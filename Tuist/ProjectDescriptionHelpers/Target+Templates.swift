@@ -17,7 +17,7 @@ extension Target {
                                           orgName: String,
                                           deploymentTarget: DeploymentTarget = .iOS(targetVersion: "16.4",
                                                                                     devices: [.iphone, .ipad],
-                                                                                    supportsMacDesignedForIOS: false),
+                                                                                    supportsMacDesignedForIOS: true),
                                           dependencies: [TargetDependency],
                                           infoPlistPath: String = "",
                                           scripts: [TargetScript] = [],
