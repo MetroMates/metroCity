@@ -145,6 +145,7 @@ opt_in_rules: # 명시적 룰 활성화
 empty_count:
     only_after_dot: true
 
+# 해당 파일 제외.
 excluded:
     - Tuist
     - Frameworks

@@ -2,7 +2,6 @@
 
 import Foundation
 
-final class ViewModel {
-    func test() {
-    }
+/// 메인 리스트 ViewModel
+final class MainListVM {
 }

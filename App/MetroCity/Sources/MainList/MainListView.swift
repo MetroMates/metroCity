@@ -2,6 +2,7 @@
 
 import SwiftUI
 
+/// 전체 호선 리스트 View
 struct MainListView: View {
     var body: some View {
         Text("Hello, World!")

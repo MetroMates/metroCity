@@ -18,7 +18,7 @@ let mainTarget = Target.makeTargetWithTest(name: "MetroCity",
                                                                   supportsMacDesignedForIOS: false),
                                            dependencies: [.target(name: "SPM")],
                                            infoPlistPath: "Support/Info.plist",
-                                           scripts: [.SwiftLintShell],
+                                           scripts: [.swiftLintPath],
                                            isResource: true,
                                            isTestAt: true)
 
@@ -39,8 +39,6 @@ let spmTarget = Target.makeTargetWithTest(name: "SPM",
 
 let b = addTargets(spmTarget)
 
-
 // ↑↑↑ 만들어진 타겟으로 프로젝트 생성
 let project = Project.makeProject(projectName: projectName,
                                   orgName: organizationName)
-
