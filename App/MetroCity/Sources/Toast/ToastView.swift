@@ -2,10 +2,10 @@
 
 import SwiftUI
 
-/// 공용 토스트메시지 View
+/// Custom 토스트메시지 View
 struct ToastView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Text("Toast")
     }
 }
 
