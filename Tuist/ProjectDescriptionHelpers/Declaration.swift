@@ -25,7 +25,7 @@ var dateToString: String {
 public let workspaceName: String = "MetroCity"
 
 /// Project명
-public let projectName: String = "MetroCity"
+public let projectNm: String = "MetroCity"
 
 /// Project -> .proj 파일 위치 폴더명
 public let projectFolder: String = "App"

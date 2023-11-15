@@ -140,7 +140,8 @@ Derived/
 Tuist/Dependencies
 
 # PList
-**/*.plist
+# **/*.plist  => 전체 plist를 다 제외함.
+Support/*.plist
 
 # XCconfig
 **.xcconfig

@@ -7,17 +7,22 @@ import Foundation
  */
 
 // MARK: - Arrived
-struct Arrived: Codable {
+struct Arrived: SubwayModeling {
     let errorMessage: ErrorMessage
     let realtimeArrivalList: [RealtimeArrivalList]
 }
 
-// MARK: - ErrorMessage
-struct ErrorMessage: Codable {
-    let status: Int
-    let code, message, link, developerMessage: String
-    let total: Int
-}
+// extension Arrived {
+//    static func emptyData() -> Self {
+//        return .init(errorMessage: .init(status: 200,
+//                                         code: "",
+//                                         message: "",
+//                                         link: "",
+//                                         developerMessage: "",
+//                                         total: 0),
+//                     realtimeArrivalList: [])
+//    }
+// }
 
 // MARK: - RealtimeArrivalList
 struct RealtimeArrivalList: Codable {
