@@ -40,5 +40,5 @@ let spmTarget = Target.makeTargetWithTest(name: "SPM",
 let b = addTargets(spmTarget)
 
 // ↑↑↑ 만들어진 타겟으로 프로젝트 생성
-let project = Project.makeProject(projectName: projectName,
+let project = Project.makeProject(projectName: projectNm,
                                   orgName: organizationName)
