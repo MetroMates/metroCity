@@ -3,7 +3,7 @@
 import SwiftUI
 
 /// MainList모델
-struct MainListModel: Identifiable {
+struct MainListModel: SubwayModelIdentifier {
     let id: String = UUID().uuidString
     /// 현재 역ID
     let statnID: String
@@ -11,13 +11,10 @@ struct MainListModel: Identifiable {
     let statnNm: String
     /// 지하철 몇호선인지
     let subwayID: String
-    
     /// 상,하행선 구분 (0 : 상행/내선, 1 : 하행/외선)
     let updnLine: String
-    
     /// 열차 도착예정시간
     let barvlDt: String
-
 }
 
 extension MainListModel {

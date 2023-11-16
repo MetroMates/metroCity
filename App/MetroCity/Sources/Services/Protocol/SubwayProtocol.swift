@@ -7,7 +7,4 @@ protocol SubwayModeling: Codable {
     var errorMessage: ErrorMessage { get }
 }
 
-// ViewModel 클래스에 따르게 만들고 중간 Repository를 만들어서 그 안에서 실행시킨다...? 흠...
-protocol SubwayInfos: AnyObject {
-    func fetch()
-}
+protocol SubwayModelIdentifier: Identifiable { }
