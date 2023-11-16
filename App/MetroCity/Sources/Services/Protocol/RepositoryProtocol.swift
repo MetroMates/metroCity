@@ -6,8 +6,14 @@ protocol SubwayRepository: SubwayRepositoryFetch, SubwayRepositoryUD { }
 
 protocol SubwayRepositoryFetch {
     /// 서버에서 데이터 fetch
-    func subwaysFetch<Content>(modelType: Content.Type) async -> [Content] where Content: SubwayModelIdentifier
+    func subwaysFetch<Content>(modelType: Content.Type, station: String) async -> [Content] where Content: SubwayModelIdentifier
 }
+
+// extension SubwayRepositoryFetch {
+//    func subwaysFetch<Content>(modelType: Content.Type, station: String = "") async -> [Content] where Content: SubwayModelIdentifier {
+//        return []
+//    }
+// }
 
 protocol SubwayRepositoryUpdate {
     func subwayUpdate()
