@@ -14,8 +14,8 @@ final class MainListUseCase {
     }
     
     // MainList에 대한 UseCase이니까 MainListVM 타입을 특정하여 받아와서 사용해도 무관.
-    func fetchData(vm: MainListVM) async {
-        let data = await repository.subwaysFetch(modelType: MainListModel.self)
+    func fetchData(vm: MainListVM, station: String) async {
+        let data = await repository.subwaysFetch(modelType: MainListModel.self, station: station)
         print("data \(data)")
         vm.models = data
         

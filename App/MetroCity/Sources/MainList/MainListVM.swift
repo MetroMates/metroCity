@@ -12,7 +12,7 @@ import Combine
 // ViewModel에서는 View와 관련된 메서드(로직)만 작성한다.
 /// 메인 리스트 ViewModel
 final class MainListVM: ObservableObject {
-
+    @Published var selectStation: String = ""
     @Published var isTapped: Bool = false
     /// 데이터 모델
     @Published var models: [MainListModel] = []
@@ -32,18 +32,26 @@ final class MainListVM: ObservableObject {
         $isTapped.sink(receiveValue: { tabbed in
             if tabbed {
                 Task {
-                    await self.fetchData()
+                    await self.fetchData("")
                 }
                 self.isTapped = false
             }
         }).store(in: &anyCancellable)
+        
+        $selectStation.sink { station in
+            Task {
+                await self.fetchData(station)
+            }
+        }
+        .store(in: &anyCancellable)
+        
     }
         
     // MARK: - Private Methods
     
     // 도메인Layer fetchData로직(= 비즈니스 로직 -> 데이터관련 로직) 호출
-    private func fetchData() async {
-        await useCase.fetchData(vm: self)
+    private func fetchData(_ station: String) async {
+        await useCase.fetchData(vm: self, station: station)
     }
 
 }
