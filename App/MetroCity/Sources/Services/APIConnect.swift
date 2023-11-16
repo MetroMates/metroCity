@@ -14,8 +14,6 @@ import SwiftUI
 protocol ErrorStatus {
     
 }
-
-
 /// API 연동 클래스 (key: ApiKey)
 ///
 /// 변수명    타입    변수설명    값설명
@@ -62,8 +60,6 @@ final class TrainAPIConnect {
             debugPrint("url [none]")
             return nil
         }
-        
-        print("url :  \(url)")
         
         // 요청할url에 대한 urlRequest객체를 생성한다.
         let urlRequest: URLRequest = .init(url: url)

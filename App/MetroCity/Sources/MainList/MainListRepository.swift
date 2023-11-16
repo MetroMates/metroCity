@@ -3,24 +3,22 @@
 import Foundation
 
 // 네트워크 통신을 하여 json으로 가져온 데이터를 디코딩까지 하고 객체로 반환해주는 곳.
-final class Repository {
+final class MainListRepository: SubwayRepositoryFetch {
+    
     private let userNetworkStore = TrainAPIConnect(key: .train) // 통신 -> DataStore
 //    private let userDBStore = UserDBStore() // 로컬
-
-//    func getUser() -> User {
-        // Combine data from network and DB if needed
-//        let networkData = userNetworkStore.fetchUserData()
-//        let dbData = userDBStore.fetchUserData()
-//        return User(name: networkData.name, age: dbData.age)
-//    }
     
-    func getMainList() async -> [MainListModel] {
-        let datas = await userNetworkStore.load(type: Arrived.self, urlAddress: .trainArrive, station: "서울")
+    // 여기서는 MainListModel의 데이터를 반환해주는 비즈니스 로직 작성.
+    // MainListModel은 SubwayModelIdentifier를 채택하고 있음.
+    func subwaysFetch<Content>(modelType: Content.Type) async -> [Content] where Content: SubwayModelIdentifier {
+        
+        let datas = await userNetworkStore.load(type: Arrived.self,
+                                                urlAddress: .trainArrive,
+                                                station: "서울")
         
         var mainLists: [MainListModel] = []
         
         if let datas {
-            
             let arrivedDatas = datas.realtimeArrivalList
             
             for item in arrivedDatas {
@@ -33,7 +31,7 @@ final class Repository {
             
         }
         
-        return mainLists
+        return mainLists as? [Content] ?? []
     }
     
     func getfavoriteList() {
