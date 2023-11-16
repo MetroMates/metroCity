@@ -7,26 +7,28 @@ struct MainListView: View {
     @StateObject var mainVM = MainListVM(domain: MainListUseCase(repo: MainListRepository()))
     
     var body: some View {
-        VStack(spacing: 20) {
-            HStack {
-                ForEach(mainVM.models) {
-                    Text($0.statnNm)
-                    Text($0.statnID)
-                    Text($0.subwayID)
-                }
-                .font(.caption)
-            }
+        NavigationStack {
             
-            Button(action: {
-                mainVM.isTapped.toggle()
-            }, label: {
-                Text("데이터 가져오기")
-            })
+            Text("호선 선택")
+            
+            ScrollView {
+                VStack(alignment: .leading, spacing: 15) {
+                    ForEach(SubwayLine.allCases, id: \.rawValue) { line in
+                        NavigationLink {
+                            Text("해당 호선 역 라인 지도 View")
+                        } label: {
+                            MainListCellView(stationName: line.rawValue)
+                        }
+                        
+                    }
+                }
+                .padding()
+                .onTapGesture {
+                    
+                }
+            }
         }
-        .padding()
-        .onAppear {
-            mainVM.buttonsSubscribe()
-        }
+        
     }
 
 }

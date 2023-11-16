@@ -12,10 +12,11 @@ final class MainListRepository: SubwayRepositoryFetch {
     // MainListModel은 SubwayModelIdentifier를 채택하고 있음.
     func subwaysFetch<Content>(modelType: Content.Type) async -> [Content] where Content: SubwayModelIdentifier {
         
-        let datas = await userNetworkStore.load(type: Arrived.self,
-                                                urlAddress: .trainArrive,
-                                                station: "서울")
+        // 로컬 저장소에 저장되어있는 데이터가 있는지 비교 후
+        // 서버에서 통신받아서 가져오기로 한다.
         
+        let datas = await userNetworkStore.loadStations()
+                
         var mainLists: [MainListModel] = []
         
         if let datas {
