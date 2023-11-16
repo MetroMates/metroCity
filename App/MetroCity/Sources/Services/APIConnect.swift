@@ -37,33 +37,59 @@ final class TrainAPIConnect {
         self.apikey = api as? String ?? ""
     }
     
+    /// 모든 역정보 Fetch
+    func loadStations() async -> Arrived? {
+        let urlAddress: URLAddress = .trainArrive
+        let urlString: String = "http://swopenAPI.seoul.go.kr/api/subway/\(apikey)/json/\(urlAddress.rawValue)/ALL"
+        
+        guard let urlRequest = self.requestURL(urlString: urlString) else { return nil }
+        
+        // url 세션을 생성한다.
+        let urlSession = URLSession(configuration: .default)
+        
+        do {
+            let (data, _) = try await urlSession.data(for: urlRequest)
+            
+            do {
+                let content = try JSONDecoder().decode(Arrived.self, from: data)
+                
+                let errStatus = content.errorMessage.status
+                
+                // 상태값 200이 정상.
+                if errStatus == 200 {
+                    let errCode = content.errorMessage.code
+                    if errCode != Status.INF000.rawValue {
+                        debugPrint(content.errorMessage.message)
+                    } else {
+                        return content  // 정상 처리됨.
+                    }
+                }
+            } catch {
+                do {
+                    let errorMsg = try JSONDecoder().decode(ErrorMessage.self, from: data)
+                    debugPrint(errorMsg.code, errorMsg.message)
+                } catch {
+                    debugPrint("json디코딩Err : ", error.localizedDescription)
+                }
+            }
+        } catch {
+            debugPrint("URL통신Err : ", error.localizedDescription)
+        }
+        
+        return nil
+    }
+    
     /// 데이터 불러오기
     func load<Content>(type: Content.Type,
                        urlAddress: URLAddress,
                        station: String,
                        startIdx: String = "0",
                        endIdx: String = "5") async -> Content? where Content: SubwayModeling {
-        
-        let urlString: String = "http://swopenAPI.seoul.go.kr/api/subway/\(apikey)/json/\(urlAddress.rawValue)/\(startIdx)/\(endIdx)/\(station)"
-        
         // ex: http://swopenAPI.seoul.go.kr/api/subway/5a5670727973776a3532736472524f/json/realtimeStationArrival/0/5/서울
         // ex: http://swopenAPI.seoul.go.kr/api/subway/5a5670727973776a3532736472524f/json/realtimePosition/0/5/1호선
+        let urlString: String = "http://swopenAPI.seoul.go.kr/api/subway/\(apikey)/json/\(urlAddress.rawValue)/\(startIdx)/\(endIdx)/\(station)"
         
-        guard let encodedURLString = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
-        else {
-            debugPrint("url 인코딩 실패")
-            return nil
-        }
-        
-        guard let url = URL(string: encodedURLString)
-        else {
-            debugPrint("url [none]")
-            return nil
-        }
-        
-        // 요청할url에 대한 urlRequest객체를 생성한다.
-        let urlRequest: URLRequest = .init(url: url)
-        // urlRequest.httpMethod = "GET" // default
+        guard let urlRequest = self.requestURL(urlString: urlString) else { return nil }
         
         // url 세션을 생성한다.
         let urlSession = URLSession(configuration: .default)
@@ -98,6 +124,26 @@ final class TrainAPIConnect {
         }
         
         return nil
+    }
+    
+    private func requestURL(urlString: String) -> URLRequest? {
+        guard let encodedURLString = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        else {
+            debugPrint("url 인코딩 실패")
+            return nil
+        }
+        
+        guard let url = URL(string: encodedURLString)
+        else {
+            debugPrint("url [none]")
+            return nil
+        }
+        
+        // 요청할url에 대한 urlRequest객체를 생성한다.
+        let urlRequest: URLRequest = .init(url: url)
+        // urlRequest.httpMethod = "GET" // default
+        
+        return urlRequest
     }
     
 }
