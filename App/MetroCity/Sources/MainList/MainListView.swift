@@ -11,7 +11,7 @@ struct MainListView: View {
             
             Text("호선 선택")
             
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 15) {
                     ForEach(SubwayLine.allCases, id: \.rawValue) { line in
                         NavigationLink {
@@ -23,9 +23,6 @@ struct MainListView: View {
                     }
                 }
                 .padding()
-                .onTapGesture {
-                    
-                }
             }
         }
         

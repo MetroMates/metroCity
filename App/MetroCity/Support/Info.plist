@@ -20,8 +20,8 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>TRAIN_API_KEY</key>
-	<string>$(TRAIN_API_KEY)</string>
+	<key>SUBWAY_API_KEY</key>
+	<string>$(SUBWAY_API_KEY)</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
