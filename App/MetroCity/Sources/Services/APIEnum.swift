@@ -4,12 +4,12 @@ import Foundation
 
 /// APIKEY Bundle.main
 enum APIKEY: String {
-    case train = "TRAIN_API_KEY"
+    case subway = "SUBWAY_API_KEY"
 }
 /// URL 주소
 enum URLAddress: String {
-    case trainArrive = "realtimeStationArrival"
-    case trainLocation = "realtimePosition"
+    case subwayArrive = "realtimeStationArrival"
+    case subwayLocation = "realtimePosition"
 }
 
 /// 지하철호선
