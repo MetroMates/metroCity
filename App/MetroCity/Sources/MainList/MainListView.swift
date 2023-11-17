@@ -23,20 +23,18 @@ struct MainListView: View {
                     } label: {
                         Text(item)
                     }
-                    
+
                 }
             }
             
-            ScrollView {
-                
-            }
+//
 //            ScrollView(showsIndicators: false) {
 //                VStack(alignment: .leading, spacing: 15) {
 //                    ForEach(SubwayLine.allCases, id: \.rawValue) { line in
 //                        NavigationLink {
-//                            Text("해당 호선 역 라인 지도 View")
+////                            MainDetailView(vm: .init(subwayID: line.rawValue))
 //                        } label: {
-//                            MainListCellView(stationName: line.rawValue)
+//                            MainListCellView(stationName: line.subwayName)
 //                        }
 //
 //                    }

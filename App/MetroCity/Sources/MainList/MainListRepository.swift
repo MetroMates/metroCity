@@ -56,11 +56,8 @@ final class MainListRepository: SubwayRepositoryFetch {
                 let arrivedDatas = datas.realtimeArrivalList
                 
                 for item in arrivedDatas {
-                    mainLists.append(.init(statnID: item.statnID,
-                                           statnNm: item.statnNm,
-                                           subwayID: item.subwayID,
-                                           updnLine: item.updnLine,
-                                           barvlDt: item.barvlDt))
+                    mainLists.append(.init(subwayID: item.subwayID,
+                                           subwayNm: ""))
                 }
                 
             }

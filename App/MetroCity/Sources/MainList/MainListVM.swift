@@ -51,7 +51,7 @@ final class MainListVM: ObservableObject {
     
     // 도메인Layer fetchData로직(= 비즈니스 로직 -> 데이터관련 로직) 호출
     private func fetchData(_ station: String) async {
-        await useCase.fetchData(vm: self, station: station)
+        self.models = await useCase.fetchData(station: station)
     }
 
 }

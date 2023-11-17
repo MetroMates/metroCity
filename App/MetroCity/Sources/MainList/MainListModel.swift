@@ -2,19 +2,22 @@
 
 import SwiftUI
 
+/*
+    1. 전체 호선 및 역정보 불러온다.
+    2. 전체 역에 대하여 역이름의 중복을 제거한다. (역 번호(statnId) 기준)
+    2-1. subwayID
+    3. 전체 호선정보를 담을 객체 생성 후 담는다. (subwayID)
+    4.
+ */
+
 /// MainList모델
+/// 전체 호선 리스트
 struct MainListModel: SubwayModelIdentifier {
     let id: String = UUID().uuidString
-    /// 현재 역ID
-    let statnID: String
-    /// 현재 역명
-    let statnNm: String
-    /// 지하철 몇호선인지
+    /// 지하철 몇호선인지(ID)
     let subwayID: String
-    /// 상,하행선 구분 (0 : 상행/내선, 1 : 하행/외선)
-    let updnLine: String
-    /// 열차 도착예정시간
-    let barvlDt: String
+    /// 지하철 호선 명
+    let subwayNm: String
 }
 
 extension MainListModel {
