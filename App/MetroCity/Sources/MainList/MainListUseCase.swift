@@ -14,11 +14,9 @@ final class MainListUseCase {
     }
     
     // MainList에 대한 UseCase이니까 MainListVM 타입을 특정하여 받아와서 사용해도 무관.
-    func fetchData(station: String) async -> [MainListModel] {
-        let data = await repository.subwaysFetch(modelType: MainListModel.self, station: station)
-        print("data \(data)")
-        return data
-    }
+//    func fetchData(station: String) async -> [StationInfo] {
+//        return await repository.subwaysFetch(modelType: StationLists.self, station: station)
+//    }
     
     // 호선 정보만 필터링해서 가져옴.
     

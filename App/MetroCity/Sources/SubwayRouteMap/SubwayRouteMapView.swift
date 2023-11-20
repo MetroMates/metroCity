@@ -4,7 +4,10 @@ import SwiftUI
 
 struct SubwayRouteMapView: View {
     var body: some View {
-        Text("Hello, World!")
+        VStack {
+            Text("Hello, World!")
+            DrawLine()
+        }
     }
 }
 

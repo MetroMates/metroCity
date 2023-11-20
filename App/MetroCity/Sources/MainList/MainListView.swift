@@ -4,50 +4,39 @@ import SwiftUI
 
 /// 전체 호선 리스트 View
 struct MainListView: View {
-    @StateObject var mainVM = MainListVM(domain: MainListUseCase(repo: MainListRepository(networkStore: SubwayAPIService())))
-    
-    // 임시
-    let lists: [String] = ["서울", "금정"]
+    @StateObject private var mainVM = MainListVM(domain: MainListUseCase(repo: MainListRepository(networkStore: SubwayAPIService())))
+    @StateObject private var mainDetailVM = MainDetailVM(subwayID: "", useCase: MainDetailUseCase(repo: MainListRepository(networkStore: SubwayAPIService())))
     
     var body: some View {
         NavigationStack {
             VStack(spacing: 30) {
                 Text("호선 선택")
-                Button("가져오기") {
-                    mainVM.isTapped.toggle()
-                }
-                ForEach(lists, id: \.self) { item in
-                    Button {
-                        // 각각 데이터 가져오기
-                        mainVM.selectStation = item
-                    } label: {
-                        Text(item)
+                
+                ScrollView(showsIndicators: false) {
+                    VStack(alignment: .leading, spacing: 15) {
+                        ForEach(SubwayLine.allCases, id: \.rawValue) { line in
+                            Button {
+                                // 임시로 해둔거임. TODO: 추후 수정
+                                mainDetailVM.subwayID = line.subwayName
+                                mainVM.isDetailPresented = true
+                            } label: {
+                                MainListCellView(stationName: line.subwayName)
+                            }
+                            .navigationDestination(isPresented: $mainVM.isDetailPresented) {
+                                MainDetailView(vm: mainDetailVM)
+                            }
+                        }
                     }
-
+                    .padding()
                 }
             }
-            
-//
-//            ScrollView(showsIndicators: false) {
-//                VStack(alignment: .leading, spacing: 15) {
-//                    ForEach(SubwayLine.allCases, id: \.rawValue) { line in
-//                        NavigationLink {
-////                            MainDetailView(vm: .init(subwayID: line.rawValue))
-//                        } label: {
-//                            MainListCellView(stationName: line.subwayName)
-//                        }
-//
-//                    }
-//                }
-//                .padding()
-//            }
         }
         .onAppear {
             mainVM.buttonsSubscribe()
         }
         
     }
-
+    
 }
 
 struct MainListView_Preview: PreviewProvider {

@@ -7,7 +7,7 @@ import Foundation
  */
 
 // MARK: - Arrived
-struct Arrived: SubwayModeling {
+struct Arrived: SubwayModel2Server {
     let errorMessage: ErrorMessage
     let realtimeArrivalList: [RealtimeArrivalList]
 }

@@ -5,15 +5,22 @@ import Foundation
 protocol SubwayRepository: SubwayRepositoryFetch, SubwayRepositoryUD { }
 
 protocol SubwayRepositoryFetch {
-    /// 서버에서 데이터 fetch
+    /// 서버에서 데이터 fetch. 배열로 받음.
     func subwaysFetch<Content>(modelType: Content.Type, station: String) async -> [Content] where Content: SubwayModelIdentifier
+    /// 서버에서 데이터 fetch
+    func subwayFetch<Content>(modelType: Content.Type, station: String) async -> Content? where Content: SubwayModel
 }
 
-// extension SubwayRepositoryFetch {
-//    func subwaysFetch<Content>(modelType: Content.Type, station: String = "") async -> [Content] where Content: SubwayModelIdentifier {
-//        return []
-//    }
-// }
+/// 기본 세팅.
+extension SubwayRepositoryFetch {
+    func subwaysFetch<Content>(modelType: Content.Type, station: String) async -> [Content] where Content: SubwayModelIdentifier {
+        return []
+    }
+    
+    func subwayFetch<Content>(modelType: Content.Type, station: String) async -> Content? where Content: SubwayModel {
+        return nil
+    }
+}
 
 protocol SubwayRepositoryUpdate {
     func subwayUpdate()

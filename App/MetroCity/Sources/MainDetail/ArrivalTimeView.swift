@@ -26,7 +26,7 @@ extension ArrivalTimeView {
             .frame(maxWidth: .infinity)
             .padding(10)
             .background {
-                Color.red.opacity(0.5)
+                Color.yellow.opacity(0.5)
             }
             
             VStack(alignment: .leading, spacing: 10) {

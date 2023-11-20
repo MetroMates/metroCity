@@ -2,19 +2,13 @@
 
 import SwiftUI
 
-/*
-    필요한 DTO
-    1. 해당호선에 대한 모든 역정보
-       statnID, statnNM
-    2. 해당호선 색상, 전반적인 UI의 색상
-
- */
-
 /// 실시간 전철 도착 정보 ViewModel
 final class MainDetailVM: ObservableObject {
-    @Published var model: MainDetailModel = .emptyData
+    /// 검색 Text
+    @Published var searchText: String = ""
+//    @Published var model: MainDetailModel = .emptyData
     
-    private let subwayID: String
+    var subwayID: String
     private let useCase: MainDetailUseCase
     
     init(subwayID id: String, useCase: MainDetailUseCase) {
@@ -25,8 +19,20 @@ final class MainDetailVM: ObservableObject {
     
     /// subwayID에 대한 역정보들을 fetch해온다.
     private func fetchData() {
-        let data = useCase.fetchData()
-        self.model = data
+//        let data = useCase.fetchData()
+//        self.model = data
     }
     
+}
+
+struct MainDetailVM_Previews: PreviewProvider {
+    static var previews: some View {
+        // 이 부분에서 MainListRepository를 테스트용 데이터를 반환하는 class로 새로 생성하여 주입해주면 테스트용 Preview가 완성.!!
+        MainDetailView(vm: MainDetailVM(subwayID: "신분당선", useCase: MainDetailUseCase(repo: MainListRepository(networkStore: SubwayAPIService()))))
+            .previewDisplayName("디테일")
+        
+        MainListView()
+            .previewDisplayName("메인리스트")
+        
+    }
 }

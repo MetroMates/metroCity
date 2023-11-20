@@ -28,7 +28,7 @@ import SwiftUI
 /// statnNm    STRING(필수)    지하철역명    지하철역명
 final class SubwayAPIService: APIServiceDelegate {
     
-    func workInUrlSession<Content>(type: Content.Type) async -> Content? where Content: SubwayModeling {
+    func workInUrlSession<Content>(type: Content.Type) async -> Content? where Content: SubwayModel2Server {
         guard let urlString else { return nil }
         guard let urlRequest = self.requestURL(urlString: urlString) else { return nil }
         
