@@ -13,8 +13,10 @@ final class MainListRepository: SubwayRepositoryFetch {
                  nil로 나오는 것일 듯하다.
      ------------------------------------------------------------------------------------------------------------------------------------------ */
     
+    // 네트워크 통신
     private let userNetworkStore: APIServiceDelegate?
-    // 로컬 서버 -> 추후 타입 교체 (약한참조, 프로토콜)
+    
+    // 로컬 서버 -> 추후 타입 교체 (약한참조, 프로토콜) CoreData
     private let localStore: String
     
     init(networkStore: APIServiceDelegate?, localStore: String = "") {
@@ -50,14 +52,16 @@ final class MainListRepository: SubwayRepositoryFetch {
             
             let datas = await userNetworkStore.workInUrlSession(type: Arrived.self)
             
-            var mainLists: [MainListModel] = []
+            var mainLists: [StationInfo] = []
             
             if let datas {
                 let arrivedDatas = datas.realtimeArrivalList
                 
                 for item in arrivedDatas {
-                    mainLists.append(.init(subwayID: item.subwayID,
-                                           subwayNm: ""))
+//                    mainLists.append(.init(subwayID: item.subwayID,
+//                                           subwayNm: SubwayLine(rawValue: item.subwayID)?.subwayName ?? "[none]",
+//                                           statnID: item.statnID,
+//                                           statnNm: item.statnNm))
                 }
                 
             }

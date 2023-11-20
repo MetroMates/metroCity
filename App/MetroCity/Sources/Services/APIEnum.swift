@@ -13,7 +13,7 @@ enum URLAddress: String {
     case subwayPosition = "realtimePosition"
 }
 
-/// 지하철호선 총 16호선
+/// 지하철호선 총 16호선 -> 추후 Firestore에서 값을 불러오게 되면 이 Enum은 필요없을것.
 enum SubwayLine: String, CaseIterable {
     case line1001 = "1001"
     case line1002 = "1002"
@@ -31,7 +31,8 @@ enum SubwayLine: String, CaseIterable {
     case line1075 = "1075"
     case line1077 = "1077"
     case line1092 = "1092"
-    
+    case line1093 = "1093"
+    case line1081 = "1081"
 }
 
 extension SubwayLine {
@@ -64,11 +65,15 @@ extension SubwayLine {
         case .line1067:
             return "경춘선"
         case .line1075:
-            return "수의분당선"
+            return "수인분당선"
         case .line1077:
             return "신분당선"
         case .line1092:
             return "우이신설선"
+        case .line1093:
+            return "서해선"
+        case .line1081:
+            return "경강선"
         }
     }
     

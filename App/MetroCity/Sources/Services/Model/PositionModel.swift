@@ -7,7 +7,7 @@ import Foundation
  */
 
 // MARK: - Position
-struct Position: SubwayModeling {
+struct Position: SubwayModel2Server {
     let errorMessage: ErrorMessage
     let realtimePositionList: [RealtimePositionList]
 }

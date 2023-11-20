@@ -3,8 +3,10 @@
 import SwiftUI
 
 // API통신시 errorMessage는 무조건 있어야하기때문에 protocol로 따로 분리하여 관리.
-protocol SubwayModeling: Codable {
+protocol SubwayModel2Server: Codable {
     var errorMessage: ErrorMessage { get }
 }
 
 protocol SubwayModelIdentifier: Identifiable { }
+
+protocol SubwayModel { }

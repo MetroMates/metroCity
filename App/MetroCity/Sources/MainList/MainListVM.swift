@@ -14,8 +14,9 @@ import Combine
 final class MainListVM: ObservableObject {
     @Published var selectStation: String = ""
     @Published var isTapped: Bool = false
+    @Published var isDetailPresented: Bool = false
     /// 데이터 모델
-    @Published var models: [MainListModel] = []
+//    @Published var stationLists: [StationLists] = []
 
     private var anyCancellable: Set<AnyCancellable> = []
     // 도메인 Layer
@@ -51,7 +52,7 @@ final class MainListVM: ObservableObject {
     
     // 도메인Layer fetchData로직(= 비즈니스 로직 -> 데이터관련 로직) 호출
     private func fetchData(_ station: String) async {
-        self.models = await useCase.fetchData(station: station)
+//        self.stationLists = await useCase.fetchData(station: station)
     }
 
 }

@@ -2,9 +2,8 @@
 
 import SwiftUI
 
-struct MainDetailView: View {
-    //    @StateObject var vm: MainDetailVM
-    @State private var searchText: String = ""
+struct MainDetailView: View {     
+    @ObservedObject var vm: MainDetailVM
     
     var body: some View {
         VStack(spacing: 20) {
@@ -17,7 +16,7 @@ struct MainDetailView: View {
             
             ArrivalTimeView()
             
-            SubwayRouteMapView()
+            LineWithCircleView()
             
             Spacer()
             
@@ -31,10 +30,10 @@ extension MainDetailView {
     /// Search부분
     @ViewBuilder var SearchContent: some View {
         HStack {
-            TextField(" 역이름을 검색해보세요", text: $searchText)
+            TextField(" 역이름을 검색해보세요", text: $vm.searchText)
                 .padding(7)
                 .background {
-                    Color.gray.opacity(0.3)
+                    Color.gray.opacity(0.22)
                 }
             Button {
                 // 검색 func
@@ -54,7 +53,7 @@ extension MainDetailView {
             Button {
                // Sheet Open
             } label: {
-                Text("신분당선(변수)")
+                Text("\(vm.subwayID)")
                     .font(.largeTitle)
                     .tint(.primary)
             }
@@ -92,7 +91,12 @@ extension MainDetailView {
 
 struct MainDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        //        MainListView()
-        MainDetailView()
+        // 이 부분에서 MainListRepository를 테스트용 데이터를 반환하는 class로 새로 생성하여 주입해주면 테스트용 Preview가 완성.!!
+        MainDetailView(vm: MainDetailVM(subwayID: "신분당선", useCase: MainDetailUseCase(repo: MainListRepository(networkStore: SubwayAPIService()))))
+            .previewDisplayName("디테일")
+        
+        MainListView()
+            .previewDisplayName("메인리스트")
+        
     }
 }

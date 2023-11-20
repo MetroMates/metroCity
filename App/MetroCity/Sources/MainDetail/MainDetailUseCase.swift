@@ -9,8 +9,8 @@ final class MainDetailUseCase {
         self.repository = repo
     }
     
-    func fetchData() -> MainDetailModel {
-        return .emptyData
-    }
+//    func fetchData() -> MainDetailModel {
+//        return .emptyData
+//    }
     
 }
