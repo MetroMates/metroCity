@@ -28,7 +28,8 @@ struct MainListView: View {
                     VStack(alignment: .leading, spacing: 15) {
                         ForEach(mainVM.subwayLines, id: \.id) { line in
                             Button {
-                                mainDetailVM.subwayID = line.subwayId
+//                                mainDetailVM.send(subwayID: line.subwayId)
+                                mainDetailVM.hosunInfo = line
                                 mainVM.isDetailPresented = true
                             } label: {
                                 MainListCellView(stationName: line.subwayNm,

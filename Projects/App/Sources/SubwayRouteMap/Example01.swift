@@ -10,7 +10,9 @@ import SwiftUI
 
 public struct P198_PolygonShape: View {
     @State private var sideCount: Double = 3
-    public init() {}
+    
+    public init() { }
+    
     public var body: some View {
         VStack {
             Spacer()
@@ -31,8 +33,7 @@ public struct P198_PolygonShape: View {
     }
 }
 
-fileprivate
-struct PolygonShape: Shape {
+private struct PolygonShape: Shape {
     
     var sideCount: Double
     
