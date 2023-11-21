@@ -12,7 +12,8 @@ struct TabbarView: View {
             ZStack {
                 switch selectedIndex {
                 case 0:
-                    DrawGeoView()
+//                    DrawGeoView()
+                    EmptyView()
                 default:
                     BookmarkView()
                 }

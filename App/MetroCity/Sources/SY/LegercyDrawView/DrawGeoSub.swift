@@ -3,7 +3,7 @@
 import SwiftUI
 
 struct SubwayMapViewdddd: View {
-    var line: SubwayLine
+    var line: SubwayLineTemp
 
     var body: some View {
         GeometryReader { geometry in
@@ -48,35 +48,35 @@ struct DrawGeoView: View {
 }
 
 // Example data for Line 2
-let line3 = SubwayLine(
+let line3 = SubwayLineTemp(
     name: "Line 2",
     color: .blue,
     stations: [
-        SubwayStation(name: "City", coordinates: CGPoint(x: 0.1, y: 0.4)),
-        SubwayStation(name: "Euljiro 1-ga", coordinates: CGPoint(x: 0.3, y: 0.4)),
-        SubwayStation(name: "Euljiro 3-ga", coordinates: CGPoint(x: 0.4, y: 0.5)),
-        SubwayStation(name: "Yaksu", coordinates: CGPoint(x: 0.6, y: 0.5)),
-        SubwayStation(name: "Jongno 3(sam)-ga", coordinates: CGPoint(x: 0.7, y: 0.4))
+        SubwayStationTemp(name: "City", coordinates: CGPoint(x: 0.1, y: 0.4)),
+        SubwayStationTemp(name: "Euljiro 1-ga", coordinates: CGPoint(x: 0.3, y: 0.4)),
+        SubwayStationTemp(name: "Euljiro 3-ga", coordinates: CGPoint(x: 0.4, y: 0.5)),
+        SubwayStationTemp(name: "Yaksu", coordinates: CGPoint(x: 0.6, y: 0.5)),
+        SubwayStationTemp(name: "Jongno 3(sam)-ga", coordinates: CGPoint(x: 0.7, y: 0.4))
     ]
 )
 
-let shinbundangLine = SubwayLine(
+let shinbundangLine = SubwayLineTemp(
     name: "Shinbundang Line",
     color: .orange,
     stations: [
-        SubwayStation(name: "Gangnam", coordinates: CGPoint(x: 0.2, y: 0.2)),
-        SubwayStation(name: "Yangjae", coordinates: CGPoint(x: 0.3, y: 0.3)),
-        SubwayStation(name: "Jeongja", coordinates: CGPoint(x: 0.5, y: 0.4)),
-        SubwayStation(name: "Pangyo", coordinates: CGPoint(x: 0.6, y: 0.5)),
-        SubwayStation(name: "Imae", coordinates: CGPoint(x: 0.7, y: 0.6)),
-        SubwayStation(name: "Dongcheon", coordinates: CGPoint(x: 0.8, y: 0.7)),
-        SubwayStation(name: "Sujeong", coordinates: CGPoint(x: 0.9, y: 0.8)),
-        SubwayStation(name: "Yatap", coordinates: CGPoint(x: 0.85, y: 0.75)),
-        SubwayStation(name: "Bundang", coordinates: CGPoint(x: 0.75, y: 0.65)),
-        SubwayStation(name: "Seohyeon", coordinates: CGPoint(x: 0.65, y: 0.55)),
-        SubwayStation(name: "Giheung", coordinates: CGPoint(x: 0.55, y: 0.45)),
-        SubwayStation(name: "Jeondae-Everland", coordinates: CGPoint(x: 0.45, y: 0.35)),
-        SubwayStation(name: "Gwanggyo Jungang", coordinates: CGPoint(x: 0.35, y: 0.25))
+        SubwayStationTemp(name: "Gangnam", coordinates: CGPoint(x: 0.2, y: 0.2)),
+        SubwayStationTemp(name: "Yangjae", coordinates: CGPoint(x: 0.3, y: 0.3)),
+        SubwayStationTemp(name: "Jeongja", coordinates: CGPoint(x: 0.5, y: 0.4)),
+        SubwayStationTemp(name: "Pangyo", coordinates: CGPoint(x: 0.6, y: 0.5)),
+        SubwayStationTemp(name: "Imae", coordinates: CGPoint(x: 0.7, y: 0.6)),
+        SubwayStationTemp(name: "Dongcheon", coordinates: CGPoint(x: 0.8, y: 0.7)),
+        SubwayStationTemp(name: "Sujeong", coordinates: CGPoint(x: 0.9, y: 0.8)),
+        SubwayStationTemp(name: "Yatap", coordinates: CGPoint(x: 0.85, y: 0.75)),
+        SubwayStationTemp(name: "Bundang", coordinates: CGPoint(x: 0.75, y: 0.65)),
+        SubwayStationTemp(name: "Seohyeon", coordinates: CGPoint(x: 0.65, y: 0.55)),
+        SubwayStationTemp(name: "Giheung", coordinates: CGPoint(x: 0.55, y: 0.45)),
+        SubwayStationTemp(name: "Jeondae-Everland", coordinates: CGPoint(x: 0.45, y: 0.35)),
+        SubwayStationTemp(name: "Gwanggyo Jungang", coordinates: CGPoint(x: 0.35, y: 0.25))
     ]
 )
 
