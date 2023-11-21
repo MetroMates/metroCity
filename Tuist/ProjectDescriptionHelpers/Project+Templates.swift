@@ -24,11 +24,17 @@ extension Project {
         guard !confirmTargets.isEmpty else { return .init(name: "ErrorProject") }
         
         
-        // 빌드 세팅
-        let setting: Settings = .settings(base: [:],
-                                          configurations: [.debug(name: .debug),
-                                                           .release(name: .release)],
-                                          defaultSettings: .recommended)
+        // 빌드 세팅 (xcconfig 있을경우)
+        let setting = Settings.settings(configurations: [
+            .debug(name: "Debug", xcconfig: .relativeToRoot("\(projectFolder)/\(projectName)/Resources/Config/Secrets.xcconfig")),
+            .release(name: "Release", xcconfig: .relativeToRoot("\(projectFolder)/\(projectName)/Resources/Config/Secrets.xcconfig")),
+        ], defaultSettings: .recommended)
+        
+       // 빌드 세팅 (기본)
+//        let setting: Settings = .settings(base: [:],
+//                                          configurations: [.debug(name: .debug),
+//                                                           .release(name: .release)],
+//                                          defaultSettings: .recommended)
         
         // 현재 생성되는 프로젝트(name)에 대한 scheme 생성
         let schemes: [Scheme] = [.makeScheme(target: .debug, name: projectName)]

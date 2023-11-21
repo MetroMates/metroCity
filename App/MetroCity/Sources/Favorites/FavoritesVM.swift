@@ -2,6 +2,6 @@
 
 import SwiftUI
 
-/// 즐겨찾기 VidwModel
+/// 즐겨찾기 ViewModel
 final class FavoritesVM {
 }
