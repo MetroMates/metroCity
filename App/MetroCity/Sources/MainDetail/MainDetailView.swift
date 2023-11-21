@@ -14,12 +14,18 @@ struct MainDetailView: View {
             }
             .padding(.horizontal)
             
-            ArrivalTimeView()
+            ArrivalTimeView(vm: vm)
             
             LineWithCircleView()
             
             Spacer()
             
+        }
+        .onAppear {
+            // MainListView에서 GPS기반으로 제일 가까운 역을 가져오고, 만약 가져오지 못했다면
+            // vm.subwayID 즉 해당 호선의 상행선기준 출발지역을 가져온다.
+            // 그렇게 가져온 역정보를 가지고 이전역과 다음역의 정보를 가져온다. -> 서버통신할 필요없이, 가져온 역ID를 -1, +1 하여 표시해주면 된다.
+            // 여기서 fetch하여 가져와야만하는 데이터는 현재역을 향해서 오고 있는 열차들의 상태와 어디쯤왔는지에대한 시간표이다.
         }
     }
     
@@ -46,14 +52,14 @@ extension MainDetailView {
     /// Title 부분
     @ViewBuilder var TitleContent: some View {
         HStack(spacing: 50) {
-            Color.red // 변수처리
+            vm.hosunInfo.hosunColor // 변수처리
                 .frame(width: 40, height: 40)
                 .clipShape(Circle())
             
             Button {
                // Sheet Open
             } label: {
-                Text("\(vm.subwayID)")
+                Text("\(vm.hosunInfo.subwayNm)")
                     .font(.largeTitle)
                     .tint(.primary)
             }
@@ -71,7 +77,7 @@ extension MainDetailView {
     @ViewBuilder var SubTitleContent: some View {
         HStack(spacing: 60) {
             Text("내가 있는 곳")
-            Text("광교중앙(변수)")
+            Text("\(vm.mystation.nowStNm)")
             Button {
                 
             } label: {
@@ -92,7 +98,7 @@ extension MainDetailView {
 struct MainDetailView_Previews: PreviewProvider {
     static var previews: some View {
         // 이 부분에서 MainListRepository를 테스트용 데이터를 반환하는 class로 새로 생성하여 주입해주면 테스트용 Preview가 완성.!!
-        MainDetailView(vm: MainDetailVM(subwayID: "신분당선", useCase: MainDetailUseCase(repo: MainListRepository(networkStore: SubwayAPIService()))))
+        MainDetailView(vm: MainDetailVM(useCase: MainDetailUseCase(repo: MainListRepository(networkStore: SubwayAPIService()))))
             .previewDisplayName("디테일")
         
         MainListView()

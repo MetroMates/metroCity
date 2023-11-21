@@ -15,6 +15,9 @@ final class MainListVM: ObservableObject {
     @Published var selectStation: String = ""
     @Published var isTapped: Bool = false
     @Published var isDetailPresented: Bool = false
+    @Published var subwayLines = TestSubwayLineColor.tempData
+    
+    
     /// 데이터 모델
 //    @Published var stationLists: [StationLists] = []
 
@@ -25,26 +28,11 @@ final class MainListVM: ObservableObject {
     init(domain: MainListUseCase) {
         // 의존성 주입: MainListVM에 MainListUseCase가 외부에서 생성되어 의존성 주입되었다.
         self.useCase = domain
-//        self.buttonsSubscribe() // 구독이 필요한 해당 View의 onAppear에 해주는게 더 좋은거 같다.
+//        self.subscribe() // 구독이 필요한 해당 View의 onAppear에 해주는게 더 좋은거 같다.
     }
     
     /// 버튼 탭 구독
-    func buttonsSubscribe() {
-        $isTapped.sink(receiveValue: { tabbed in
-            if tabbed {
-                Task {
-                    await self.fetchData("")
-                }
-                self.isTapped = false
-            }
-        }).store(in: &anyCancellable)
-        
-        $selectStation.sink { station in
-            Task {
-                await self.fetchData(station)
-            }
-        }
-        .store(in: &anyCancellable)
+    func subscribe() {
         
     }
         

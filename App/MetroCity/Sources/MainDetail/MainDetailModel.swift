@@ -43,9 +43,19 @@ struct HosunInfo: SubwayModelIdentifier {
     let id: String = UUID().uuidString
     let subwayID: String
     let subwayNm: String
-    let hosunColor: String
-    let lineColor: String
+    let hosunColor: Color
+    let lineColor: Color
 }
+
+extension HosunInfo {
+    static var emptyData: Self {
+        return .init(subwayID: "",
+                     subwayNm: "",
+                     hosunColor: .black,
+                     lineColor: .black)
+    }
+}
+
 
 /// 역정보 (호선 내부용) -> 호선에 대한 현재역, 이전역, 다음역
 ///
@@ -69,6 +79,20 @@ struct MyStation: SubwayModel {
     let updnLine: String
     /// 열차종류 (급행,ITX,일반,특급)
     let trainType: String
+}
+
+extension MyStation {
+    static var emptyData: Self {
+        return .init(nowSt: "",
+                     nowStNm: "",
+                     nowStatus: "",
+                     beforeSt: "",
+                     beforeStNm: "",
+                     afterSt: "",
+                     afterStNm: "",
+                     updnLine: "",
+                     trainType: "")
+    }
 }
 
 /// 실시간 지하철 위치 정보

@@ -9,8 +9,14 @@ final class MainDetailUseCase {
         self.repository = repo
     }
     
-//    func fetchData() -> MainDetailModel {
-//        return .emptyData
-//    }
+    func fetchData<Content: SubwayModel>(type: Content.Type) -> Content? {
+        return nil
+    }
+    
+    func fetchDatas(whereData: String) async -> [HosunInfo] {
+//        print("👀 usecase")
+        let datas = await repository.subwaysFetch(modelType: HosunInfo.self, urlType: .subwayArrive, whereData: whereData)
+        return datas
+    }
     
 }
