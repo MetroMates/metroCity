@@ -2,13 +2,13 @@
 
 import SwiftUI
 
-struct SubwayLine {
+struct SubwayLineTemp {
     var name: String
     var color: Color
-    var stations: [SubwayStation]
+    var stations: [SubwayStationTemp]
 }
 
-struct SubwayStation: Identifiable, Equatable {
+struct SubwayStationTemp: Identifiable, Equatable {
     var id: UUID = UUID()
     var name: String
     var coordinates: CGPoint

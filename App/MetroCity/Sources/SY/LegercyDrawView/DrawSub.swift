@@ -3,7 +3,7 @@
 import SwiftUI
 
 struct SubwayLineMapView: View {
-    var line: SubwayLine
+    var line: SubwayLineTemp
     @State private var moveSize: CGPoint = .init(x: 200, y: 500)
     @State private var isDragging: Bool = false
     @State private var scale: CGFloat = 0
@@ -70,35 +70,35 @@ struct SubwayExampleView: View {
 }
 
 // Example data for Line 2
-let line2 = SubwayLine(
+let line2 = SubwayLineTemp(
     name: "Line 2",
     color: .blue,
     stations: [
-        SubwayStation(name: "시청역", coordinates: CGPoint(x: 50, y: 200)),
-        SubwayStation(name: "을지로 1가", coordinates: CGPoint(x: 150, y: 300)),
-        SubwayStation(name: "을지로 3가", coordinates: CGPoint(x: 200, y: 350)),
-        SubwayStation(name: "역삼역", coordinates: CGPoint(x: 300, y: 250)),
-        SubwayStation(name: "종로 3가", coordinates: CGPoint(x: 350, y: 200))
+        SubwayStationTemp(name: "시청역", coordinates: CGPoint(x: 50, y: 200)),
+        SubwayStationTemp(name: "을지로 1가", coordinates: CGPoint(x: 150, y: 300)),
+        SubwayStationTemp(name: "을지로 3가", coordinates: CGPoint(x: 200, y: 350)),
+        SubwayStationTemp(name: "역삼역", coordinates: CGPoint(x: 300, y: 250)),
+        SubwayStationTemp(name: "종로 3가", coordinates: CGPoint(x: 350, y: 200))
     ]
 )
 
-let 신분당선 = SubwayLine(
+let 신분당선 = SubwayLineTemp(
     name: "Shinbundang Line",
     color: .green,
     stations: [
-        SubwayStation(name: "강남역", coordinates: CGPoint(x: 100, y: 200)),
-        SubwayStation(name: "양재역", coordinates: CGPoint(x: 150, y: 250)),
-        SubwayStation(name: "정자역", coordinates: CGPoint(x: 250, y: 300)),
-        SubwayStation(name: "판교역", coordinates: CGPoint(x: 300, y: 350)),
-        SubwayStation(name: "임재역", coordinates: CGPoint(x: 350, y: 400)),
-        SubwayStation(name: "동천역", coordinates: CGPoint(x: 400, y: 450)),
-        SubwayStation(name: "수정역", coordinates: CGPoint(x: 450, y: 500)),
-        SubwayStation(name: "야탑역", coordinates: CGPoint(x: 425, y: 475)),
-        SubwayStation(name: "분당역", coordinates: CGPoint(x: 375, y: 425)),
-        SubwayStation(name: "서현역", coordinates: CGPoint(x: 325, y: 375)),
-        SubwayStation(name: "기흥역", coordinates: CGPoint(x: 275, y: 325)),
-        SubwayStation(name: "전대에버랜드역", coordinates: CGPoint(x: 225, y: 275)),
-        SubwayStation(name: "광교중앙역", coordinates: CGPoint(x: 175, y: 225))
+        SubwayStationTemp(name: "강남역", coordinates: CGPoint(x: 100, y: 200)),
+        SubwayStationTemp(name: "양재역", coordinates: CGPoint(x: 150, y: 250)),
+        SubwayStationTemp(name: "정자역", coordinates: CGPoint(x: 250, y: 300)),
+        SubwayStationTemp(name: "판교역", coordinates: CGPoint(x: 300, y: 350)),
+        SubwayStationTemp(name: "임재역", coordinates: CGPoint(x: 350, y: 400)),
+        SubwayStationTemp(name: "동천역", coordinates: CGPoint(x: 400, y: 450)),
+        SubwayStationTemp(name: "수정역", coordinates: CGPoint(x: 450, y: 500)),
+        SubwayStationTemp(name: "야탑역", coordinates: CGPoint(x: 425, y: 475)),
+        SubwayStationTemp(name: "분당역", coordinates: CGPoint(x: 375, y: 425)),
+        SubwayStationTemp(name: "서현역", coordinates: CGPoint(x: 325, y: 375)),
+        SubwayStationTemp(name: "기흥역", coordinates: CGPoint(x: 275, y: 325)),
+        SubwayStationTemp(name: "전대에버랜드역", coordinates: CGPoint(x: 225, y: 275)),
+        SubwayStationTemp(name: "광교중앙역", coordinates: CGPoint(x: 175, y: 225))
     ]
 )
 
