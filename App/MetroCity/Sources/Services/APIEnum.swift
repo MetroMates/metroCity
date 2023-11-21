@@ -1,6 +1,6 @@
 // Copyright © 2023 TDS. All rights reserved. 2023-11-14 화 오후 01:06 꿀꿀🐷
 
-import Foundation
+import SwiftUI
 
 /// APIKEY Bundle.main
 enum APIKEY: String {
@@ -76,5 +76,47 @@ extension SubwayLine {
             return "경강선"
         }
     }
-    
+}
+
+extension SubwayLine {
+    var subwayColor: Color {
+        switch self {
+        case .line1001:
+            return .blue
+        case .line1002:
+            return .green
+        case .line1003:
+            return .init(hex: "")
+        case .line1004:
+            return .init(hex: "")
+        case .line1005:
+            return .purple
+        case .line1006:
+            return .init(hex: "")
+        case .line1007:
+            return .init(hex: "")
+        case .line1008:
+            return .pink
+        case .line1009:
+            return .init(hex: "")
+        case .line1061:
+            return .init(hex: "")
+        case .line1063:
+            return .init(hex: "")
+        case .line1065:
+            return .init(hex: "")
+        case .line1067:
+            return .init(hex: "")
+        case .line1075:
+            return .yellow
+        case .line1077:
+            return .red
+        case .line1092:
+            return .init(hex: "")
+        case .line1093:
+            return .init(hex: "")
+        case .line1081:
+            return .init(hex: "")
+        }
+    }
 }

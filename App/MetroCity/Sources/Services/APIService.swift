@@ -1,74 +1,55 @@
-// Copyright © 2023 TDS. All rights reserved. 2023-11-16 목 오전 11:23 꿀꿀🐷
-
-import Foundation
-
-// final class APIService {
-//    private weak var delegate: APIServiceDelegate?
+//// Copyright © 2023 TDS. All rights reserved. 2023-11-16 목 오전 11:23 꿀꿀🐷
 //
-//    init(delegate: APIServiceDelegate) {
-//        self.delegate = delegate
+//import SwiftUI
+//
+//// 지하철 데이터를 모두 모아둔다.
+//final class OpenAPIInfo {
+//
+//    func fetchSeoulStationInfo() {
+//
 //    }
 //
-//    func fetchSession<Content: SubwayModeling>(type: Content.Type,
-//                                               urlString: String) async -> Content? {
-//        guard let delegate else { return nil }
-//        guard let urlRequest = self.requestURL(urlString: urlString) else { return nil }
+//    func fetchIncheonStationInfo() {
 //
-//        // url 세션을 생성한다.
-//        let urlSession = URLSession(configuration: .default)
-//
-//        do {
-//            let (data, _) = try await urlSession.data(for: urlRequest)
-//
-//            do {
-//                let content = try JSONDecoder().decode(type, from: data)
-//
-//                let errStatus = content.errorMessage.status
-//
-//                // 상태값 200이 정상.
-//                if errStatus == 200 {
-//                    let errCode = content.errorMessage.code
-//
-//                    if Status(rawValue: errCode) != .INF000 {
-//                        debugPrint(content.errorMessage.message)
-//                    } else {
-//                        delegate.afterUrlSession()
-//                        return content  // 정상 처리됨.
-//                    }
-//                }
-//            } catch {
-//                do {
-//                    let errorMsg = try JSONDecoder().decode(ErrorMessage.self, from: data)
-//                    debugPrint(errorMsg.code, errorMsg.message)
-//                } catch {
-//                    debugPrint("json디코딩Err : ", error.localizedDescription)
-//                }
-//            }
-//        } catch {
-//            debugPrint("URL통신Err : ", error.localizedDescription)
-//        }
-//
-//        return nil
 //    }
 //
-//    private func requestURL(urlString: String) -> URLRequest? {
-//        guard let encodedURLString = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+//    func fetchNamYangJuStationInfo() {
+//
+//    }
+//
+//}
+//
+//extension OpenAPIInfo {
+//    /// URLSession 생성하여 받아오기
+//    private func connectURL(url: String) async {
+//        guard !url.isEmpty else { return }
+//        
+//        guard let encodedURLString = url.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
 //        else {
 //            debugPrint("url 인코딩 실패")
-//            return nil
+//            return
 //        }
 //
-//        guard let url = URL(string: encodedURLString)
+//        guard let convertURL = URL(string: encodedURLString)
 //        else {
 //            debugPrint("url [none]")
-//            return nil
+//            return
 //        }
 //
-//        // 요청할url에 대한 urlRequest객체를 생성한다.
-//        let urlRequest: URLRequest = .init(url: url)
-//        // urlRequest.httpMethod = "GET" // default
+//        let urlSession: URLSession = .init(configuration: .default)
+//        let urlRequest: URLRequest = .init(url: convertURL)
 //
-//        return urlRequest
+//        do {
+//            let (data, _) =  try await urlSession.data(for: urlRequest)
+//        } catch {
+//            print(error.localizedDescription)
+//        }
+//
 //    }
 //
-// }
+//    /// 데이터 받아오기
+//    private func fetchData() {
+//
+//    }
+//
+//}

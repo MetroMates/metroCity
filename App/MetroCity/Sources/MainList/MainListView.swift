@@ -2,25 +2,36 @@
 
 import SwiftUI
 
+/*
+    MainListView.onAppear에서 mainVM.fetchData 함수 호출하기
+    - mainVM.fetchData => coreData에 값이 없으면 FireStore에서 값 불러오기.
+    - FireStore에서 가져온 데이터는 FireStoreCodable 프로토콜을 채택하는 DTO로 받는다.
+    - FireStore fetch는 MainListRepository에서 이루어진다.
+    - FireStoreCodable 프로토콜을 채택하는 프리뷰용 목업 DTO를 하나 더 만들어준다.
+    - 
+ */
+
 /// 전체 호선 리스트 View
 struct MainListView: View {
     @StateObject private var mainVM = MainListVM(domain: MainListUseCase(repo: MainListRepository(networkStore: SubwayAPIService())))
-    @StateObject private var mainDetailVM = MainDetailVM(subwayID: "", useCase: MainDetailUseCase(repo: MainListRepository(networkStore: SubwayAPIService())))
+    
+    @StateObject private var mainDetailVM = MainDetailVM(useCase: MainDetailUseCase(repo: MainDetailRepository(networkService: SubwayAPIService())))
     
     var body: some View {
         NavigationStack {
             VStack(spacing: 30) {
                 Text("호선 선택")
+                    .font(.title2)
+                    .padding(.top, 5)
                 
                 ScrollView(showsIndicators: false) {
                     VStack(alignment: .leading, spacing: 15) {
-                        ForEach(SubwayLine.allCases, id: \.rawValue) { line in
+                        ForEach(mainVM.subwayLines, id: \.id) { line in
                             Button {
-                                // 임시로 해둔거임. TODO: 추후 수정
-                                mainDetailVM.subwayID = line.subwayName
                                 mainVM.isDetailPresented = true
                             } label: {
-                                MainListCellView(stationName: line.subwayName)
+                                MainListCellView(stationName: line.subwayNm,
+                                                 stationColor: line.lineColor)
                             }
                             .navigationDestination(isPresented: $mainVM.isDetailPresented) {
                                 MainDetailView(vm: mainDetailVM)
@@ -32,7 +43,8 @@ struct MainListView: View {
             }
         }
         .onAppear {
-            mainVM.buttonsSubscribe()
+            mainVM.subscribe()
+            mainDetailVM.subscribe()
         }
         
     }

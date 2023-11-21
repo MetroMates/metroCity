@@ -26,7 +26,9 @@ final class MainListRepository: SubwayRepositoryFetch {
         
     // 여기서는 MainListModel의 데이터를 반환해주는 비즈니스 로직 작성.
     // MainListModel은 SubwayModelIdentifier를 채택하고 있음.
-    func subwaysFetch<Content>(modelType: Content.Type, station: String) async -> [Content] where Content: SubwayModelIdentifier {
+    func subwaysFetch<Content>(modelType: Content.Type,
+                               urlType: URLAddress,
+                               whereData: String) async -> [Content] where Content: SubwayModelIdentifier {
         // TODO:
         // 로컬 저장소에 저장되어있는 데이터가 있는지 비교 후
         // 서버에서 통신받아서 가져오기로 한다.
@@ -45,8 +47,8 @@ final class MainListRepository: SubwayRepositoryFetch {
             userNetworkStore.apikey = api as? String ?? ""
             
             let urlString = self.makeSubwayURL(apikey: userNetworkStore.apikey ?? "",
-                                               urlAddress: .subwayArrive,
-                                               station: station)
+                                               urlAddress: urlType,
+                                               station: whereData)
             
             userNetworkStore.urlString = urlString
             

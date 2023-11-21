@@ -4,10 +4,11 @@ import SwiftUI
 
 struct MainListCellView: View {
     let stationName: String
+    let stationColor: Color
     
     var body: some View {
         HStack(spacing: 15) {
-            Color.yellow
+            stationColor
                 .frame(width: 30, height: 30)
                 .clipShape(Circle())
             

@@ -12,18 +12,6 @@ struct Arrived: SubwayModel2Server {
     let realtimeArrivalList: [RealtimeArrivalList]
 }
 
-// extension Arrived {
-//    static func emptyData() -> Self {
-//        return .init(errorMessage: .init(status: 200,
-//                                         code: "",
-//                                         message: "",
-//                                         link: "",
-//                                         developerMessage: "",
-//                                         total: 0),
-//                     realtimeArrivalList: [])
-//    }
-// }
-
 // MARK: - RealtimeArrivalList
 struct RealtimeArrivalList: Codable {
     let beginRow, endRow, curPage, pageRow: JSONNull?

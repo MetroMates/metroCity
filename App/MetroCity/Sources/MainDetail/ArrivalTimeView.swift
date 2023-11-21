@@ -4,10 +4,12 @@ import SwiftUI
 
 /// 도착예정시간 현황 View
 struct ArrivalTimeView: View {
+    @ObservedObject var vm: MainDetailVM
+    
     var body: some View {
         HStack(spacing: 3) {
-            contentView()
-            contentView()
+            contentView(.up)
+            contentView(.down)
         }
     }
 }
@@ -16,7 +18,7 @@ struct ArrivalTimeView: View {
 extension ArrivalTimeView {
     /// 컨텐츠
     /// (상행, 하행) 구분,
-    @ViewBuilder func contentView() -> some View {
+    @ViewBuilder func contentView(_ updn: MainDetailVM.UpDn) -> some View {
         VStack(spacing: 20) {
             HStack {
                 Text("상행역")
@@ -33,7 +35,7 @@ extension ArrivalTimeView {
                 HStack {
                     Text("곧 도착")
                     Text("강남행")
-                    Text("1분 30초")
+                    Text("전역 도착")
                 }
                 
                 HStack {
@@ -56,6 +58,11 @@ extension ArrivalTimeView {
 
 struct ArrivalTimeView_Previews: PreviewProvider {
     static var previews: some View {
-        ArrivalTimeView()
+        // 이 부분에서 MainListRepository를 테스트용 데이터를 반환하는 class로 새로 생성하여 주입해주면 테스트용 Preview가 완성.!!
+        MainDetailView(vm: MainDetailVM(useCase: MainDetailUseCase(repo: MainListRepository(networkStore: SubwayAPIService()))))
+            .previewDisplayName("디테일")
+        
+        MainListView()
+            .previewDisplayName("메인리스트")        
     }
 }
