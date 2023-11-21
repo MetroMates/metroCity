@@ -3,7 +3,7 @@
 import Foundation
 
 /// FireStore 서버통신용 객체 프로토콜
-protocol FireStoreCodable: Codable {}
+protocol FireStoreCodable: Codable { }
 
 protocol FireStoreServiceDelegate {
     var collection: String { get }

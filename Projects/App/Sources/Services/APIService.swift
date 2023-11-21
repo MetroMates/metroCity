@@ -1,9 +1,9 @@
 //// Copyright © 2023 TDS. All rights reserved. 2023-11-16 목 오전 11:23 꿀꿀🐷
 //
-//import SwiftUI
+// import SwiftUI
 //
 //// 지하철 데이터를 모두 모아둔다.
-//final class OpenAPIInfo {
+// final class OpenAPIInfo {
 //
 //    func fetchSeoulStationInfo() {
 //
@@ -17,9 +17,9 @@
 //
 //    }
 //
-//}
+// }
 //
-//extension OpenAPIInfo {
+// extension OpenAPIInfo {
 //    /// URLSession 생성하여 받아오기
 //    private func connectURL(url: String) async {
 //        guard !url.isEmpty else { return }
@@ -52,4 +52,4 @@
 //
 //    }
 //
-//}
+// }

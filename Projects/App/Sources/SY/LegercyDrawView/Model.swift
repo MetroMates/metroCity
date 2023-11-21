@@ -3,20 +3,18 @@
 import Foundation
 
 // MARK: - Welcome
-//struct Subway: Codable {
+// struct Subway: Codable {
 //    let errorMessage: ErrorMessage
 //    let realtimeArrivalList: [RealtimeArrivalList]
-//}
-//
-//// MARK: - ErrorMessage
-//struct ErrorMessage: Codable {
+// }
+
+// struct ErrorMessage: Codable {
 //    let status: Int
 //    let code, message, link, developerMessage: String
 //    let total: Int
-//}
+// }
 //
-//// MARK: - RealtimeArrivalList
-//struct RealtimeArrivalList: Codable {
+// struct RealtimeArrivalList: Codable {
 //    let beginRow, endRow, curPage, pageRow: JSONNull?
 //    let totalCount, rowNum, selectedCount: Int
 //    let subwayID: String
@@ -40,31 +38,4 @@ import Foundation
 //        case bstatnNm, recptnDt, arvlMsg2, arvlMsg3
 //        case arvlCD = "arvlCd"
 //    }
-//}
-//
-//// MARK: - Encode/decode helpers
-//
-//class JSONNull: Codable, Hashable {
-//
-//    public static func == (lhs: JSONNull, rhs: JSONNull) -> Bool {
-//        return true
-//    }
-//
-//    public var hashValue: Int {
-//        return 0
-//    }
-//
-//    public init() {}
-//
-//    public required init(from decoder: Decoder) throws {
-//        let container = try decoder.singleValueContainer()
-//        if !container.decodeNil() {
-//            throw DecodingError.typeMismatch(JSONNull.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for JSONNull"))
-//        }
-//    }
-//
-//    public func encode(to encoder: Encoder) throws {
-//        var container = encoder.singleValueContainer()
-//        try container.encodeNil()
-//    }
-//}
+// }

@@ -17,7 +17,6 @@ final class MainListVM: ObservableObject {
     @Published var isDetailPresented: Bool = false
     @Published var subwayLines = TestSubwayLineColor.tempData
     
-    
     /// 데이터 모델
 //    @Published var stationLists: [StationLists] = []
 

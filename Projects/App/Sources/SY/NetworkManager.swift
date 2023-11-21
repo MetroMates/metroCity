@@ -1,8 +1,8 @@
 //// Copyright © 2023 TDS. All rights reserved. 2023-11-15 수 오후 12:21 꿀꿀🐷
 //
-//import Foundation
+// import Foundation
 //
-//class NetworkManager {
+// class NetworkManager {
 //    
 //    static let shared = NetworkManager()
 //    
@@ -34,4 +34,4 @@
 //
 //        return nil
 //    }
-//}
+// }

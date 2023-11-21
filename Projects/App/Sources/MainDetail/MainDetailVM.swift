@@ -16,36 +16,37 @@ final class MainDetailVM: ObservableObject {
     private let useCase: MainDetailUseCase
     private var anyCancellable: Set<AnyCancellable> = []
     
+    private let passthroughSubject = PassthroughSubject<String, Never>()
+    private let subwayIDpassSubject = PassthroughSubject<String, Never>()
+    
     init(useCase: MainDetailUseCase) {
         self.useCase = useCase
     }
     
+    /// 구독 메서드
     func subscribe() {
         // 처음 초기화할때는 호출할 필요가 없기때문에 passthroghtSubject로 발행.
-        let passthroughSubject = PassthroughSubject<String, Never>()
         passthroughSubject.sink { newValue in
-            print("호출됨")
+            print(newValue)
         }
         .store(in: &anyCancellable)
-
-        
-//        $stationName.sink { newValue in
-//            print("stationName 변경!!")
-////            Task {
-////                await self.fetchHosunInfos()
-////            }
-//        }
-//        .store(in: &anyCancellable)
         
         // 이 부분도 처음 구독할때부터 바로 실행하지 않게 하기위해 passthrogughSubject를 활용해서 발행하기.
-        $subwayID.sink { newValue in
+        subwayIDpassSubject.sink { newValue in
             self.changeHosunInfo(value: newValue)
-//            self.stationName = ""
-//            passthroughSubject.send(self.stationName)
         }
         .store(in: &anyCancellable)
     }
     
+    func timer() {
+        // 1초에 한번씩 실행이 돼.
+        // fetch를 해오는 구문이 있어 -> 10초에 한번 실행이되야해.
+    }
+    
+}
+
+// MARK: Private Methods
+extension MainDetailVM {
     /// subwayID에 대한 역정보들을 fetch해온다.
     private func fetchData() async {
         await fetchHosunInfos()
@@ -76,12 +77,6 @@ final class MainDetailVM: ObservableObject {
                                    lineColor: subwayLineInfo.subwayColor)
         }
     }
-
-    func timer() {
-        // 1초에 한번씩 실행이 돼.
-        // fetch를 해오는 구문이 있어 -> 10초에 한번 실행이되야해.
-    }
-    
 }
 
 extension MainDetailVM {

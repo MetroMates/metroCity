@@ -28,6 +28,7 @@ struct MainListView: View {
                     VStack(alignment: .leading, spacing: 15) {
                         ForEach(mainVM.subwayLines, id: \.id) { line in
                             Button {
+                                mainDetailVM.subwayID = line.subwayId
                                 mainVM.isDetailPresented = true
                             } label: {
                                 MainListCellView(stationName: line.subwayNm,
