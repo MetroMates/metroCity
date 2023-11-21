@@ -51,7 +51,7 @@ final class MainDetailRepository: SubwayRepositoryFetch {
     
     func subwayFetch<Content>(modelType: Content.Type,
                               urlType: URLAddress,
-                              whereData: String) async -> Content? where Content : SubwayModel {
+                              whereData: String) async -> Content? where Content: SubwayModel {
         guard let networkService else { return nil }
         
         networkService.apikey = self.apikey as? String ?? ""
@@ -59,7 +59,6 @@ final class MainDetailRepository: SubwayRepositoryFetch {
                                            urlAddress: .subwayPosition,
                                            station: whereData)
         networkService.urlString = urlString
-        
         
         return nil
     }

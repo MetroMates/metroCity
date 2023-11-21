@@ -9,7 +9,10 @@ final class MainDetailVM: ObservableObject {
     @Published var searchText: String = ""
     @Published var subwayID: String = ""
     @Published var stationName: String = "" // 추후 GPS로 받아올 것.
-    @Published var hosunInfo: HosunInfo = .emptyData
+    @Published var hosunInfo: TestSubwayLineColor = .init(subwayId: "",
+                                                          subwayNm: "",
+                                                          lineColorHexCode: "")
+    
     @Published var hosunInfos: [HosunInfo] = [.emptyData]
     @Published var mystation: MyStation = .emptyData
     
@@ -32,10 +35,14 @@ final class MainDetailVM: ObservableObject {
         .store(in: &anyCancellable)
         
         // 이 부분도 처음 구독할때부터 바로 실행하지 않게 하기위해 passthrogughSubject를 활용해서 발행하기.
-        subwayIDpassSubject.sink { newValue in
-            self.changeHosunInfo(value: newValue)
+        subwayIDpassSubject.sink { _ in
+//            self.changeHosunInfo(value: newValue)
         }
         .store(in: &anyCancellable)
+    }
+    
+    func send(subwayID: String) {
+        subwayIDpassSubject.send(subwayID)
     }
     
     func timer() {
@@ -63,19 +70,19 @@ extension MainDetailVM {
     private func fetchHosunInfos() async {
         let hosuns = await useCase.fetchDatas(whereData: self.stationName)
         if hosuns.isEmpty {
-            self.hosunInfos = [self.hosunInfo]
+//            self.hosunInfos = [self.hosunInfo]
         } else {
             self.hosunInfos = hosuns
         }
     }
     
     private func changeHosunInfo(value: String) {
-        if let subwayLineInfo = SubwayLine(rawValue: value) {
-            self.hosunInfo = .init(subwayID: value,
-                                   subwayNm: subwayLineInfo.subwayName,
-                                   hosunColor: subwayLineInfo.subwayColor,
-                                   lineColor: subwayLineInfo.subwayColor)
-        }
+//        if let subwayLineInfo = SubwayLine(rawValue: value) {
+//            self.hosunInfo = .init(subwayID: value,
+//                                   subwayNm: subwayLineInfo.subwayName,
+//                                   hosunColor: subwayLineInfo.subwayColor,
+//                                   lineColor: subwayLineInfo.subwayColor)
+//        }
     }
 }
 

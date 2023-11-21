@@ -52,7 +52,7 @@ extension MainDetailView {
     /// Title 부분
     @ViewBuilder var TitleContent: some View {
         HStack(spacing: 50) {
-            vm.hosunInfo.hosunColor // 변수처리
+            vm.hosunInfo.lineColor // 변수처리
                 .frame(width: 40, height: 40)
                 .clipShape(Circle())
             

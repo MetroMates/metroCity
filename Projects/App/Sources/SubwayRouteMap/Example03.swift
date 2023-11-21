@@ -45,7 +45,7 @@ struct MovingCircleWithoutCanvasView: View {
             )
         }
         let pathLength = path.boundingRect.width
-        let currentPosition = path.trimmedPath(from: 0.0, to: pathLength * 0.5).boundingRect
+        _ = path.trimmedPath(from: 0.0, to: pathLength * 0.5).boundingRect
         let nextPosition = path.trimmedPath(from: pathLength * 0.5, to: pathLength).boundingRect.origin
         
         return nextPosition
