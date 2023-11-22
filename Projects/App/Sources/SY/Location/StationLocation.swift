@@ -2,20 +2,16 @@
 
 import Foundation
 
-struct StationLocation {
+struct StationLocation: Decodable {
     
     /// 경도
-    let crdnX: String
+    let crdntX: Double
     /// 위도
-    let crndY: String
+    let crdntY: Double
     /// 지하철 호선
     let route: String
     /// 지하철 역 코드명
-    let statnId: String
+    let statnId: Int
     /// 지하철 역명
-    let statNm: String
-    
+    let statnNm: String
 }
-
-/// 사용예제
-let testStation = StationLocation(crdnX: "126.794461", crndY: "37.658239", route: "경의중앙선", statnId: "1273", statNm: "백마")
