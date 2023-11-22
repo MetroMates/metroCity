@@ -8,17 +8,17 @@ import SwiftUI
     - FireStore에서 가져온 데이터는 FireStoreCodable 프로토콜을 채택하는 DTO로 받는다.
     - FireStore fetch는 MainListRepository에서 이루어진다.
     - FireStoreCodable 프로토콜을 채택하는 프리뷰용 목업 DTO를 하나 더 만들어준다.
-    - 
  */
 
 /// 전체 호선 리스트 View
 struct MainListView: View {
-    @StateObject private var mainVM = MainListVM(domain: MainListUseCase(repo: MainListRepository(networkStore: SubwayAPIService())))
+    @StateObject private var mainVM = MainListVM(useCase: MainListUseCase(repo: MainListRepository(networkStore: SubwayAPIService())))
     
     @StateObject private var mainDetailVM = MainDetailVM(useCase: MainDetailUseCase(repo: MainDetailRepository(networkService: SubwayAPIService())))
     
     var body: some View {
         NavigationStack {
+            
             VStack(spacing: 30) {
                 Text("호선 선택")
                     .font(.title2)
@@ -26,10 +26,10 @@ struct MainListView: View {
                 
                 ScrollView(showsIndicators: false) {
                     VStack(alignment: .leading, spacing: 15) {
-                        ForEach(mainVM.subwayLines, id: \.id) { line in
+                        ForEach(mainVM.subwayLines) { line in
                             Button {
-//                                mainDetailVM.send(subwayID: line.subwayId)
-                                mainDetailVM.hosunInfo = line
+                                mainDetailVM.send(line)
+                                mainDetailVM.send(mainVM.nearStation)
                                 mainVM.isDetailPresented = true
                             } label: {
                                 MainListCellView(stationName: line.subwayNm,
@@ -43,8 +43,20 @@ struct MainListView: View {
                     .padding()
                 }
             }
+            .overlay(alignment: .bottomTrailing) {
+                Button {
+                    mainVM.GPScheckNowLocactionTonearStation()
+                } label: {
+                    Image(systemName: "location.circle")
+                        .font(.title)
+                        .foregroundStyle(Color.primary)
+                        .padding()
+                        .padding(.trailing, 5)
+                }
+            }
         }
         .onAppear {
+            mainVM.GPScheckNowLocactionTonearStation()
             mainVM.subscribe()
             mainDetailVM.subscribe()
         }

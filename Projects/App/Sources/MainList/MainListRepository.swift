@@ -1,6 +1,7 @@
 // Copyright © 2023 TDS. All rights reserved. 2023-11-14 화 오후 01:06 꿀꿀🐷
 
 import Foundation
+import Combine
 
 // 네트워크 통신을 하여 json으로 가져온 데이터를 디코딩까지 하고 객체로 반환해주는 곳.
 final class MainListRepository: SubwayRepositoryFetch {
@@ -23,24 +24,18 @@ final class MainListRepository: SubwayRepositoryFetch {
         self.userNetworkStore = networkStore
         self.localStore = localStore
     }
-        
-    // 여기서는 MainListModel의 데이터를 반환해주는 비즈니스 로직 작성.
-    // MainListModel은 SubwayModelIdentifier를 채택하고 있음.
-    func subwaysFetch<Content>(modelType: Content.Type,
-                               urlType: URLAddress,
-                               whereData: String) async -> [Content] where Content: SubwayModelIdentifier {
-        // TODO:
+    
+    func receivePublisher<Content>(type: Content.Type, urlType: URLAddress, whereData: String) -> AnyPublisher<Content, Error> where Content: SubwayModel2Server {
         // 로컬 저장소에 저장되어있는 데이터가 있는지 비교 후
         // 서버에서 통신받아서 가져오기로 한다.
-        
         if !localStore.isEmpty {
-            return []
+            return Empty().setFailureType(to: Error.self).eraseToAnyPublisher()
             
         } else {
             guard let userNetworkStore
             else {
                 debugPrint("userNetworkStore 없음")
-                return []
+                return Empty().setFailureType(to: Error.self).eraseToAnyPublisher()
             }
             
             let api = Bundle.main.object(forInfoDictionaryKey: APIKEY.subway.rawValue)
@@ -52,26 +47,12 @@ final class MainListRepository: SubwayRepositoryFetch {
             
             userNetworkStore.urlString = urlString
             
-            let datas = await userNetworkStore.workInUrlSession(type: Arrived.self)
-            
-            var mainLists: [StationInfo] = []
-            
-            if let datas {
-                let arrivedDatas = datas.realtimeArrivalList
-                
-                for item in arrivedDatas {
-//                    mainLists.append(.init(subwayID: item.subwayID,
-//                                           subwayNm: SubwayLine(rawValue: item.subwayID)?.subwayName ?? "[none]",
-//                                           statnID: item.statnID,
-//                                           statnNm: item.statnNm))
-                }
-                
-            }
-            
-            return mainLists as? [Content] ?? []
+            return Empty().setFailureType(to: Error.self).eraseToAnyPublisher()
         }
     }
-    
+}
+
+extension MainListRepository {
     // MARK: - Private Methods
     /// URL 반환 함수
     private func makeSubwayURL(apikey: String,
@@ -90,5 +71,4 @@ final class MainListRepository: SubwayRepositoryFetch {
         return urlString
         
     }
-    
 }

@@ -13,11 +13,9 @@ final class MainListUseCase {
         self.repository = repo
     }
     
-    // MainList에 대한 UseCase이니까 MainListVM 타입을 특정하여 받아와서 사용해도 무관.
-//    func fetchData(station: String) async -> [StationInfo] {
-//        return await repository.subwaysFetch(modelType: StationLists.self, urlType: ,station: station)
-//    }
-    
-    // 호선 정보만 필터링해서 가져옴.
+    /// GPS 기반하여 가장 가까운 역이름, 역코드 반환
+    func getNearStation() -> String {
+        return "신길온천" // 테스트 데이터
+    }
     
 }
