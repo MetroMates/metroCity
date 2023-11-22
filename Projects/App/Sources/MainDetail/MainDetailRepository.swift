@@ -1,11 +1,12 @@
 // Copyright © 2023 TDS. All rights reserved. 2023-11-16 목 오전 11:23 꿀꿀🐷
 
 import Foundation
+import Combine
 
 final class MainDetailRepository: SubwayRepositoryFetch {
+
     private let networkService: APIServiceDelegate?
     private let localService: String // -> 추후에 Service 타입으로 변경할 것.
-    
     private let apikey = Bundle.main.object(forInfoDictionaryKey: APIKEY.subway.rawValue)
     
     init(networkService: APIServiceDelegate?, localService: String = "") {
@@ -13,71 +14,40 @@ final class MainDetailRepository: SubwayRepositoryFetch {
         self.localService = localService
     }
     
-    func subwaysFetch<Content>(modelType: Content.Type,
-                               urlType: URLAddress,
-                               whereData: String) async -> [Content] where Content: SubwayModelIdentifier {
-        guard let networkService else { return [] }
+    func receivePublisher<Content>(type: Content.Type,
+                                   urlType: URLAddress,
+                                   whereData: String) -> AnyPublisher<Content, Error> where Content: SubwayModel2Server {
+        
+        guard let networkService else { return Fail(error: StatusError.ERR100).eraseToAnyPublisher() }
         
         networkService.apikey = self.apikey as? String ?? ""
         let urlString = self.makeSubwayURL(apikey: networkService.apikey ?? "",
                                            urlAddress: .subwayArrive,
-                                           station: whereData)
+                                           whereData: whereData)
         networkService.urlString = urlString
+        print("url \(networkService.urlString)")
+        return networkService.request(type: Content.self)
         
-        var rtnDatas: [HosunInfo] = []
-        
-        let data = await networkService.workInUrlSession(type: Arrived.self)
-//        print("👀", data)
-        if let data {
-            let arrivedDatas = data.realtimeArrivalList
-            let subwayLines = arrivedDatas.first?.subwayList
-
-            if let subwayLines {
-//                print("subwayLines", subwayLines)
-                let separatedArray = subwayLines.components(separatedBy: ",")
-//                print("separatedArray", separatedArray)
-                for item in separatedArray {
-                    rtnDatas.append(.init(subwayID: item,
-                                          subwayNm: SubwayLine(rawValue: item)?.subwayName ?? "",
-                                          hosunColor: SubwayLine(rawValue: item)?.subwayColor ?? .black,
-                                          lineColor: SubwayLine(rawValue: item)?.subwayColor ?? .black))
-                }
-                return rtnDatas as? [Content] ?? []
-            }
-            
-        }
-        return []
     }
     
-    func subwayFetch<Content>(modelType: Content.Type,
-                              urlType: URLAddress,
-                              whereData: String) async -> Content? where Content: SubwayModel {
-        guard let networkService else { return nil }
-        
-        networkService.apikey = self.apikey as? String ?? ""
-        let urlString = self.makeSubwayURL(apikey: networkService.apikey ?? "",
-                                           urlAddress: .subwayPosition,
-                                           station: whereData)
-        networkService.urlString = urlString
-        
-        return nil
-    }
+}
 
+// MARK: - Private Functions
+extension MainDetailRepository {
     /// URL 반환 함수
     private func makeSubwayURL(apikey: String,
                                urlAddress: URLAddress,
-                               station: String = "",
+                               whereData: String = "",
                                startIdx: String = "1",
                                endIdx: String = "1") -> String {
         var urlString: String = ""
         
-        if station.isEmpty {
+        if whereData.isEmpty {
             urlString = "http://swopenAPI.seoul.go.kr/api/subway/\(apikey)/json/\(urlAddress.rawValue)/ALL"
         } else {
-            urlString = "http://swopenAPI.seoul.go.kr/api/subway/\(apikey)/json/\(urlAddress.rawValue)/\(startIdx)/\(endIdx)/\(station)"
+            urlString = "http://swopenAPI.seoul.go.kr/api/subway/\(apikey)/json/\(urlAddress.rawValue)/\(startIdx)/\(endIdx)/\(whereData)"
         }
         
         return urlString
     }
-    
 }

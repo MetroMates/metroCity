@@ -3,16 +3,44 @@
 import SwiftUI
 
 struct SubwayRouteMapView: View {
+    @ObservedObject var vm: MainDetailVM
+    
     var body: some View {
-        VStack {
-            Text("Hello, World!")
-            DrawLine()
+        ZStack {
+            Rectangle()
+                .fill(vm.hosunInfo.lineColor.opacity(0.7))
+                .frame(maxWidth: .infinity)
+                .frame(height: 15)
+
+            StationCircle("남한산성입구(성남법원,검찰청)")
+            
         }
+    }
+}
+
+extension SubwayRouteMapView {
+    @ViewBuilder private func StationCircle(_ text: String) -> some View {
+        Text(text)
+            .font(.caption)
+            .padding(.horizontal, 5)
+            .background {
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(vm.hosunInfo.lineColor, lineWidth: 2)
+                    .frame(height: 25)
+//                    .frame(width: 55, height: 25)
+                    .background {
+                        Color.white
+                    }
+            }
     }
 }
 
 struct SubwayRouteMapView_Previews: PreviewProvider {
     static var previews: some View {
-        SubwayRouteMapView()
+        MainDetailView(vm: MainDetailVM(useCase: MainDetailUseCase(repo: MainListRepository(networkStore: SubwayAPIService()))))
+            .previewDisplayName("디테일")
+        
+        MainListView()
+            .previewDisplayName("메인리스트")
     }
 }

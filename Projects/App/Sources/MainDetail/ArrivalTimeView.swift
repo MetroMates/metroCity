@@ -19,38 +19,49 @@ extension ArrivalTimeView {
     /// 컨텐츠
     /// (상행, 하행) 구분,
     @ViewBuilder func contentView(_ updn: MainDetailVM.UpDn) -> some View {
-        VStack(spacing: 20) {
-            HStack {
-                Text("상행역")
-                Text("강남")
-            }
-            .tint(.primary)
-            .frame(maxWidth: .infinity)
-            .padding(10)
-            .background {
-                Color.yellow.opacity(0.5)
-            }
+        var upDnText: String {
+            updn == .up ? "상행" : "하행"
+        }
+        
+        var destiStation: String {
+            updn == .up ? vm.stationInfo.beforeStNm : vm.stationInfo.afterStNm
+        }
+        
+        VStack {
+            Text(upDnText)
+                .font(.title3)
             
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(spacing: 20) {
                 HStack {
-                    Text("곧 도착")
-                    Text("강남행")
-                    Text("전역 도착")
+                    Text("\(destiStation) 방면")
+                }
+                .tint(.primary)
+                .frame(maxWidth: .infinity)
+                .padding(10)
+                .background {
+                    vm.hosunInfo.lineColor.opacity(0.5)
                 }
                 
-                HStack {
-                    Text("다음 열차")
-                    Text("양재행")
-                    Text("16분 30초")
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack {
+                        Text("이번 열차 :")
+                        Text("전역 도착")
+                    }
+                    
+                    HStack {
+                        Text("다음 열차 :")
+                        Text("진입 중")
+                    }
+                    Spacer()
                 }
-                Spacer()
+                .padding(.horizontal, 3)
+                .font(.callout)
+                .frame(height: 80)
+                
             }
-            .font(.callout)
-            .frame(height: 80)
-            
-        }
-        .background {
-            Color.orange.opacity(0.1)
+            .background {
+                Color.orange.opacity(0.1)
+            }
         }
         
     }

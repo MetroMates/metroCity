@@ -8,19 +8,18 @@ final class MainDetailVM: ObservableObject {
     /// 검색 Text
     @Published var searchText: String = ""
     @Published var subwayID: String = ""
-    @Published var stationName: String = "" // 추후 GPS로 받아올 것.
-    @Published var hosunInfo: TestSubwayLineColor = .init(subwayId: "",
-                                                          subwayNm: "",
-                                                          lineColorHexCode: "")
+    @Published var stationInfo: MyStation = .emptyData
+    @Published var realTimeInfo: RealTimeSubway = .init(statnNm: "")
     
-    @Published var hosunInfos: [HosunInfo] = [.emptyData]
-    @Published var mystation: MyStation = .emptyData
+    /// 호선정보 및 색상 MainListModel.swift
+    var hosunInfo: TestSubwayLineColor = .emptyData
+   
+    // MARK: - Private Properties
+    private var anyCancellable: Set<AnyCancellable> = []
+    private let nearStationInfoFetchSubject = PassthroughSubject<String, Never>()
+    private let lineInfoFetchSubject = PassthroughSubject<FireStoreCodable, Never>()
     
     private let useCase: MainDetailUseCase
-    private var anyCancellable: Set<AnyCancellable> = []
-    
-    private let passthroughSubject = PassthroughSubject<String, Never>()
-    private let subwayIDpassSubject = PassthroughSubject<String, Never>()
     
     init(useCase: MainDetailUseCase) {
         self.useCase = useCase
@@ -28,62 +27,65 @@ final class MainDetailVM: ObservableObject {
     
     /// 구독 메서드
     func subscribe() {
-        // 처음 초기화할때는 호출할 필요가 없기때문에 passthroghtSubject로 발행.
-        passthroughSubject.sink { newValue in
-            print(newValue)
-        }
-        .store(in: &anyCancellable)
-        
-        // 이 부분도 처음 구독할때부터 바로 실행하지 않게 하기위해 passthrogughSubject를 활용해서 발행하기.
-        subwayIDpassSubject.sink { _ in
-//            self.changeHosunInfo(value: newValue)
-        }
-        .store(in: &anyCancellable)
+        // 2개의 Publisher가 모두 값이 들어왔을때 실행된다. -> combineLatest의 기능.
+        lineInfoFetchSubject.combineLatest(nearStationInfoFetchSubject)
+            .sink { (hosun, nearStation) in
+                self.hosunInfo = hosun as? TestSubwayLineColor ?? .emptyData
+//                print("housn정보, 역정보를 가지고 이전, 다음역정보(열차상태)와 이번역을 향해 오는 상하행선 전철의 실시간 위치정보를 fetch한다.")
+                self.fetchInfo(value: nearStation)
+            }
+            .store(in: &anyCancellable)
     }
     
-    func send(subwayID: String) {
-        subwayIDpassSubject.send(subwayID)
+    func send(_ data: String) {
+        nearStationInfoFetchSubject.send(data)
+    }
+    
+    func send(_ data: FireStoreCodable) {
+        lineInfoFetchSubject.send(data)
     }
     
     func timer() {
-        // 1초에 한번씩 실행이 돼.
+        // 1초에 한번씩 실행이 되.
         // fetch를 해오는 구문이 있어 -> 10초에 한번 실행이되야해.
+    }
+    
+    func realTimeFetch() {
+        
     }
     
 }
 
 // MARK: Private Methods
 extension MainDetailVM {
-    /// subwayID에 대한 역정보들을 fetch해온다.
-    private func fetchData() async {
-        await fetchHosunInfos()
-        fetchStationInfo()
+    /// StationInfo Fetch 메서드
+    private func fetchInfo(value: String) {
+        getStationInfo(value)
+        getRealTimeInfo(value)
     }
     
-    private func fetchStationInfo() {
-        if let stationInfo = useCase.fetchData(type: MyStation.self) {
-            self.mystation = stationInfo
-        }
+    /// 이전, 다음역 정보 DTO객체 생성
+    private func getStationInfo(_ stationName: String) {
+        self.stationInfo = useCase.getStationData(vm: self, stationName)
     }
     
-    /// 여러호선이 있는 경우 정보 Fetch해오기
-    private func fetchHosunInfos() async {
-        let hosuns = await useCase.fetchDatas(whereData: self.stationName)
-        if hosuns.isEmpty {
-//            self.hosunInfos = [self.hosunInfo]
-        } else {
-            self.hosunInfos = hosuns
-        }
+    private func getRealTimeInfo(_ stationName: String) {
+        print("엳ㄱ이름 : \(stationName)")
+        useCase.recievePublisher(whereData: stationName)
+            .print("패치중 : ")
+            .sink { result in
+                switch result {
+                case .finished:
+                    break
+                case .failure(_):
+                    break
+                }
+            } receiveValue: { data in
+                self.realTimeInfo = data
+            }
+            .store(in: &anyCancellable)
     }
     
-    private func changeHosunInfo(value: String) {
-//        if let subwayLineInfo = SubwayLine(rawValue: value) {
-//            self.hosunInfo = .init(subwayID: value,
-//                                   subwayNm: subwayLineInfo.subwayName,
-//                                   hosunColor: subwayLineInfo.subwayColor,
-//                                   lineColor: subwayLineInfo.subwayColor)
-//        }
-    }
 }
 
 extension MainDetailVM {

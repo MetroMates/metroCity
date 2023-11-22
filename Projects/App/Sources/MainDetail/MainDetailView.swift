@@ -15,15 +15,15 @@ struct MainDetailView: View {
             .padding(.horizontal)
             
             ArrivalTimeView(vm: vm)
+                .padding(.top, 30)
             
-            LineWithCircleView()
+            SubwayRouteMapView(vm: vm)
+                .padding(.top, 100)
             
             Spacer()
             
         }
         .onAppear {
-            // MainListView에서 GPS기반으로 제일 가까운 역을 가져오고, 만약 가져오지 못했다면
-            // vm.subwayID 즉 해당 호선의 상행선기준 출발지역을 가져온다.
             // 그렇게 가져온 역정보를 가지고 이전역과 다음역의 정보를 가져온다. -> 서버통신할 필요없이, 가져온 역ID를 -1, +1 하여 표시해주면 된다.
             // 여기서 fetch하여 가져와야만하는 데이터는 현재역을 향해서 오고 있는 열차들의 상태와 어디쯤왔는지에대한 시간표이다.
         }
@@ -36,7 +36,7 @@ extension MainDetailView {
     /// Search부분
     @ViewBuilder var SearchContent: some View {
         HStack {
-            TextField(" 역이름을 검색해보세요", text: $vm.searchText)
+            TextField(" 역이름을 검색해보세요 \(vm.realTimeInfo.statnNm)", text: $vm.searchText)
                 .padding(7)
                 .background {
                     Color.gray.opacity(0.22)
@@ -66,6 +66,7 @@ extension MainDetailView {
             
             Button {
                 // 화살표 돌아가게 애니메이션 적용 rotation 사용하면 될듯.
+            
             } label: {
                 Image(systemName: "arrow.clockwise")
                     .tint(.primary)
@@ -76,8 +77,8 @@ extension MainDetailView {
     /// SubTitle 부분
     @ViewBuilder var SubTitleContent: some View {
         HStack(spacing: 60) {
-            Text("내가 있는 곳")
-            Text("\(vm.mystation.nowStNm)")
+            Text("현재 역")
+            Text("\(vm.stationInfo.nowStNm)")
             Button {
                 
             } label: {
