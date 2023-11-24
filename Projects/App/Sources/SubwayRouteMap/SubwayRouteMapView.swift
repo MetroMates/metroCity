@@ -6,25 +6,25 @@ struct SubwayRouteMapView: View {
     @ObservedObject var vm: MainDetailVM
     
     var body: some View {
-        VStack {
-            updownStationText(.up)
+        VStack(spacing: 0 ) {
+            Image(systemName: "arrow.left")
             
             ZStack {
                 StationLine
                 
                 GeometryReader { geo in
                     // 0.0 ~ 0.45 까지의 거리로 계산
-                    ForEach([0.1, 0.2, 0.6], id: \.self) { x in
-                        subway(geo: geo, .up, no: "\(x)대행", x: x)
+                    ForEach(vm.upRealTimeInfos, id: \.id) { x in
+                        subway(geo: geo, .up, no: x.trainDestiStation, x: 0.3)
                     }
-                    ForEach([0.1, 0.4, 0.6], id: \.self) { x in
-                        subway(geo: geo, .down, no: "\(x)대행", x: x)
+                    ForEach(vm.downRealTimeInfos, id: \.id) { x in
+                        subway(geo: geo, .down, no: x.trainDestiStation, x: 0.3)
                     }
                 }
                 .frame(height: 100)
             }
             
-            updownStationText(.down)
+            Image(systemName: "arrow.right")
             
         }
     }
@@ -35,14 +35,21 @@ extension SubwayRouteMapView {
         ZStack {
             RoundedRectangle(cornerRadius: 10)
                 .fill(vm.hosunInfo.lineColor)
-                .frame(width: 3, height: 90)
+                .frame(width: 3, height: 80)
             
             Rectangle()
                 .fill(vm.hosunInfo.lineColor.opacity(0.8))
                 .frame(maxWidth: .infinity)
                 .frame(height: 20)
             
-            stationCircle(vm.stationInfo.nowStNm)
+            ZStack {
+                HStack {
+                    stationCircle(vm.stationInfo.upStNm)
+                    Spacer()
+                    stationCircle(vm.stationInfo.downStNm)
+                }
+                stationCircle(vm.stationInfo.nowStNm)
+            }
             
         }
     }
@@ -50,26 +57,26 @@ extension SubwayRouteMapView {
 
 extension SubwayRouteMapView {
     
-    @ViewBuilder private func updownStationText(_ updn: MainDetailVM.UpDn) -> some View {
-        var station: String {
-            updn == .up ? vm.stationInfo.upStNm : vm.stationInfo.downStNm
-        }
-        var systemImage: String {
-            updn == .up ? "arrow.left" : "arrow.right"
-        }
-        
-        ZStack {
-            HStack {
-                Text(station)
-                    .opacity(updn == .up ? 1 : 0)
-                Spacer()
-                Text(station)
-                    .opacity(updn == .down ? 1 : 0)
-            }
-            Image(systemName: systemImage)
-            
-        }.padding(.horizontal, 3)
-    }
+//    @ViewBuilder private func updownStationText(_ updn: MainDetailVM.UpDn) -> some View {
+//        var station: String {
+//            updn == .up ? vm.stationInfo.upStNm : vm.stationInfo.downStNm
+//        }
+//        var systemImage: String {
+//            updn == .up ? "arrow.left" : "arrow.right"
+//        }
+//
+//        ZStack {
+//            HStack {
+//                Text(station)
+//                    .opacity(updn == .up ? 1 : 0)
+//                Spacer()
+//                Text(station)
+//                    .opacity(updn == .down ? 1 : 0)
+//            }
+//            Image(systemName: systemImage)
+//
+//        }.padding(.horizontal, 3)
+//    }
     
     @ViewBuilder private func stationCircle(_ text: String) -> some View {
         Text(text)

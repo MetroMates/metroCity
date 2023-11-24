@@ -7,9 +7,13 @@ import Combine
 final class MainDetailVM: ObservableObject {
     /// 검색 Text
     @Published var searchText: String = ""
-    @Published var subwayID: String = ""
     @Published var stationInfo: MyStation = .emptyData
-    @Published var realTimeInfo: RealTimeSubway = .emptyData
+    @Published var realTimeInfo: [RealTimeSubway] = [.emptyData]
+    
+    /// 상행 실시간 정보
+    @Published var upRealTimeInfos: [RealTimeSubway] = [.emptyData] // 런타임 에러 방지
+    /// 하행 실시간 정보
+    @Published var downRealTimeInfos: [RealTimeSubway] = [.emptyData] // 런타임 에러 방지
     
     /// 호선정보 및 색상 MainListModel.swift
     var hosunInfo: TestSubwayLineColor = .emptyData
@@ -27,22 +31,23 @@ final class MainDetailVM: ObservableObject {
     
     /// 구독 메서드
     func subscribe() {
-        // 2개의 Publisher가 모두 값이 들어왔을때 실행된다. -> combineLatest의 기능.
-        lineInfoFetchSubject.combineLatest(nearStationInfoFetchSubject)
+        // 2개의 Publisher가 모두 값이 들어왔을때 실행된다. -> combineLatest, zip의 기능.
+        // 아래 구문에서는 combineLatest를 사용하게 되면 처음 방출했던 이벤트를 기억하고 또 방출한다.
+//        lineInfoFetchSubject.combineLatest(nearStationInfoFetchSubject)
+        
+        lineInfoFetchSubject.zip(nearStationInfoFetchSubject)
             .sink { (hosun, nearStation) in
+                print("👍🏻Combine!!!")
                 self.hosunInfo = hosun
-//                print("housn정보, 역정보를 가지고 이전, 다음역정보(열차상태)와 이번역을 향해 오는 상하행선 전철의 실시간 위치정보를 fetch한다.")
                 self.fetchInfo(value: nearStation)
             }
             .store(in: &anyCancellable)
     }
     
-    func send(_ data: String) {
-        nearStationInfoFetchSubject.send(data)
-    }
-    
-    func send(_ data: TestSubwayLineColor) {
-        lineInfoFetchSubject.send(data)
+    func send(nearStInfo: String, lineInfo: TestSubwayLineColor) {
+        print("SEND: \(nearStInfo) \(lineInfo)")
+        nearStationInfoFetchSubject.send(nearStInfo)
+        lineInfoFetchSubject.send(lineInfo)
     }
     
     func timer() {
@@ -68,8 +73,10 @@ extension MainDetailVM {
     /// 실시간 지하철 위치 정보 fetch
     /// RealTime DTO객체 생성
     private func getRealTimeInfo(_ stationName: String) {
-        print("역이름 : \(stationName)")
-        useCase.recievePublisher(whereData: stationName)
+        upRealTimeInfos.removeAll() // 초기화
+        downRealTimeInfos.removeAll() // 초기화
+        print("🐹 \(hosunInfo.subwayId)")
+        useCase.recievePublisher(subwayLine: "\(hosunInfo.subwayId)", whereData: stationName)
             .print("패치중 : ")
             // sink로 구독시 publisher의 타입의 에러 형태가 Never가 아닐경우에는 receiveCompelete도 무조건 작성해야함.
             .sink { result in
@@ -80,7 +87,12 @@ extension MainDetailVM {
                     break
                 }
             } receiveValue: { data in
-                self.realTimeInfo = data
+                print("🐹여기진입")
+                print("🐹호선: \(self.hosunInfo.subwayId)")
+                self.upRealTimeInfos = data.filter { $0.updnLine == "상행" }
+                self.downRealTimeInfos = data.filter { $0.updnLine == "하행" }
+                print("🐹Up \(self.upRealTimeInfos)")
+                print("🐹Down \(self.downRealTimeInfos)")
             }
             .store(in: &anyCancellable)
     }

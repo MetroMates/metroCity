@@ -101,13 +101,29 @@ extension MyStation {
 ///
 ///
 /// Position에서 데이터 가져올수 있다.
-struct RealTimeSubway: SubwayModel {
-    let statnNm: String
+struct RealTimeSubway: SubwayModelIdentifier {
+    let id = UUID()
+    /// 상, 하행
+    let updnLine: String
+    /// 열차 번호
+    let trainNo: String
+    /// 열차 종류 ( 급행, ITX, 일반, 특급 )
+    let trainType: String
+    /// 정렬 순서
+    let sortOrder: Int
+    /// 표출메세지 : 전역 도착, 130초전 등등
+    let message: String
+    /// 무슨행 ( 광운대행, 청량ㅇ리행 )
+    let trainDestiStation: String
 }
 
 extension RealTimeSubway {
+    var updnIndex: String {
+        updnLine == "상행" ? "0" : "1"
+    }
+    
     static var emptyData: Self {
-        return .init(statnNm: "값이 없음")
+        return .init(updnLine: "", trainNo: "", trainType: "", sortOrder: 0, message: "", trainDestiStation: "")
     }
     
     // 여러개 들어올 예정.

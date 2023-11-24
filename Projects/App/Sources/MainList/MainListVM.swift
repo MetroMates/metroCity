@@ -18,6 +18,7 @@ final class MainListVM: ObservableObject {
     
     /// 호선정보
     @Published var subwayLines = TestSubwayLineColor.tempData
+    @Published var nearStationSubwayLines: [TestSubwayLineColor] = []
     
     private var anyCancellable: Set<AnyCancellable> = []
     
@@ -32,7 +33,10 @@ final class MainListVM: ObservableObject {
     
     /// 구독메서드
     func subscribe() {
-        
+        $nearStation.sink { i in
+            self.getNearStationLineInfos(value: i)
+        }
+        .store(in: &anyCancellable)
     }
     
     /// GPS 기반 현재위치에서 제일 가까운 역이름 가져오기
@@ -50,4 +54,22 @@ extension MainListVM {
     private func fetchData(_ station: String) {
 //      await useCase.fetchData(station: station)
     }
+    
+    private func getNearStationLineInfos(value: String) {
+        nearStationSubwayLines.removeAll() // 초기화
+        
+        let stationDatas = useCase.getNearStationLineInfos(statName: value)
+        let lineData = TestSubwayLineColor.tempData // Color값 가져와야함.
+        
+        self.nearStationSubwayLines = lineData.filter({ info in
+            for stationData in stationDatas {
+                if stationData.subwayId == info.subwayId {
+                    return true
+                }
+            }
+            return false
+        })
+        
+    }
+    
 }

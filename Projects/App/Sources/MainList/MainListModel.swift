@@ -44,7 +44,10 @@ extension StationInfo {
         .init(subwayId: 1005, subwayNm: "5호선", statnId: 1005000512, statnNm: "김포공항"),
         .init(subwayId: 1007, subwayNm: "7호선", statnId: 1007000727, statnNm: "건대입구"),
         .init(subwayId: 1075, subwayNm: "수인분당선", statnId: 1075075256, statnNm: "신길온천"),
-        .init(subwayId: 1075, subwayNm: "수인분당선", statnId: 1075075257, statnNm: "정왕")
+        .init(subwayId: 1075, subwayNm: "수인분당선", statnId: 1075075257, statnNm: "정왕"),
+        .init(subwayId: 1004, subwayNm: "4호선", statnId: 1004000425, statnNm: "회현"),
+        .init(subwayId: 1004, subwayNm: "4호선", statnId: 1004000426, statnNm: "서울"),
+        .init(subwayId: 1004, subwayNm: "4호선", statnId: 1004000427, statnNm: "숙대입구")
     ]
     
 }

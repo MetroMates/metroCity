@@ -26,19 +26,10 @@ struct MainListView: View {
                 
                 ScrollView(showsIndicators: false) {
                     VStack(alignment: .leading, spacing: 15) {
-                        ForEach(mainVM.subwayLines) { line in
-                            Button {
-                                mainDetailVM.send(line)
-                                mainDetailVM.send(mainVM.nearStation)
-                                mainVM.isDetailPresented = true
-                            } label: {
-                                MainListCellView(stationName: line.subwayNm,
-                                                 stationColor: line.lineColor)
-                            }
-                            .navigationDestination(isPresented: $mainVM.isDetailPresented) {
-                                MainDetailView(vm: mainDetailVM)
-                            }
+                        if !mainVM.nearStation.isEmpty {
+                            NearStationLine
                         }
+                        AllStationLine
                     }
                     .padding()
                 }
@@ -46,10 +37,11 @@ struct MainListView: View {
             .overlay(alignment: .bottomTrailing) {
                 Button {
                     mainVM.GPScheckNowLocactionTonearStation()
+                    mainVM.nearStation = "서울"
                 } label: {
                     Image(systemName: "location.circle")
                         .font(.title)
-                        .foregroundStyle(Color.primary)
+                        .foregroundStyle(Color.primary.opacity(0.6))
                         .padding()
                         .padding(.trailing, 5)
                 }
@@ -63,6 +55,50 @@ struct MainListView: View {
         
     }
     
+}
+
+extension MainListView {
+    @ViewBuilder private var NearStationLine: some View {
+        Section {
+            ForEach(mainVM.nearStationSubwayLines) { line in
+                Button {
+                    mainDetailVM.send(nearStInfo: mainVM.nearStation,
+                                      lineInfo: line)
+                    mainVM.isDetailPresented = true
+                } label: {
+                    MainListCellView(stationName: line.subwayNm,
+                                     stationColor: line.lineColor)
+                }
+                .navigationDestination(isPresented: $mainVM.isDetailPresented) {
+                    MainDetailView(vm: mainDetailVM)
+                }
+            }
+            
+        } header: {
+            HStack(spacing: 0) {
+                Image(systemName: "location.fill")
+                Text("'\(mainVM.nearStation)역'기준 호선")
+            }
+        }
+    }
+    
+    @ViewBuilder private var AllStationLine: some View {
+        Section("전체 호선") {
+            ForEach(mainVM.subwayLines) { line in
+                Button {
+                    mainDetailVM.send(nearStInfo: mainVM.nearStation,
+                                      lineInfo: line)
+                    mainVM.isDetailPresented = true
+                } label: {
+                    MainListCellView(stationName: line.subwayNm,
+                                     stationColor: line.lineColor)
+                }
+                .navigationDestination(isPresented: $mainVM.isDetailPresented) {
+                    MainDetailView(vm: mainDetailVM)
+                }
+            }
+        }
+    }
 }
 
 struct MainListView_Preview: PreviewProvider {

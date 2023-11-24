@@ -30,6 +30,7 @@ struct MainDetailView: View {
         }
         .refreshable {
             // 새로고침
+            vm.send(nearStInfo: vm.stationInfo.nowStNm, lineInfo: vm.hosunInfo)
         }
     }
     
@@ -85,13 +86,12 @@ extension MainDetailView {
                 HStack(spacing: 15) {
                     Button {
                         // 화살표 돌아가게 애니메이션 적용 rotation 사용하면 될듯.
-                        
+                        vm.send(nearStInfo: vm.stationInfo.nowStNm, lineInfo: vm.hosunInfo)
                     } label: {
                         Image(systemName: "arrow.clockwise")
                             .tint(.primary)
                     }
                     Button {
-                        // 화살표 돌아가게 애니메이션 적용 rotation 사용하면 될듯.
                         
                     } label: {
                         Image(systemName: "bookmark")
