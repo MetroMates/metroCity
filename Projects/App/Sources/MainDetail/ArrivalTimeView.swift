@@ -7,7 +7,7 @@ struct ArrivalTimeView: View {
     @ObservedObject var vm: MainDetailVM
     
     var body: some View {
-        HStack(spacing: 3) {
+        HStack(spacing: 2) {
             contentView(.up)
             contentView(.down)
         }
@@ -19,16 +19,29 @@ extension ArrivalTimeView {
     /// 컨텐츠
     /// (상행, 하행) 구분,
     @ViewBuilder func contentView(_ updn: MainDetailVM.UpDn) -> some View {
-        var upDnText: String {
-            updn == .up ? "상행" : "하행"
+        var destiStation: String {
+            updn == .up ? vm.stationInfo.upStNm : vm.stationInfo.downStNm
         }
         
-        var destiStation: String {
-            updn == .up ? vm.stationInfo.beforeStNm : vm.stationInfo.afterStNm
+        var upstId: String {
+            updn == .up ? "1111" : "2222"
+        }
+        
+        var downstId: String {
+            updn == .up ? "3333" : "4444"
+        }
+        
+        var upMsg: String {
+            updn == .up ? "전역 도착" : "3전역 출발"
+        }
+        
+        // 도착 메세지? 가 시간단위로 나타내줄떄 1초에 1씩 카운트가 줄어들어야 한다.
+        var downMsg: String {
+            updn == .up ? "2전역 출발" : "177초 후 도착"
         }
         
         VStack {
-            Text(upDnText)
+            Text(updn.rawValue)
                 .font(.title3)
             
             VStack(spacing: 20) {
@@ -43,14 +56,22 @@ extension ArrivalTimeView {
                 }
                 
                 VStack(alignment: .leading, spacing: 10) {
-                    HStack {
-                        Text("이번 열차 :")
-                        Text("전역 도착")
+                    HStack(spacing: 10) {
+                        VStack(alignment: .center) {
+                            Text("이번 열차")
+                            Text("(\(upstId))")
+                                .font(.caption)
+                        }
+                        Text(upMsg)
                     }
                     
-                    HStack {
-                        Text("다음 열차 :")
-                        Text("진입 중")
+                    HStack(spacing: 10) {
+                        VStack(alignment: .center) {
+                            Text("다음 열차")
+                            Text("(\(downstId))")
+                                .font(.caption)
+                        }
+                        Text(downMsg)
                     }
                     Spacer()
                 }
@@ -60,7 +81,7 @@ extension ArrivalTimeView {
                 
             }
             .background {
-                Color.orange.opacity(0.1)
+                Color.gray.opacity(0.2)
             }
         }
         

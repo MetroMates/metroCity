@@ -23,7 +23,8 @@ final class MainDetailRepository: SubwayRepositoryFetch {
         networkService.apikey = self.apikey as? String ?? ""
         let urlString = self.makeSubwayURL(apikey: networkService.apikey ?? "",
                                            urlAddress: .subwayArrive,
-                                           whereData: whereData)
+                                           whereData: whereData,
+                                           endIdx: "10")
         networkService.urlString = urlString
         print("url \(networkService.urlString)")
         return networkService.request(type: Content.self)

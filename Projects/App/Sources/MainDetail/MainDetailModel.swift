@@ -70,22 +70,22 @@ struct MyStation: SubwayModel {
     let nowSt: Int
     /// 현재역명 (선택한역)
     let nowStNm: String
-    /// 이전역 id ( statnFid )
-    let beforeSt: Int
-    /// 이전역명
-    let beforeStNm: String
-    /// 다음역  id ( statnTid )
-    let afterSt: Int
-    /// 다음역명
-    let afterStNm: String
+    /// 상행역 id ( statnFid )
+    let upSt: Int
+    /// 상행역명
+    let upStNm: String
+    /// 하행역  id ( statnTid )
+    let downSt: Int
+    /// 하행역명
+    let downStNm: String
 
 }
 
 extension MyStation {
     static var emptyData: Self {
         return .init(nowSt: 0, nowStNm: "현재역정보가 없습니다.",
-                     beforeSt: 0, beforeStNm: "이전역 X",
-                     afterSt: 0, afterStNm: "다음역 X")
+                     upSt: 0, upStNm: "상행역 none",
+                     downSt: 0, downStNm: "하행역 none")
     }
 }
 
@@ -99,4 +99,16 @@ extension MyStation {
 /// Position에서 데이터 가져올수 있다.
 struct RealTimeSubway: SubwayModel {
     let statnNm: String
+}
+
+extension RealTimeSubway {
+    static var emptyData: Self {
+        return .init(statnNm: "값이 없음")
+    }
+    
+    // 여러개 들어올 예정.
+    static var list: [Self] {
+        return []
+    }
+    
 }

@@ -9,7 +9,7 @@ final class MainDetailVM: ObservableObject {
     @Published var searchText: String = ""
     @Published var subwayID: String = ""
     @Published var stationInfo: MyStation = .emptyData
-    @Published var realTimeInfo: RealTimeSubway = .init(statnNm: "")
+    @Published var realTimeInfo: RealTimeSubway = .emptyData
     
     /// 호선정보 및 색상 MainListModel.swift
     var hosunInfo: TestSubwayLineColor = .emptyData
@@ -17,7 +17,7 @@ final class MainDetailVM: ObservableObject {
     // MARK: - Private Properties
     private var anyCancellable: Set<AnyCancellable> = []
     private let nearStationInfoFetchSubject = PassthroughSubject<String, Never>()
-    private let lineInfoFetchSubject = PassthroughSubject<FireStoreCodable, Never>()
+    private let lineInfoFetchSubject = PassthroughSubject<TestSubwayLineColor, Never>()
     
     private let useCase: MainDetailUseCase
     
@@ -30,7 +30,7 @@ final class MainDetailVM: ObservableObject {
         // 2개의 Publisher가 모두 값이 들어왔을때 실행된다. -> combineLatest의 기능.
         lineInfoFetchSubject.combineLatest(nearStationInfoFetchSubject)
             .sink { (hosun, nearStation) in
-                self.hosunInfo = hosun as? TestSubwayLineColor ?? .emptyData
+                self.hosunInfo = hosun
 //                print("housn정보, 역정보를 가지고 이전, 다음역정보(열차상태)와 이번역을 향해 오는 상하행선 전철의 실시간 위치정보를 fetch한다.")
                 self.fetchInfo(value: nearStation)
             }
@@ -41,17 +41,13 @@ final class MainDetailVM: ObservableObject {
         nearStationInfoFetchSubject.send(data)
     }
     
-    func send(_ data: FireStoreCodable) {
+    func send(_ data: TestSubwayLineColor) {
         lineInfoFetchSubject.send(data)
     }
     
     func timer() {
         // 1초에 한번씩 실행이 되.
         // fetch를 해오는 구문이 있어 -> 10초에 한번 실행이되야해.
-    }
-    
-    func realTimeFetch() {
-        
     }
     
 }
@@ -69,15 +65,18 @@ extension MainDetailVM {
         self.stationInfo = useCase.getStationData(vm: self, stationName)
     }
     
+    /// 실시간 지하철 위치 정보 fetch
+    /// RealTime DTO객체 생성
     private func getRealTimeInfo(_ stationName: String) {
-        print("엳ㄱ이름 : \(stationName)")
+        print("역이름 : \(stationName)")
         useCase.recievePublisher(whereData: stationName)
             .print("패치중 : ")
+            // sink로 구독시 publisher의 타입의 에러 형태가 Never가 아닐경우에는 receiveCompelete도 무조건 작성해야함.
             .sink { result in
                 switch result {
                 case .finished:
-                    break
-                case .failure(_):
+                    print("패치완료")
+                case .failure:
                     break
                 }
             } receiveValue: { data in
@@ -89,8 +88,10 @@ extension MainDetailVM {
 }
 
 extension MainDetailVM {
-    enum UpDn {
-        case up, down
+    /// ArrivalTimeView에서 상하행 구분으로 사용.
+    enum UpDn: String {
+        case up = "상행"
+        case down = "하행"
     }
 }
 
