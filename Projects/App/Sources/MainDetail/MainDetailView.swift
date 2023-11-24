@@ -7,25 +7,29 @@ struct MainDetailView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            VStack(spacing: 25) {
+            VStack(spacing: 20) {
                 SearchContent
                 TitleContent
                 SubTitleContent
             }
             .padding(.horizontal)
             
-            ArrivalTimeView(vm: vm)
-                .padding(.top, 30)
-            
-            SubwayRouteMapView(vm: vm)
-                .padding(.top, 30)
-            
-            Spacer()
-            
+            ScrollView(showsIndicators: false) {
+                ArrivalTimeView(vm: vm)
+                    .padding(.top, 10)
+                
+                SubwayRouteMapView(vm: vm)
+                    .padding(.top, 10)
+                
+                Spacer()
+            }
         }
         .onAppear {
             // 그렇게 가져온 역정보를 가지고 이전역과 다음역의 정보를 가져온다. -> 서버통신할 필요없이, 가져온 역ID를 -1, +1 하여 표시해주면 된다. -> publisher로 처리함.
             // 여기서 fetch하여 가져와야만하는 데이터는 현재역을 향해서 오고 있는 열차들의 상태와 어디쯤왔는지에대한 시간표이다.
+        }
+        .refreshable {
+            // 새로고침
         }
     }
     
@@ -55,41 +59,92 @@ extension MainDetailView {
     }
     /// Title 부분
     @ViewBuilder var TitleContent: some View {
-        HStack(spacing: 50) {
-            vm.hosunInfo.lineColor // 변수처리
-                .frame(width: 40, height: 40)
-                .clipShape(Circle())
-            
+        ZStack {
             Button {
-               // Sheet Open
+                // Sheet Open
             } label: {
-                Text("\(vm.hosunInfo.subwayNm)")
-                    .font(.largeTitle)
-                    .tint(.primary)
+                HStack {
+                    Text("\(vm.hosunInfo.subwayNm)")
+                    Image(systemName: "chevron.down")
+                        .font(.caption)
+                }
+                .foregroundStyle(Color.white)
+                .padding(.vertical, 5)
+                .padding(.horizontal, 15)
+                .font(.title3)
+                .bold()
+                .tint(.primary)
+                .background {
+                    RoundedRectangle(cornerRadius: 15)
+                        .fill(vm.hosunInfo.lineColor)
+                }
             }
             
-            Button {
-                // 화살표 돌아가게 애니메이션 적용 rotation 사용하면 될듯.
-            
-            } label: {
-                Image(systemName: "arrow.clockwise")
-                    .tint(.primary)
+            HStack {
+                Spacer()
+                HStack(spacing: 15) {
+                    Button {
+                        // 화살표 돌아가게 애니메이션 적용 rotation 사용하면 될듯.
+                        
+                    } label: {
+                        Image(systemName: "arrow.clockwise")
+                            .tint(.primary)
+                    }
+                    Button {
+                        // 화살표 돌아가게 애니메이션 적용 rotation 사용하면 될듯.
+                        
+                    } label: {
+                        Image(systemName: "bookmark")
+                            .tint(.primary)
+                    }
+                }
             }
         }
+        
     }
     
-    /// SubTitle 부분
+    /// SubTitle 부분 역정보
     @ViewBuilder var SubTitleContent: some View {
-        HStack(spacing: 60) {
-            Text("현재 역")
-            Text("\(vm.stationInfo.nowStNm)")
-            Button {
+        ZStack {
+            RoundedRectangle(cornerRadius: 17)
+                .fill(vm.hosunInfo.lineColor)
+                .frame(height: 30)
+            
+            HStack {
+                HStack {
+                    Image(systemName: "chevron.left")
+                        .font(.caption)
+                    Text(vm.stationInfo.upStNm)
+                        .font(.headline)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.leading, 5)
                 
-            } label: {
-                Image(systemName: "bookmark")
-                    .font(.title2)
-                    .tint(.primary)
+                ZStack {
+                    RoundedRectangle(cornerRadius: 30)
+                        .stroke(vm.hosunInfo.lineColor, lineWidth: 5)
+                        .frame(width: 150, height: 40)
+                        .background {
+                            RoundedRectangle(cornerRadius: 30)
+                                .fill(Color.white)
+                        }
+                    
+                    Text("\(vm.stationInfo.nowStNm)")
+                        .foregroundColor(Color.black)
+                        .bold()
+                        
+                }
+                
+                HStack {
+                    Text(vm.stationInfo.downStNm)
+                        .font(.headline)
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                }
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .padding(.trailing, 5)
             }
+            .foregroundStyle(Color.white)
         }
     }
     
@@ -101,16 +156,18 @@ extension MainDetailView {
 }
 
 struct MainDetailView_Previews: PreviewProvider {
+    @StateObject static var vm = MainDetailVM(useCase: MainDetailUseCase(repo: MainListRepository(networkStore: SubwayAPIService())))
+    
     static var previews: some View {
         // 이 부분에서 MainListRepository를 테스트용 데이터를 반환하는 class로 새로 생성하여 주입해주면 테스트용 Preview가 완성.!!
-        MainDetailView(vm: MainDetailVM(useCase: MainDetailUseCase(repo: MainListRepository(networkStore: SubwayAPIService()))))
+        MainDetailView(vm: vm)
             .previewDisplayName("디테일")
         
         MainListView()
             .previewDisplayName("메인리스트")
         
         TabbarView()
-            .previewDisplayName("탭바 ")
+            .previewDisplayName("탭바")
         
     }
 }

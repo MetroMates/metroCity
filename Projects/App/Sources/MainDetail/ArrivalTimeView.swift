@@ -40,49 +40,60 @@ extension ArrivalTimeView {
             updn == .up ? "2전역 출발" : "177초 후 도착"
         }
         
-        VStack {
-            Text(updn.rawValue)
-                .font(.title3)
-            
-            VStack(spacing: 20) {
-                HStack {
-                    Text("\(destiStation) 방면")
-                }
-                .tint(.primary)
-                .frame(maxWidth: .infinity)
-                .padding(10)
-                .background {
-                    vm.hosunInfo.lineColor.opacity(0.5)
-                }
-                
+        
+        LazyVStack(spacing: 0, pinnedViews: .sectionHeaders) {
+            Section {
                 VStack(alignment: .leading, spacing: 10) {
-                    HStack(spacing: 10) {
-                        VStack(alignment: .center) {
-                            Text("이번 열차")
-                            Text("(\(upstId))")
-                                .font(.caption)
+                    VStack(spacing: 5) {
+                        Text("이번 열차")
+                            .font(.subheadline)
+                        
+                        Rectangle()
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 1)
+                        
+                        ForEach(0..<3, id: \.self) { _ in
+                            Text("\(upstId)행 \(upMsg)")
                         }
-                        Text(upMsg)
                     }
+                    .frame(maxWidth: .infinity)
                     
-                    HStack(spacing: 10) {
-                        VStack(alignment: .center) {
-                            Text("다음 열차")
-                            Text("(\(downstId))")
-                                .font(.caption)
+                    Divider()
+                    
+                    VStack(spacing: 5) {
+                        Text("다음 열차")
+                            .font(.subheadline)
+                        
+                        Rectangle()
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 1)
+                        
+                        ForEach(0..<3, id: \.self) { _ in
+                            Text(downMsg)
                         }
-                        Text(downMsg)
                     }
-                    Spacer()
+                    .frame(maxWidth: .infinity)
+                    
                 }
-                .padding(.horizontal, 3)
                 .font(.callout)
-                .frame(height: 80)
-                
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 3)
+                .padding(.vertical, 10)
+                .background {
+                    Color.gray.opacity(0.2)
+                }
+            } header: {
+                Text(updn.rawValue)
+                    .foregroundStyle(Color.white)
+                    .bold()
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 15)
+                    .padding(10)
+                    .background {
+                        vm.hosunInfo.lineColor
+                    }
             }
-            .background {
-                Color.gray.opacity(0.2)
-            }
+            
         }
         
     }
