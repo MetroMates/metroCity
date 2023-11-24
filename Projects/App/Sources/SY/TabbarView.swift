@@ -13,7 +13,7 @@ struct TabbarView: View {
                 switch selectedIndex {
                 case 0:
 //                    DrawGeoView()
-                    EmptyView()
+                    MainDetailView(vm: MainDetailVM(useCase: MainDetailUseCase(repo: MainListRepository(networkStore: SubwayAPIService()))))
                 default:
                     BookmarkView()
                 }

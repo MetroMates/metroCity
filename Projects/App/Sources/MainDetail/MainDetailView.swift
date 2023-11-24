@@ -18,13 +18,13 @@ struct MainDetailView: View {
                 .padding(.top, 30)
             
             SubwayRouteMapView(vm: vm)
-                .padding(.top, 100)
+                .padding(.top, 30)
             
             Spacer()
             
         }
         .onAppear {
-            // 그렇게 가져온 역정보를 가지고 이전역과 다음역의 정보를 가져온다. -> 서버통신할 필요없이, 가져온 역ID를 -1, +1 하여 표시해주면 된다.
+            // 그렇게 가져온 역정보를 가지고 이전역과 다음역의 정보를 가져온다. -> 서버통신할 필요없이, 가져온 역ID를 -1, +1 하여 표시해주면 된다. -> publisher로 처리함.
             // 여기서 fetch하여 가져와야만하는 데이터는 현재역을 향해서 오고 있는 열차들의 상태와 어디쯤왔는지에대한 시간표이다.
         }
     }
@@ -36,10 +36,14 @@ extension MainDetailView {
     /// Search부분
     @ViewBuilder var SearchContent: some View {
         HStack {
-            TextField(" 역이름을 검색해보세요 \(vm.realTimeInfo.statnNm)", text: $vm.searchText)
+            TextField("역이름을 검색해보세요", text: $vm.searchText)
                 .padding(7)
+                .padding(.leading, 3)
+                .font(.caption)
                 .background {
-                    Color.gray.opacity(0.22)
+                    RoundedRectangle(cornerRadius: 5)
+                        .stroke(Color.gray.opacity(0.8), lineWidth: 2)
+                    
                 }
             Button {
                 // 검색 func
@@ -104,6 +108,9 @@ struct MainDetailView_Previews: PreviewProvider {
         
         MainListView()
             .previewDisplayName("메인리스트")
+        
+        TabbarView()
+            .previewDisplayName("탭바 ")
         
     }
 }

@@ -30,16 +30,16 @@ final class MainDetailUseCase {
             
             return .init(nowSt: newDatas.statnId,
                          nowStNm: value,
-                         beforeSt: upSt,
-                         beforeStNm: upStNm,
-                         afterSt: downSt,
-                         afterStNm: downStNm)
+                         upSt: upSt,
+                         upStNm: upStNm,
+                         downSt: downSt,
+                         downStNm: downStNm)
         }
         
         return .emptyData
     }
     
-    // Never타입은 못씀. 에러를 발생시키지 않기 때문...!!
+    // Never타입은 못씀. 에러를 발생시키지 않기 때문...!! -> api통신중의 발생한 Error를 생성해주어야함.
     func recievePublisher(whereData: String) -> AnyPublisher<RealTimeSubway, Error> {
         return repository.receivePublisher(type: Arrived.self, urlType: .subwayArrive, whereData: whereData)
             .flatMap { rdata -> AnyPublisher<RealTimeSubway, Error> in
