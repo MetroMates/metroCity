@@ -23,23 +23,9 @@ extension ArrivalTimeView {
             updn == .up ? vm.stationInfo.upStNm : vm.stationInfo.downStNm
         }
         
-        var upstId: String {
-            updn == .up ? "1111" : "2222"
+        var trainDatas: [RealTimeSubway] {
+            updn == .up ? vm.upRealTimeInfos : vm.downRealTimeInfos
         }
-        
-        var downstId: String {
-            updn == .up ? "3333" : "4444"
-        }
-        
-        var upMsg: String {
-            updn == .up ? "전역 도착" : "3전역 출발"
-        }
-        
-        // 도착 메세지? 가 시간단위로 나타내줄떄 1초에 1씩 카운트가 줄어들어야 한다.
-        var downMsg: String {
-            updn == .up ? "2전역 출발" : "177초 후 도착"
-        }
-        
         
         LazyVStack(spacing: 0, pinnedViews: .sectionHeaders) {
             Section {
@@ -52,11 +38,16 @@ extension ArrivalTimeView {
                             .frame(maxWidth: .infinity)
                             .frame(height: 1)
                         
-                        ForEach(0..<3, id: \.self) { _ in
-                            Text("\(upstId)행 \(upMsg)")
+                        ForEach(trainDatas, id: \.id) { info in
+                            HStack {
+                                Text(info.trainDestiStation)
+                                Text(info.message)
+                            }
                         }
+                        Spacer()
                     }
                     .frame(maxWidth: .infinity)
+                    .frame(height: 100)
                     
                     Divider()
                     
@@ -68,11 +59,13 @@ extension ArrivalTimeView {
                             .frame(maxWidth: .infinity)
                             .frame(height: 1)
                         
-                        ForEach(0..<3, id: \.self) { _ in
-                            Text(downMsg)
-                        }
+//                        ForEach(0..<3, id: \.self) { _ in
+//                            Text(downMsg)
+//                        }
+                        Spacer()
                     }
                     .frame(maxWidth: .infinity)
+                    .frame(height: 100)
                     
                 }
                 .font(.callout)
