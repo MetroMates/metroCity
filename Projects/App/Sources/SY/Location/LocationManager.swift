@@ -16,6 +16,7 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var userLocationInto = Location(crdntX: 0.0, crdntY: 0.0)
     @Published var distacneArray: [Double] = []
     @Published var stationArray: [String] = []
+    @Published var calculatedStation: [StationLocation] = []
     
     override init() {
         super.init()
@@ -27,12 +28,13 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         self.locationManager.requestWhenInUseAuthorization()
         
         // 대리인(self)에게 위치 없데이트 전달을 시작함 -> delegate 채택으로 인하여 정의한 didUpdateLocations 대리자 메서드는 사용 가능한 새 위치 데이터가 있을 때마다 호출됩니다.
-
+        // startUpdatingLocation : 유저 위치가져오기
         self.locationManager.startUpdatingLocation()
     }
     
-    func fetchUserLocation() {
-        self.locationManager.requestLocation()
+    /// 버튼을 누를 때마다 위치 업데이트를 하기 위해 함수로 따로 뺌!
+    func fetchUserLocation() { 
+        self.locationManager.startUpdatingLocation()
     }
     
     /// delegate 관련 정의 함수
@@ -49,6 +51,8 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
 
         userLocationInto.crdntY = latitude
         userLocationInto.crdntX = longitude
+        
+        manager.stopUpdatingLocation()
     }
     
     /// delegate 관련 정의 함수
@@ -57,17 +61,28 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         print("Location error: \(error.localizedDescription)")
         locationString = "Failed to fetch location"
     }
-    
-    /// 위경도 값 기준 가장 가까운 거리의 역 찾기
-    func findClosestStation(userLocation: Location, stationLocations: [StationLocation]) -> StationLocation? {
-        guard !stationLocations.isEmpty else {
-            return nil
-        }
 
+    /// 3키로 반경 이내 역중에 위경도 값 기준으로 가장 근사한 역 하나를 리턴해줌
+    func calculateDistance(userLocation: Location, stationLocation: [StationLocation]) -> StationLocation? {
+        guard !stationLocation.isEmpty else { return nil }
+        
+        let userPoint = CLLocation(latitude: userLocation.crdntY, longitude: userLocation.crdntX)
+        
+        self.calculatedStation = []
+        for station in stationLocation {
+            let stationPoint = CLLocation(latitude: station.crdntY, longitude: station.crdntX)
+            
+            let distance = stationPoint.distance(from: userPoint)
+            
+            if distance <= 3000 {
+                self.calculatedStation.append(station)
+            }
+        }
+        
         var closestStation: StationLocation?
         var minDifference: Double = Double.infinity
         
-        for station in stationLocations {
+        for station in self.calculatedStation {
             let diffX = abs(station.crdntX - userLocation.crdntX)
             let diffY = abs(station.crdntY - userLocation.crdntY)
             
@@ -77,12 +92,53 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
                 minDifference = totalDifference
                 closestStation = station
                 self.distacneArray.append(totalDifference)
-//                self.stationArray.append(closestStation?.statnNm ?? "⭐️")
             }
             self.stationArray.append(closestStation?.statnNm ?? "⭐️")
-            
         }
         return closestStation
     }
-
+    
+    // MARK: - 레거시 코드
+    /// 위경도 값 기준 가장 가까운 거리의 역 찾기
+//    func findClosestStation(userLocation: Location, stationLocations: [StationLocation]) -> StationLocation? {
+//        guard !stationLocations.isEmpty else {
+//            return nil
+//        }
+//
+//        var closestStation: StationLocation?
+//        var minDifference: Double = Double.infinity
+//
+//        for station in stationLocations {
+//            let diffX = abs(station.crdntX - userLocation.crdntX)
+//            let diffY = abs(station.crdntY - userLocation.crdntY)
+//
+//            let totalDifference = diffX + diffY
+//
+//            if totalDifference < minDifference {
+//                minDifference = totalDifference
+//                closestStation = station
+//                self.distacneArray.append(totalDifference)
+//            }
+//            self.stationArray.append(closestStation?.statnNm ?? "⭐️")
+//
+//        }
+//        return closestStation
+//    }
+    
+    /// 3키로 반경 이내 역을 찾아주는 함수
+//    func calculateDistance(userLocation: Location, stationLocation: [StationLocation]) {
+//
+//        let userPoint = CLLocation(latitude: userLocation.crdntY, longitude: userLocation.crdntX)
+//
+//        self.calculatedStation = []
+//        for station in stationLocation {
+//            let stationPoint = CLLocation(latitude: station.crdntY, longitude: station.crdntX)
+//
+//            let distance = stationPoint.distance(from: userPoint)
+//
+//            if distance <= 3000 {
+//                self.calculatedStation.append(station)
+//            }
+//        }
+//    }
 }
