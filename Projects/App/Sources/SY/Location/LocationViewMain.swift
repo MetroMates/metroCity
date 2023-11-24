@@ -5,7 +5,10 @@ import SwiftUI
 @MainActor
 class LocationViewModel: ObservableObject {
     private let firestoreManager = FirebaseLocationManager.shared
+    @StateObject var locationManager = LocationManager()
+    
     @Published var documentsData: [StationLocation] = []
+    @Published var targetStation: StationLocation?
     
     func fetchingData() {
         Task {
@@ -18,45 +21,42 @@ class LocationViewModel: ObservableObject {
             }
         }
     }
+    
+    @MainActor
+    func findTargetStation() {
+        self.targetStation = locationManager.calculateDistance(userLocation: locationManager.userLocationInto, stationLocation: self.documentsData)
+    }
 }
 
 struct LocationViewMain: View {
     @StateObject var LocationVM = LocationViewModel()
     @StateObject var locationManager = LocationManager()
-    
-    @State var closestStation: StationLocation?
-    
-    func findStation() {
-        self.closestStation = locationManager.findClosestStation(userLocation: locationManager.userLocationInto, stationLocations: LocationVM.documentsData)
-        
-    }
-    
-    var body: some View {
-        VStack {
-            Text("유저 위치값")
-            Text(locationManager.locationString)
+    @State var targerStation: StationLocation = StationLocation(crdntX: 0, crdntY: 0, route: "", statnId: 0, statnNm: "")
 
+    var body: some View {
+        VStack(spacing: 30) {
+            
             Button {
-                if let findLocation = locationManager.findClosestStation(userLocation: locationManager.userLocationInto, stationLocations: LocationVM.documentsData) {
-                    print("😎\(findLocation.statnNm)")
-                } else {
-                    print("dd")
-                }
+                locationManager.fetchUserLocation()
             } label: {
-                Text("find!")
+                Text("유저 위치값")
+            }
+            
+            VStack {
+                Text("위도 \(locationManager.userLocationInto.crdntX)")
+                Text("경도 \(locationManager.userLocationInto.crdntY)")
             }
             
             Button {
-                print(locationManager.distacneArray.sorted())
-                print(locationManager.stationArray)
+                let targerStation = locationManager.calculateDistance(userLocation: locationManager.userLocationInto, stationLocation: LocationVM.documentsData)
+                print(targerStation?.statnNm ?? "없음")
             } label: {
-                Text("거리 배열 값 확인하기")
+                Text("3키로 반경이내 역 찾아내기")
             }
 
         }
         .onAppear {
             LocationVM.fetchingData()
-            locationManager.fetchUserLocation()
         }
     }
 }
