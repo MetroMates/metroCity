@@ -12,8 +12,8 @@ struct TabbarView: View {
             ZStack {
                 switch selectedIndex {
                 case 0:
-//                    DrawGeoView()
-                    MainDetailView(vm: MainDetailVM(useCase: MainDetailUseCase(repo: MainListRepository(networkStore: SubwayAPIService()))))
+                    MainListView()
+//                    MainDetailView(vm: MainDetailVM(useCase: MainDetailUseCase(repo: MainListRepository(networkStore: SubwayAPIService()))))
                 default:
                     BookmarkView()
                 }

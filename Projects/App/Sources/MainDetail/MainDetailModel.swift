@@ -83,11 +83,15 @@ struct MyStation: SubwayModel {
 
 extension MyStation {
     static var emptyData: Self {
-        return .init(nowSt: 0, nowStNm: "현재역정보가 없습니다.",
-                     upSt: 0, upStNm: "상행역 none",
-                     downSt: 0, downStNm: "하행역 none")
+        return .init(nowSt: 0, nowStNm: "NONE",
+                     upSt: 0, upStNm: "",
+                     downSt: 0, downStNm: "")
     }
 }
+
+/*
+    
+ */
 
 /// 실시간 지하철 위치 정보
 /// 내가 현재 선택한 역 기준으로 데이터 가져와야 함.

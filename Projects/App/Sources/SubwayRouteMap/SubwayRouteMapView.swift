@@ -15,10 +15,10 @@ struct SubwayRouteMapView: View {
                 GeometryReader { geo in
                     // 0.0 ~ 0.45 까지의 거리로 계산
                     ForEach([0.1, 0.2, 0.6], id: \.self) { x in
-                        subway(geo: geo, .up, no: "\(x)00", x: x)
+                        subway(geo: geo, .up, no: "\(x)대행", x: x)
                     }
                     ForEach([0.1, 0.4, 0.6], id: \.self) { x in
-                        subway(geo: geo, .down, no: "\(x)00", x: x)
+                        subway(geo: geo, .down, no: "\(x)대행", x: x)
                     }
                 }
                 .frame(height: 100)
@@ -40,7 +40,7 @@ extension SubwayRouteMapView {
             Rectangle()
                 .fill(vm.hosunInfo.lineColor.opacity(0.8))
                 .frame(maxWidth: .infinity)
-                .frame(height: 35)
+                .frame(height: 20)
             
             stationCircle(vm.stationInfo.nowStNm)
             
@@ -78,7 +78,7 @@ extension SubwayRouteMapView {
             .padding(.horizontal, 5)
             .background {
                 RoundedRectangle(cornerRadius: 10)
-                    .stroke(vm.hosunInfo.lineColor, lineWidth: 1.5)
+                    .stroke(vm.hosunInfo.lineColor, lineWidth: 3)
                     .frame(height: 25)
                     .background {
                         RoundedRectangle(cornerRadius: 10)
@@ -87,20 +87,20 @@ extension SubwayRouteMapView {
             }
     }
     
+    // TODO: 급행이면 테두리색상을 검정색으로 주기.
     /// 열차 View
     @ViewBuilder private func subway(geo: GeometryProxy,
                                      _ updn: MainDetailVM.UpDn,
                                      no: String, x: CGFloat) -> some View {
         Text(no)
             .font(.caption)
-            .foregroundStyle(Color.primary)
+            .foregroundStyle(Color.white)
             .padding(3)
             .background {
                 RoundedRectangle(cornerRadius: 6)
-//                    .stroke(vm.hosunInfo.lineColor.opacity(0.7), style: .init(lineWidth: 2, lineCap: .round, dash: [1,3], dashPhase: 2))
-                    .stroke(vm.hosunInfo.lineColor.opacity(0.7), lineWidth: 2)
+                    .fill(vm.hosunInfo.lineColor)
             }
-            .offset(y: geo.size.height * (updn == .up ? 0.08 : 0.72))
+            .offset(y: geo.size.height * (updn == .up ? 0.12 : 0.68))
         // 0.0 곱하면 맨 왼쪽, 0.9는 맨 오른쪽
             .offset(x: geo.size.width * (updn == .up ? (0.9 - x) : x))
     }
