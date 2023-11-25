@@ -33,8 +33,6 @@ final class FirebaseLocationManager {
             throw error
         }
     }
-    
-    ///  StationInfo fetch 해오기
 }
 
 extension QueryDocumentSnapshot {

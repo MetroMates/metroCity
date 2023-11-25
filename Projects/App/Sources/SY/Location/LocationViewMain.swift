@@ -60,10 +60,6 @@ class LocationViewModel: ObservableObject {
             }
         }
     }
-
-    func fetchingUserLocaiton() {
-        locationService.fetchUserLocation()
-    }
     
     /// 3키로 반경 이내 역중에 위경도 값 기준으로 가장 근사한 역 하나를 리턴해줌
     func calculateDistance() {
@@ -127,7 +123,7 @@ struct LocationViewMain: View {
             Button {
                 LocationVM.calculateDistance()
             } label: {
-                Text("3키로 반경이내 역 찾아내기: \(LocationVM.stationName)")
+                Text("3키로 반경이내 역은? \(LocationVM.stationName)역")
             }
 
         }
