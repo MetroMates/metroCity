@@ -10,38 +10,8 @@ final class FirebaseLocationManager {
     static let shared = FirebaseLocationManager()
     private let db = Firestore.firestore()
     
-//    func fetchStationLocations(collectionName: String) async throws -> [StationLocation] {
-//        let collectionRef = db.collection(collectionName)
-//
-//        do {
-//            let querySnapshot = try await collectionRef.getDocuments()
-//
-//            let allLocations = try querySnapshot.documents.compactMap { document -> StationLocation? in
-//                // Access the data directly from the document
-//                guard let data = document.data() else {
-//                    return StationLocation(crdntX: 0.0, crdntY: 0.0, route: "none", statnId: 0, statnNm: "none")
-//                }
-//
-//                // Attempt to decode the data into StationLocation
-//                do {
-//                    let jsonData = try JSONSerialization.data(withJSONObject: data, options: [])
-//                    let returnData = try JSONDecoder().decode(StationLocation.self, from: jsonData)
-//                    return returnData
-//                } catch {
-//                    print(error.localizedDescription)
-//                    throw error
-//                }
-//            }
-//
-//            return allLocations
-//        } catch {
-//            print(error.localizedDescription)
-//            throw error
-//        }
-//    }
-    
     /// 위치정보 가져오는 함수
-    func fetchStationLocations(collectionName: String) async throws -> [StationLocation] {
+    func fetchStationLocations<T: Decodable>(collectionName: String, type: T.Type) async throws -> [T] {
         let collectionRef = db.collection(collectionName)
 
         do {
@@ -53,7 +23,7 @@ final class FirebaseLocationManager {
                 // StationLocation의 형태로 디코딩하여 추가
                 // 이렇게 디코딩 하기 위해서는 커스텀하게
                 // 현재 [String:Any] type의 document에서 Any를 통해 Data를 뽑아와서 Decode 해줌
-                return try document.decode(as: StationLocation.self)
+                return try document.decode(as: T.self)
             }
 
             return allLocations
@@ -63,6 +33,8 @@ final class FirebaseLocationManager {
             throw error
         }
     }
+    
+    ///  StationInfo fetch 해오기
 }
 
 extension QueryDocumentSnapshot {
