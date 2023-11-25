@@ -50,34 +50,13 @@ extension SubwayRouteMapView {
                 }
                 stationCircle(vm.stationInfo.nowStNm)
             }
+            .padding(.horizontal, 10)
             
         }
     }
 }
 
 extension SubwayRouteMapView {
-    
-//    @ViewBuilder private func updownStationText(_ updn: MainDetailVM.UpDn) -> some View {
-//        var station: String {
-//            updn == .up ? vm.stationInfo.upStNm : vm.stationInfo.downStNm
-//        }
-//        var systemImage: String {
-//            updn == .up ? "arrow.left" : "arrow.right"
-//        }
-//
-//        ZStack {
-//            HStack {
-//                Text(station)
-//                    .opacity(updn == .up ? 1 : 0)
-//                Spacer()
-//                Text(station)
-//                    .opacity(updn == .down ? 1 : 0)
-//            }
-//            Image(systemName: systemImage)
-//
-//        }.padding(.horizontal, 3)
-//    }
-    
     @ViewBuilder private func stationCircle(_ text: String) -> some View {
         Text(text)
             .font(.caption)

@@ -52,7 +52,12 @@ final class MainDetailUseCase {
                 
                 for data in realDatas {
                     let sort: Int = self.trainSortOrder(ordkey: data.ordkey)
-                    let message: String = self.trainMessage(barvlDt: data.barvlDt, arvlMsg2: data.arvlMsg2, arvlCd: data.arvlCD)
+                    
+                    let message: String = self.trainMessage(barvlDt: data.barvlDt,
+                                                            arvlMsg2: data.arvlMsg2,
+                                                            arvlMsg3: data.arvlMsg3,
+                                                            arvlCd: data.arvlCD,
+                                                            nowStationName: whereData)
                     
                     stations.append(.init(updnLine: data.updnLine,
                                           trainNo: data.btrainNo,
@@ -79,13 +84,17 @@ extension MainDetailUseCase {
         
     }
     
-    private func trainMessage(barvlDt: String, arvlMsg2: String, arvlCd: String) -> String {
+    private func trainMessage(barvlDt: String,
+                              arvlMsg2: String,
+                              arvlMsg3: String,
+                              arvlCd: String,
+                              nowStationName: String) -> String {
         if barvlDt != "0" {
             return "\(barvlDt)초전"
         }
         
-        if !arvlMsg2.isEmpty {
-            return arvlMsg2
+        if !arvlMsg2.isEmpty || !arvlMsg3.isEmpty {
+            return nowStationName == arvlMsg3 ? "당역 도착" : arvlMsg2
         }
         
         if !arvlCd.isEmpty {
@@ -96,6 +105,7 @@ extension MainDetailUseCase {
     }
     
     private func trainSortOrder(ordkey: String) -> Int {
+        print("👊ordkey : ", ordkey)
         if ordkey.count >= 2 {
             let secondCharacter = ordkey[ordkey.index(ordkey.startIndex, offsetBy: 1)]
             
