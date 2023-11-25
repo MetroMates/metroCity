@@ -24,7 +24,23 @@ extension ArrivalTimeView {
         }
         
         var trainDatas: [RealTimeSubway] {
-            updn == .up ? vm.upRealTimeInfos : vm.downRealTimeInfos
+            var timeData = updn == .up ? vm.upRealTimeInfos : vm.downRealTimeInfos
+            
+            timeData = timeData.filter({ info in
+                info.sortOrder == 1
+            })
+            
+            return timeData
+        }
+        
+        var trainNextDatas: [RealTimeSubway] {
+            var timeData = updn == .up ? vm.upRealTimeInfos : vm.downRealTimeInfos
+            
+            timeData = timeData.filter({ info in
+                info.sortOrder == 2
+            })
+            
+            return timeData
         }
         
         LazyVStack(spacing: 0, pinnedViews: .sectionHeaders) {
@@ -39,10 +55,11 @@ extension ArrivalTimeView {
                             .frame(height: 1)
                         
                         ForEach(trainDatas, id: \.id) { info in
-                            HStack {
-                                Text(info.trainDestiStation)
-                                Text(info.message)
+                            HStack(spacing: 20) {
+                                ScrollText(content: info.trainDestiStation)
+                                ScrollText(content: info.message)
                             }
+                            .padding(.horizontal, 10)
                         }
                         Spacer()
                     }
@@ -59,9 +76,14 @@ extension ArrivalTimeView {
                             .frame(maxWidth: .infinity)
                             .frame(height: 1)
                         
-//                        ForEach(0..<3, id: \.self) { _ in
-//                            Text(downMsg)
-//                        }
+                        ForEach(trainNextDatas, id: \.id) { info in
+                            HStack(spacing: 20) {
+                                ScrollText(content: info.trainDestiStation)
+                                ScrollText(content: info.message)
+                            }
+                            .padding(.horizontal, 10)
+                        }
+                        
                         Spacer()
                     }
                     .frame(maxWidth: .infinity)

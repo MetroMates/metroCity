@@ -15,6 +15,9 @@ final class MainDetailVM: ObservableObject {
     /// 하행 실시간 정보
     @Published var downRealTimeInfos: [RealTimeSubway] = [.emptyData] // 런타임 에러 방지
     
+    /// 근처역 관련 호선들
+    @Published var nearStationLines: [TestSubwayLineColor] = []
+    
     /// 호선정보 및 색상 MainListModel.swift
     var hosunInfo: TestSubwayLineColor = .emptyData
    
@@ -29,6 +32,10 @@ final class MainDetailVM: ObservableObject {
         self.useCase = useCase
     }
     
+    deinit {
+        anyCancellable.removeAll()
+    }
+    
     /// 구독 메서드
     func subscribe() {
         // 2개의 Publisher가 모두 값이 들어왔을때 실행된다. -> combineLatest, zip의 기능.
@@ -39,7 +46,8 @@ final class MainDetailVM: ObservableObject {
             .sink { (hosun, nearStation) in
                 print("👍🏻Combine!!!")
                 self.hosunInfo = hosun
-                self.fetchInfo(value: nearStation)
+                self.fetchInfo(value:
+                                self.whenNearStationNoInfoSetCloseStation(nearStation))
             }
             .store(in: &anyCancellable)
     }
@@ -59,6 +67,21 @@ final class MainDetailVM: ObservableObject {
 
 // MARK: Private Methods
 extension MainDetailVM {
+    private func whenNearStationNoInfoSetCloseStation(_ stationName: String) -> String {
+        var stationInfos = StationInfo.testList
+        var stationData = stationName
+        
+        stationInfos = stationInfos.filter { $0.subwayId == hosunInfo.subwayId }
+ 
+        if !stationInfos.contains { $0.statnNm == stationName } {
+            // 선택한 라인에서 역코드가 제일 작은걸 가져온다.
+            if let firstData = stationInfos.first {
+                return firstData.statnNm
+            }
+        }
+        return stationData
+    }
+    
     /// StationInfo Fetch 메서드
     private func fetchInfo(value: String) {
         getStationInfo(value)
@@ -75,7 +98,9 @@ extension MainDetailVM {
     private func getRealTimeInfo(_ stationName: String) {
         upRealTimeInfos.removeAll() // 초기화
         downRealTimeInfos.removeAll() // 초기화
+
         print("🐹 \(hosunInfo.subwayId)")
+        
         useCase.recievePublisher(subwayLine: "\(hosunInfo.subwayId)", whereData: stationName)
             .print("패치중 : ")
             // sink로 구독시 publisher의 타입의 에러 형태가 Never가 아닐경우에는 receiveCompelete도 무조건 작성해야함.
@@ -87,12 +112,8 @@ extension MainDetailVM {
                     break
                 }
             } receiveValue: { data in
-                print("🐹여기진입")
-                print("🐹호선: \(self.hosunInfo.subwayId)")
-                self.upRealTimeInfos = data.filter { $0.updnLine == "상행" }
-                self.downRealTimeInfos = data.filter { $0.updnLine == "하행" }
-                print("🐹Up \(self.upRealTimeInfos)")
-                print("🐹Down \(self.downRealTimeInfos)")
+                self.upRealTimeInfos = Array(data.filter { $0.updnLine == "상행" }.prefix(10))
+                self.downRealTimeInfos = Array(data.filter { $0.updnLine == "하행" }.prefix(10))
             }
             .store(in: &anyCancellable)
     }

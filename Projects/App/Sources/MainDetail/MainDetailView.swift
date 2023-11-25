@@ -114,7 +114,7 @@ extension MainDetailView {
                 HStack {
                     Image(systemName: "chevron.left")
                         .font(.caption)
-                    Text(vm.stationInfo.upStNm)
+                    ScrollText(content: vm.stationInfo.upStNm)
                         .font(.headline)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -129,14 +129,14 @@ extension MainDetailView {
                                 .fill(Color.white)
                         }
                     
-                    Text("\(vm.stationInfo.nowStNm)")
+                    ScrollText(content: vm.stationInfo.nowStNm)
                         .foregroundColor(Color.black)
                         .bold()
                         
                 }
                 
                 HStack {
-                    Text(vm.stationInfo.downStNm)
+                    ScrollText(content: vm.stationInfo.downStNm)
                         .font(.headline)
                     Image(systemName: "chevron.right")
                         .font(.caption)

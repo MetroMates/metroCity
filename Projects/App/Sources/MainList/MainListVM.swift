@@ -20,6 +20,8 @@ final class MainListVM: ObservableObject {
     @Published var subwayLines = TestSubwayLineColor.tempData
     @Published var nearStationSubwayLines: [TestSubwayLineColor] = []
     
+    @Published var isProgressed: Bool = false
+    
     private var anyCancellable: Set<AnyCancellable> = []
     
     // 도메인 Layer
@@ -34,7 +36,9 @@ final class MainListVM: ObservableObject {
     /// 구독메서드
     func subscribe() {
         $nearStation.sink { i in
+            self.isProgressed = true
             self.getNearStationLineInfos(value: i)
+            self.isProgressed = false
         }
         .store(in: &anyCancellable)
     }

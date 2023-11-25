@@ -18,32 +18,37 @@ struct MainListView: View {
     
     var body: some View {
         NavigationStack {
-            
-            VStack(spacing: 30) {
-                Text("호선 선택")
-                    .font(.title2)
-                    .padding(.top, 5)
+            ZStack {
+                // 커스텀으로 바꾸기 프로그래뷰
+                ProgressView()
+                    .opacity(mainVM.isProgressed ? 1.0 : 0.0)
                 
-                ScrollView(showsIndicators: false) {
-                    VStack(alignment: .leading, spacing: 15) {
-                        if !mainVM.nearStation.isEmpty {
-                            NearStationLine
+                VStack(spacing: 30) {
+                    Text("호선 선택")
+                        .font(.title2)
+                        .padding(.top, 5)
+                    
+                    ScrollView(showsIndicators: false) {
+                        VStack(alignment: .leading, spacing: 15) {
+                            if !mainVM.nearStation.isEmpty {
+                                NearStationLines
+                            }
+                            AllStationLines
                         }
-                        AllStationLine
-                    }
-                    .padding()
-                }
-            }
-            .overlay(alignment: .bottomTrailing) {
-                Button {
-                    mainVM.GPScheckNowLocactionTonearStation()
-                    mainVM.nearStation = "서울"
-                } label: {
-                    Image(systemName: "location.circle")
-                        .font(.title)
-                        .foregroundStyle(Color.primary.opacity(0.6))
                         .padding()
-                        .padding(.trailing, 5)
+                    }
+                }
+                .overlay(alignment: .bottomTrailing) {
+                    Button {
+                        mainVM.GPScheckNowLocactionTonearStation()
+                        mainVM.nearStation = "서울"
+                    } label: {
+                        Image(systemName: "location.circle")
+                            .font(.title)
+                            .foregroundStyle(Color.primary.opacity(0.6))
+                            .padding()
+                            .padding(.trailing, 5)
+                    }
                 }
             }
         }
@@ -57,13 +62,13 @@ struct MainListView: View {
     
 }
 
+/// View 연산프로퍼티
 extension MainListView {
-    @ViewBuilder private var NearStationLine: some View {
+    @ViewBuilder private var NearStationLines: some View {
         Section {
             ForEach(mainVM.nearStationSubwayLines) { line in
                 Button {
-                    mainDetailVM.send(nearStInfo: mainVM.nearStation,
-                                      lineInfo: line)
+                    self.setLineAndstationInfo(line: line)
                     mainVM.isDetailPresented = true
                 } label: {
                     MainListCellView(stationName: line.subwayNm,
@@ -82,12 +87,11 @@ extension MainListView {
         }
     }
     
-    @ViewBuilder private var AllStationLine: some View {
+    @ViewBuilder private var AllStationLines: some View {
         Section("전체 호선") {
             ForEach(mainVM.subwayLines) { line in
                 Button {
-                    mainDetailVM.send(nearStInfo: mainVM.nearStation,
-                                      lineInfo: line)
+                    self.setLineAndstationInfo(line: line)
                     mainVM.isDetailPresented = true
                 } label: {
                     MainListCellView(stationName: line.subwayNm,
@@ -98,6 +102,15 @@ extension MainListView {
                 }
             }
         }
+    }
+}
+
+// MARK: - Private Methods
+extension MainListView {
+    private func setLineAndstationInfo(line: TestSubwayLineColor) {
+        mainDetailVM.nearStationLines = mainVM.nearStationSubwayLines
+        mainDetailVM.send(nearStInfo: mainVM.nearStation,
+                          lineInfo: line)
     }
 }
 
