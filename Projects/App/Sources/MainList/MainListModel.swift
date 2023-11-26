@@ -15,7 +15,6 @@ struct StationInfo: FireStoreCodable, SubwayModelIdentifier {
     let statnNm: String
     
     init(subwayId: Int, subwayNm: String, statnId: Int, statnNm: String) {
-        self.id = UUID().uuidString
         self.subwayId = subwayId
         self.subwayNm = subwayNm
         self.statnId = statnId
