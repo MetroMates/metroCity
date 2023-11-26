@@ -10,11 +10,10 @@ struct ScrollText: View {
     @State private var offset: CGFloat = .zero
     @State private var parentWidth: CGFloat = .zero
     @State private var isdisabled: Bool = false
-    
     /// Text Content
     let content: String
     /// 스크롤 스피드
-    var transSpeed: Double = 7.0
+    var transSpeed: Double = 5.5
     
     var body: some View {
         GeometryReader { g in
@@ -25,26 +24,36 @@ struct ScrollText: View {
                         GeometryReader { geo in
                             Color.clear
                                 .onAppear {
-                                    textHeight = geo.size.height
-                                    textWidth = geo.size.width
-                                    parentWidth = g.size.width
+                                    setting(geo: geo, g: g)
+                                }
+                                .onChange(of: content) { _ in
+                                    setting(geo: geo, g: g)
                                 }
                         }
                     }
             }
-            .onAppear {
-                withAnimation(.linear(duration: transSpeed).repeatForever(autoreverses: false)) {
-                    if parentWidth < textWidth {
-                        offset = -textWidth / 2 // text길이의 절반까지만 움직이면 됨
-                    } else {
-                        isdisabled = true
-                    }
-                }
-            }
+            
         }
         .frame(maxWidth: parentWidth == .zero ? nil : textWidth)
         .frame(maxHeight: textHeight)
         .disabled(isdisabled)
+        // 부모View가 onAppear 될때 withAnimation은 한번만 써줘야 중첩되지 않음.
+        .onAppear {
+            withAnimation(.linear(duration: transSpeed).delay(1).repeatForever(autoreverses: false)) {
+                if parentWidth < textWidth {
+                    offset = -textWidth / 3  // text길이의 1/3까지만 움직이면 됨
+                } else {
+                    isdisabled = true
+                }
+            }
+        }
+    }
+    
+    private func setting(geo: GeometryProxy, g: GeometryProxy) {
+        textHeight = geo.size.height
+        textWidth = geo.size.width
+        parentWidth = g.size.width
+        print("🟢", "|\(content)|", "W: \(textWidth)", "H: \(textHeight)", "ParentW: \(parentWidth)")
     }
     
 }
@@ -52,5 +61,8 @@ struct ScrollText: View {
 struct ScrollText_Previews: PreviewProvider {
     static var previews: some View {
         ScrollText(content: "남한산성(경마공원어리둥절)")
+        
+        MainListView()
+            .previewDisplayName("메인리스트")
     }
 }

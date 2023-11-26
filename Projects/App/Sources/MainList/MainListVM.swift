@@ -66,10 +66,8 @@ extension MainListVM {
         let lineData = TestSubwayLineColor.tempData // Color값 가져와야함.
         
         self.nearStationSubwayLines = lineData.filter({ info in
-            for stationData in stationDatas {
-                if stationData.subwayId == info.subwayId {
-                    return true
-                }
+            for stationData in stationDatas where stationData.subwayId == info.subwayId {
+                return true
             }
             return false
         })
