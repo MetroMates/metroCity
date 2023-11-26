@@ -19,6 +19,9 @@ class LocationViewModel: ObservableObject {
     @Published var stationInfo: [StationInfo]?
     /// 3키로 이내의 역이름
     @Published var stationName: String = ""
+    /// stationInfo 기준으로 찾은 역 이름
+    @Published var findStationInfoNm: String = ""
+    
     private var anycancellable = Set<AnyCancellable>()
     
     init() {
@@ -54,7 +57,9 @@ class LocationViewModel: ObservableObject {
             do {
                 let stationInfoData = try await firestoreManager.fetchStationLocations(collectionName: "StationInfo", type: StationInfo.self)
                 print(stationInfoData)
-                self.stationInfo = stationInfoData
+                await MainActor.run {
+                    self.stationInfo = stationInfoData
+                }
             } catch {
                 print("StationInfo fetch error: \(error.localizedDescription)")
             }
@@ -94,13 +99,17 @@ class LocationViewModel: ObservableObject {
             }
         }
         self.stationName = closestStation?.statnNm ?? ""
-//        return closestStation?.statnNm ?? ""
+        
+        /// stationInfo 컬렉션 기준으로 역이름 찾아내기 없으면 "" 리턴
+        let tempStaitonInfo = self.stationInfo?.filter { $0.statnNm.contains(self.stationName) }
+        self.findStationInfoNm = tempStaitonInfo?.first?.statnNm ?? ""
     }
     
-    func test() {
-        self.userLocation = locationService.returnUserLocation()
+    /// 유저 버튼 패치 버튼
+    func locationButtonTapped() {
         locationService.fetchUserLocation()
     }
+    
 }
 
 struct LocationViewMain: View {
@@ -110,7 +119,7 @@ struct LocationViewMain: View {
         VStack(spacing: 30) {
             
             Button {
-                LocationVM.test()
+                LocationVM.locationButtonTapped()
             } label: {
                 Text("유저 위치 값 확인하기")
             }
@@ -123,9 +132,11 @@ struct LocationViewMain: View {
             Button {
                 LocationVM.calculateDistance()
             } label: {
-                Text("3키로 반경이내 역은? \(LocationVM.stationName)역")
+                VStack {
+                    Text("3키로 반경이내 역은? \(LocationVM.stationName)역")
+                    Text("StationInfo 기준 \(LocationVM.findStationInfoNm)역")
+                }
             }
-
         }
         .onAppear {
             LocationVM.fetchingData()
