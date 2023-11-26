@@ -35,23 +35,24 @@ struct MainDetailView: View {
 extension MainDetailView {
     /// Search부분
     @ViewBuilder private var SearchContent: some View {
-        HStack {
-            TextField("역이름을 검색해보세요", text: $vm.searchText)
-                .padding(7)
-                .padding(.leading, 3)
-                .font(.caption)
-                .background {
-                    RoundedRectangle(cornerRadius: 5)
-                        .stroke(Color.gray.opacity(0.8), lineWidth: 2)
-                    
-                }
-            Button {
-                // 검색 func
-            } label: {
-                Image(systemName: "magnifyingglass")
-                    .tint(.primary)
-            }
-        }
+//        HStack {
+//            TextField("역이름을 검색해보세요", text: $vm.searchText)
+//                .padding(7)
+//                .padding(.leading, 3)
+//                .font(.caption)
+//                .background {
+//                    RoundedRectangle(cornerRadius: 5)
+//                        .stroke(Color.gray.opacity(0.8), lineWidth: 2)
+//
+//                }
+//            Button {
+//                // 검색 func
+//            } label: {
+//                Image(systemName: "magnifyingglass")
+//                    .tint(.primary)
+//            }
+//        }
+        SearchBarMain()
     }
     /// Title 부분
     @ViewBuilder private var TitleContent: some View {
@@ -59,7 +60,7 @@ extension MainDetailView {
             Button {
                 // Sheet Open
                 print(vm.nearStationLines)
-            
+                print("역 호선 정보")
             } label: {
                 HStack {
                     Text("\(vm.hosunInfo.subwayNm)")
@@ -90,8 +91,10 @@ extension MainDetailView {
                         Image(systemName: "arrow.clockwise")
                             .tint(.primary)
                     }
+                    
+                    // MARK: - BookBark Button!!
                     Button {
-                        
+                        print("Bookmark Button tapped!")
                     } label: {
                         Image(systemName: "bookmark")
                             .tint(.primary)
@@ -113,6 +116,7 @@ extension MainDetailView {
             HStack {
                 Button {
                     vm.send(nearStInfo: vm.stationInfo.upStNm, lineInfo: vm.hosunInfo)
+                    print("이전역")
                 } label: {
                     HStack {
                         Image(systemName: "chevron.left")
@@ -143,6 +147,7 @@ extension MainDetailView {
                 
                 Button {
                     vm.send(nearStInfo: vm.stationInfo.downStNm, lineInfo: vm.hosunInfo)
+                    print("다음역")
                 } label: {
                     HStack {
                         ScrollText(content: vm.stationInfo.downStNm)
