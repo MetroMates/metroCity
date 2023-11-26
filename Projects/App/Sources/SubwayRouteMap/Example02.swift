@@ -4,6 +4,7 @@ import SwiftUI
 
 struct LineWithCircleView: View {
     var body: some View {
+        EmptyView()
 //        let resultPoint = drawLineWithCircle(
 //            color: .blue,
 //            length: 100.0,
@@ -13,20 +14,20 @@ struct LineWithCircleView: View {
 //            lineWidth: 3.0
 //        )
         
-        Canvas { context, size in
-            drawLineWithCircle(context: context,
-                               color: .blue,
-                               length: 20.0,
-                               curvature: 0,
-                               angle: 0.0,
-                               direction: 10.0,
-                               lineWidth: 6.0)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .onAppear {
-            // 결과 좌표 출력
-//            print("결과 좌표: \(resultPoint)")
-        }
+//        Canvas { context, size in
+//            drawLineWithCircle(context: context,
+//                               color: .blue,
+//                               length: 20.0,
+//                               curvature: 0,
+//                               angle: 0.0,
+//                               direction: 10.0,
+//                               lineWidth: 6.0)
+//        }
+//        .frame(maxWidth: .infinity, maxHeight: .infinity)
+//        .onAppear {
+//            // 결과 좌표 출력
+////            print("결과 좌표: \(resultPoint)")
+//        }
     }
     
     func drawLineWithCircle(context: GraphicsContext,
@@ -37,7 +38,7 @@ struct LineWithCircleView: View {
                             direction: CGFloat,
                             lineWidth: CGFloat) -> Path {
         
-        var startPoint = CGPoint(x: 50, y: 150)
+        let startPoint = CGPoint(x: 50, y: 150)
         
         var path = Path()
         path.move(to: startPoint)

@@ -8,14 +8,14 @@ struct Temp: SubwayModelIdentifier {
     let statnId: String
     /// 현재 지하철역명
     let statnNm: String
-    /// 이전 지하철역ID
-    /// 이전 지하철역명
-    /// 다음 지하철역ID
-    /// 다음 지하철역명
-    /// 상하행선 구분 (0: 상행/내선, 1: 하행/외선)
-    /// 도착지방면 (성수행(목적지역) - 구로디지털단지방면(다음역))
-    /// 도착코드  (0:진입, 1:도착, 2:출발, 3:전역출발, 4:전역진입, 5:전역도착, 99:운행중)
-    /// 열차종류(급행, ITX, 일반, 특급)
+//    / 이전 지하철역ID
+//    / 이전 지하철역명
+//    / 다음 지하철역ID
+//    / 다음 지하철역명
+//    / 상하행선 구분 (0: 상행/내선, 1: 하행/외선)
+//    / 도착지방면 (성수행(목적지역) - 구로디지털단지방면(다음역))
+//    / 도착코드  (0:진입, 1:도착, 2:출발, 3:전역출발, 4:전역진입, 5:전역도착, 99:운행중)
+//    / 열차종류(급행, ITX, 일반, 특급)
 }
 
 /*
@@ -38,61 +38,60 @@ struct Temp: SubwayModelIdentifier {
 /// - subwayNm: 호선명
 /// - hosunColor: 호선대표색상 (ex: 4호선 하늘색, 1호선 파란색)
 /// - lineColor: 실시간 열차위치를 표시할 라인 색상
-struct HosunInfo: SubwayModelIdentifier {
-    let id: String = UUID().uuidString
-    let subwayID: String
-    let subwayNm: String
-    let hosunColor: Color
-    let lineColor: Color
-}
+// struct HosunInfo: SubwayModelIdentifier {
+//    let id: String = UUID().uuidString
+//    let subwayID: String
+//    let subwayNm: String
+//    let hosunColor: Color
+//    let lineColor: Color
+//}
+//
+// extension HosunInfo {
+//    static var emptyData: Self {
+//        return .init(subwayID: "",
+//                     subwayNm: "",
+//                     hosunColor: .black,
+//                     lineColor: .black)
+//    }
+// }
 
-extension HosunInfo {
-    static var emptyData: Self {
-        return .init(subwayID: "",
-                     subwayNm: "",
-                     hosunColor: .black,
-                     lineColor: .black)
-    }
-}
-
+///// 현재역 열차 도착 상태 (0:진입, 1:도착, 2:출발, 3:전역출발, 4:전역진입, 5:전역도착, 99:운행중)
+// let nowStatus: String
+///// 상하행선구분  (0 : 상행/내선, 1 : 하행/외선)  상행이면 다음역을 상행에 이전역을 하행에 배치.
+// let updnLine: String
+///// 열차종류 (급행,ITX,일반,특급)
+// let trainType: String
 
 /// 역정보 (호선 내부용) -> 호선에 대한 현재역, 이전역, 다음역
 ///
 /// Arrived에서 데이터 가져올수 있다.
 struct MyStation: SubwayModel {
     /// 현재역 id ( statnId )
-    let nowSt: String
+    let nowSt: Int
     /// 현재역명 (선택한역)
     let nowStNm: String
-    /// 현재역 열차 도착 상태 (0:진입, 1:도착, 2:출발, 3:전역출발, 4:전역진입, 5:전역도착, 99:운행중)
-    let nowStatus: String
-    /// 이전역 id ( statnFid )
-    let beforeSt: String
-    /// 이전역명
-    let beforeStNm: String
-    /// 다음역  id ( statnTid )
-    let afterSt: String
-    /// 다음역명
-    let afterStNm: String
-    /// 상하행선구분  (0 : 상행/내선, 1 : 하행/외선)  상행이면 다음역을 상행에 이전역을 하행에 배치.
-    let updnLine: String
-    /// 열차종류 (급행,ITX,일반,특급)
-    let trainType: String
+    /// 상행역 id ( statnFid )
+    let upSt: Int
+    /// 상행역명
+    let upStNm: String
+    /// 하행역  id ( statnTid )
+    let downSt: Int
+    /// 하행역명
+    let downStNm: String
+
 }
 
 extension MyStation {
     static var emptyData: Self {
-        return .init(nowSt: "",
-                     nowStNm: "",
-                     nowStatus: "",
-                     beforeSt: "",
-                     beforeStNm: "",
-                     afterSt: "",
-                     afterStNm: "",
-                     updnLine: "",
-                     trainType: "")
+        return .init(nowSt: 0, nowStNm: "NONE",
+                     upSt: 0, upStNm: "",
+                     downSt: 0, downStNm: "")
     }
 }
+
+/*
+    
+ */
 
 /// 실시간 지하철 위치 정보
 /// 내가 현재 선택한 역 기준으로 데이터 가져와야 함.
@@ -102,6 +101,34 @@ extension MyStation {
 ///
 ///
 /// Position에서 데이터 가져올수 있다.
-struct RealTimeSubway: SubwayModel {
+struct RealTimeSubway: SubwayModelIdentifier {
+    let id = UUID()
+    /// 상, 하행
+    let updnLine: String
+    /// 열차 번호
+    let trainNo: String
+    /// 열차 종류 ( 급행, ITX, 일반, 특급 )
+    let trainType: String
+    /// 정렬 순서
+    let sortOrder: Int
+    /// 표출메세지 : 전역 도착, 130초전 등등
+    let message: String
+    /// 무슨행 ( 광운대행, 청량ㅇ리행 )
+    let trainDestiStation: String
+}
+
+extension RealTimeSubway {
+    var updnIndex: String {
+        updnLine == "상행" ? "0" : "1"
+    }
+    
+    static var emptyData: Self {
+        return .init(updnLine: "", trainNo: "", trainType: "", sortOrder: 0, message: "", trainDestiStation: "")
+    }
+    
+    // 여러개 들어올 예정.
+    static var list: [Self] {
+        return []
+    }
     
 }

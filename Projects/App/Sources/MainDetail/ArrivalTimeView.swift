@@ -7,7 +7,7 @@ struct ArrivalTimeView: View {
     @ObservedObject var vm: MainDetailVM
     
     var body: some View {
-        HStack(spacing: 3) {
+        HStack(spacing: 2) {
             contentView(.up)
             contentView(.down)
         }
@@ -19,41 +19,86 @@ extension ArrivalTimeView {
     /// 컨텐츠
     /// (상행, 하행) 구분,
     @ViewBuilder func contentView(_ updn: MainDetailVM.UpDn) -> some View {
-        VStack(spacing: 20) {
-            HStack {
-                Text("상행역")
-                Text("강남")
-            }
-            .tint(.primary)
-            .frame(maxWidth: .infinity)
-            .padding(10)
-            .background {
-                Color.yellow.opacity(0.5)
-            }
+        var destiStation: String {
+            updn == .up ? vm.stationInfo.upStNm : vm.stationInfo.downStNm
+        }
+        
+        var trainDatas: [RealTimeSubway] {
+            var timeData = updn == .up ? vm.upRealTimeInfos : vm.downRealTimeInfos
+            timeData = timeData.filter({ info in
+                info.sortOrder == 1
+            })
             
-            VStack(alignment: .leading, spacing: 10) {
-                HStack {
-                    Text("곧 도착")
-                    Text("강남행")
-                    Text("전역 도착")
+            return timeData
+        }
+        
+        var trainNextDatas: [RealTimeSubway] {
+            var timeData = updn == .up ? vm.upRealTimeInfos : vm.downRealTimeInfos
+            timeData = timeData.filter({ info in
+                info.sortOrder == 2
+            })
+            
+            return timeData
+        }
+        
+        LazyVStack(spacing: 0, pinnedViews: .sectionHeaders) {
+            Section {
+                VStack(alignment: .leading, spacing: 10) {
+                    trainList(title: "이번 열차", trainDatas)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 100) // TODO: 상수로 말고 변수화 시키기.(내부Content비율로)
+                    
+                    Divider()
+                    
+                    trainList(title: "다음 열차", trainNextDatas)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 100)
+                }
+                .font(.callout)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 3)
+                .padding(.vertical, 10)
+                .background {
+                    Color.gray.opacity(0.2)
                 }
                 
-                HStack {
-                    Text("다음 열차")
-                    Text("양재행")
-                    Text("16분 30초")
-                }
-                Spacer()
+            } header: {
+                Text(updn.rawValue)
+                    .foregroundStyle(Color.white)
+                    .bold()
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 15)
+                    .padding(10)
+                    .background {
+                        vm.hosunInfo.lineColor
+                    }
             }
-            .font(.callout)
-            .frame(height: 80)
             
-        }
-        .background {
-            Color.orange.opacity(0.1)
         }
         
     }
+    
+    @ViewBuilder private func trainList(title: String, _ data: [RealTimeSubway]) -> some View {
+        VStack(spacing: 5) {
+            Text(title)
+                .font(.subheadline)
+            
+            Rectangle()
+                .frame(maxWidth: .infinity)
+                .frame(height: 1)
+            
+            ForEach(data, id: \.id) { info in
+                HStack(spacing: 20) {
+                    ScrollText(content: info.trainDestiStation)
+                    ScrollText(content: info.message)
+                }
+                .padding(.horizontal, 10)
+            }
+            
+            Spacer()
+        }
+    }
+    
 }
 
 struct ArrivalTimeView_Previews: PreviewProvider {
@@ -63,6 +108,6 @@ struct ArrivalTimeView_Previews: PreviewProvider {
             .previewDisplayName("디테일")
         
         MainListView()
-            .previewDisplayName("메인리스트")        
+            .previewDisplayName("메인리스트")
     }
 }

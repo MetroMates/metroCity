@@ -10,6 +10,7 @@
  */
 
 import SwiftUI
+import Combine
 
 /// API 연동 클래스 (key: ApiKey)
 ///
@@ -28,51 +29,44 @@ import SwiftUI
 /// statnNm    STRING(필수)    지하철역명    지하철역명
 final class SubwayAPIService: APIServiceDelegate {
     
-    func workInUrlSession<Content>(type: Content.Type) async -> Content? where Content: SubwayModel2Server {
-        guard let urlString else { return nil }
-        guard let urlRequest = self.requestURL(urlString: urlString) else { return nil }
-        
-        // url 세션을 생성한다.
-        let urlSession = URLSession(configuration: .default)
-        
-        do {
-            let (data, _) = try await urlSession.data(for: urlRequest)
-            
-            do {
-                let content = try JSONDecoder().decode(type, from: data)
-                
-                let errStatus = content.errorMessage.status
-                
-                // 상태값 200이 정상.
-                if errStatus == 200 {
-                    let errCode = content.errorMessage.code
-                    
-                    if Status(rawValue: errCode) != .INF000 {
-                        debugPrint(content.errorMessage.message)
-                    } else {
-                        return content  // 정상 처리됨.
-                    }
-                }
-            } catch {
-                do {
-                    let errorMsg = try JSONDecoder().decode(ErrorMessage.self, from: data)
-                    debugPrint(errorMsg.code, errorMsg.message)
-                } catch {
-                    debugPrint("json디코딩Err : ", error.localizedDescription)
-                }
-            }
-        } catch {
-            debugPrint("URL통신Err : ", error.localizedDescription)
-        }
-        
-        return nil
-    }
-    
     var apikey: String?
     var urlString: String?
     
     // MARK: 초기화 Method
     init() { }
+    
+    func request<Content>(type: Content.Type) -> AnyPublisher<Content, Error> where Content: SubwayModel2Server {
+        guard let urlString, let urlRequest = self.requestURL(urlString: urlString) else {
+            return Fail(error: StatusError.ERR100).eraseToAnyPublisher()
+        }
+        
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+//            .print(urlString)
+            .map(\.data) // data, response 중 data 가져오기
+            .decode(type: Content.self, decoder: JSONDecoder()) // data decoding
+            .flatMap { content -> AnyPublisher<Content, Error> in
+                let errStatus = content.errorMessage.status
+
+                // 상태값 200이 정상.
+                if errStatus == 200 {
+                    let errCode = content.errorMessage.code
+
+                    if StatusError(rawValue: errCode) != .INF000 {
+                        debugPrint(content.errorMessage.message)
+                        return Fail(error: StatusError.INF000).eraseToAnyPublisher()
+                    } else {
+                        return Just(content)
+                            .setFailureType(to: Error.self) // flatMap의 반환타입이 AnyPublisher<Content, Error>임 그래서 Error타입을 넣어주는 역할
+                                                            // 만약 AnyPublisher<Content, Never>였다면 생략가능. (필요없기 때문)
+                            .eraseToAnyPublisher()
+                    }
+                } else {
+                    return Fail(error: StatusError.ERR100).eraseToAnyPublisher()
+                }
+            }
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
+    }
 
     private func requestURL(urlString: String) -> URLRequest? {
         guard let encodedURLString = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)

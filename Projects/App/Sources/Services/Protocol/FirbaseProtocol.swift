@@ -5,9 +5,10 @@ import Foundation
 /// FireStore 서버통신용 객체 프로토콜
 protocol FireStoreCodable: Codable { }
 
-protocol FireStoreServiceDelegate {
+protocol FireStoreServiceDelegate: AnyObject {
     var collection: String { get }
     var documentID: String { get }
+    
     func fetchAll()
     func fetchOne()
     func update()
