@@ -21,28 +21,43 @@ var dateToString: String {
     return dateFormatter.string(from: Date())
 }
 
-/// Workspace명 -> 현재 안씀.
+/// Workspace명
 public let workspaceName: String = "MetroCity"
-
-/// Project명
-public let projectNm: String = "MetroCity"
-
-/// Project -> .proj 파일 위치 폴더명
-public let projectFolder: String = "App"
 
 /// organization 명
 public let organizationName: String = "TDS"
 
-
 /// New File 주석 Template
 let firstHeadTemplate: String = "___COPYRIGHT___ \(dateToString) 꿀꿀🐷"
 
-/// Target 담아두기
-public var confirmTargets: [Target] = []
+// Project -> .proj 파일 위치 폴더명
+public let projectFolder: String = "Projects"
+public var projectNames: [String] = []
 
-/// Target 추가함수
-public func addTargets(_ target: [Target]) -> Bool {
-    confirmTargets += target
-    
-    return true
+extension String {
+    public var projectPath: ProjectDescription.Path {
+        return .relativeToRoot("\(projectFolder)/" + self)
+    }
 }
+
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------//
+/// Project명
+//public let projectNm: String = "MetroCity"
+
+
+
+
+///// Target 담아두기
+//public var confirmTargets: [Target] = []
+//
+///// Target 추가함수
+//public func addTargets(_ target: [Target]) -> Bool {
+//    confirmTargets += target
+//
+//    return true
+//}

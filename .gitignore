@@ -140,8 +140,10 @@ Derived/
 Tuist/Dependencies
 
 # PList
-# **/*.plist  => 전체 plist를 다 제외함.
-Support/*.plist
+# => 전체 plist를 다 제외함.
+# **/*.plist  
+# Support/*.plist
+# GoogleService-Info.plist
 
 # XCconfig
 **.xcconfig
