@@ -38,7 +38,7 @@ struct MainListView: View {
                         .padding()
                     }
                 }
-                .overlay(alignment: .bottomTrailing) {
+                .overlay(alignment: .topTrailing) {
                     Button {
                         mainVM.GPScheckNowLocactionTonearStation()
                         mainVM.nearStation = "서울"
@@ -47,7 +47,7 @@ struct MainListView: View {
                             .font(.title)
                             .foregroundStyle(Color.primary.opacity(0.6))
                             .padding()
-                            .padding(.trailing, 5)
+                            .padding(.trailing, 15)
                     }
                 }
             }

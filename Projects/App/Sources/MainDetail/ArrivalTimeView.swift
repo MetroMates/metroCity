@@ -25,7 +25,6 @@ extension ArrivalTimeView {
         
         var trainDatas: [RealTimeSubway] {
             var timeData = updn == .up ? vm.upRealTimeInfos : vm.downRealTimeInfos
-            
             timeData = timeData.filter({ info in
                 info.sortOrder == 1
             })
@@ -35,7 +34,6 @@ extension ArrivalTimeView {
         
         var trainNextDatas: [RealTimeSubway] {
             var timeData = updn == .up ? vm.upRealTimeInfos : vm.downRealTimeInfos
-            
             timeData = timeData.filter({ info in
                 info.sortOrder == 2
             })
@@ -46,49 +44,15 @@ extension ArrivalTimeView {
         LazyVStack(spacing: 0, pinnedViews: .sectionHeaders) {
             Section {
                 VStack(alignment: .leading, spacing: 10) {
-                    VStack(spacing: 5) {
-                        Text("이번 열차")
-                            .font(.subheadline)
-                        
-                        Rectangle()
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 1)
-                        
-                        ForEach(trainDatas, id: \.id) { info in
-                            HStack(spacing: 20) {
-                                ScrollText(content: info.trainDestiStation)
-                                ScrollText(content: info.message)
-                            }
-                            .padding(.horizontal, 10)
-                        }
-                        Spacer()
-                    }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 100)
+                    trainList(title: "이번 열차", trainDatas)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 100) // TODO: 상수로 말고 변수화 시키기.(내부Content비율로)
                     
                     Divider()
                     
-                    VStack(spacing: 5) {
-                        Text("다음 열차")
-                            .font(.subheadline)
-                        
-                        Rectangle()
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 1)
-                        
-                        ForEach(trainNextDatas, id: \.id) { info in
-                            HStack(spacing: 20) {
-                                ScrollText(content: info.trainDestiStation)
-                                ScrollText(content: info.message)
-                            }
-                            .padding(.horizontal, 10)
-                        }
-                        
-                        Spacer()
-                    }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 100)
-                    
+                    trainList(title: "다음 열차", trainNextDatas)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 100)
                 }
                 .font(.callout)
                 .frame(maxWidth: .infinity)
@@ -97,6 +61,7 @@ extension ArrivalTimeView {
                 .background {
                     Color.gray.opacity(0.2)
                 }
+                
             } header: {
                 Text(updn.rawValue)
                     .foregroundStyle(Color.white)
@@ -112,6 +77,28 @@ extension ArrivalTimeView {
         }
         
     }
+    
+    @ViewBuilder private func trainList(title: String, _ data: [RealTimeSubway]) -> some View {
+        VStack(spacing: 5) {
+            Text(title)
+                .font(.subheadline)
+            
+            Rectangle()
+                .frame(maxWidth: .infinity)
+                .frame(height: 1)
+            
+            ForEach(data, id: \.id) { info in
+                HStack(spacing: 20) {
+                    ScrollText(content: info.trainDestiStation)
+                    ScrollText(content: info.message)
+                }
+                .padding(.horizontal, 10)
+            }
+            
+            Spacer()
+        }
+    }
+    
 }
 
 struct ArrivalTimeView_Previews: PreviewProvider {
@@ -121,6 +108,6 @@ struct ArrivalTimeView_Previews: PreviewProvider {
             .previewDisplayName("디테일")
         
         MainListView()
-            .previewDisplayName("메인리스트")        
+            .previewDisplayName("메인리스트")
     }
 }

@@ -11,12 +11,19 @@ struct MainDetailView: View {
                 SearchContent
                 TitleContent
                 SubTitleContent
+                    .onAppear {
+                        print("🔴", "SubTitleContentAppear")
+                    }
+//                SubMapTitleView(vm: vm)
             }
             .padding(.horizontal)
             
             ScrollView(showsIndicators: false) {
                 ArrivalTimeView(vm: vm)
                     .padding(.top, 10)
+                    .onAppear {
+                        print("🔴", "ArrivalAppear")
+                    }
                 
                 SubwayRouteMapView(vm: vm)
                     .padding(.top, 10)
@@ -39,7 +46,7 @@ struct MainDetailView: View {
 // MARK: - UI 모듈 연산프로퍼티
 extension MainDetailView {
     /// Search부분
-    @ViewBuilder var SearchContent: some View {
+    @ViewBuilder private var SearchContent: some View {
         HStack {
             TextField("역이름을 검색해보세요", text: $vm.searchText)
                 .padding(7)
@@ -59,15 +66,18 @@ extension MainDetailView {
         }
     }
     /// Title 부분
-    @ViewBuilder var TitleContent: some View {
+    @ViewBuilder private var TitleContent: some View {
         ZStack {
             Button {
                 // Sheet Open
+                print(vm.nearStationLines)
+            
             } label: {
                 HStack {
                     Text("\(vm.hosunInfo.subwayNm)")
                     Image(systemName: "chevron.down")
                         .font(.caption)
+                    
                 }
                 .foregroundStyle(Color.white)
                 .padding(.vertical, 5)
@@ -104,21 +114,26 @@ extension MainDetailView {
     }
     
     /// SubTitle 부분 역정보
-    @ViewBuilder var SubTitleContent: some View {
+    @ViewBuilder private var SubTitleContent: some View {
+        
         ZStack {
             RoundedRectangle(cornerRadius: 17)
                 .fill(vm.hosunInfo.lineColor)
                 .frame(height: 30)
             
             HStack {
-                HStack {
-                    Image(systemName: "chevron.left")
-                        .font(.caption)
-                    ScrollText(content: vm.stationInfo.upStNm)
-                        .font(.headline)
+                Button {
+                    vm.send(nearStInfo: vm.stationInfo.upStNm, lineInfo: vm.hosunInfo)
+                } label: {
+                    HStack {
+                        Image(systemName: "chevron.left")
+                            .font(.caption)
+                        ScrollText(content: vm.stationInfo.upStNm)
+                            .font(.headline)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.leading, 5)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.leading, 5)
                 
                 ZStack {
                     RoundedRectangle(cornerRadius: 30)
@@ -130,19 +145,25 @@ extension MainDetailView {
                         }
                     
                     ScrollText(content: vm.stationInfo.nowStNm)
+                        .padding(.horizontal, 5)
                         .foregroundColor(Color.black)
                         .bold()
                         
                 }
                 
-                HStack {
-                    ScrollText(content: vm.stationInfo.downStNm)
-                        .font(.headline)
-                    Image(systemName: "chevron.right")
-                        .font(.caption)
+                Button {
+                    vm.send(nearStInfo: vm.stationInfo.downStNm, lineInfo: vm.hosunInfo)
+                } label: {
+                    HStack {
+                        ScrollText(content: vm.stationInfo.downStNm)
+                            .font(.headline)
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .padding(.trailing, 5)
                 }
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                .padding(.trailing, 5)
+                
             }
             .foregroundStyle(Color.white)
         }

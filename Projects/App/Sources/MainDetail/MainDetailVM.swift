@@ -44,7 +44,7 @@ final class MainDetailVM: ObservableObject {
         
         lineInfoFetchSubject.zip(nearStationInfoFetchSubject)
             .sink { (hosun, nearStation) in
-                print("👍🏻Combine!!!")
+//                print("👍🏻Combine!!!")
                 self.hosunInfo = hosun
                 self.fetchInfo(value:
                                 self.whenNearStationNoInfoSetCloseStation(nearStation))
@@ -53,7 +53,8 @@ final class MainDetailVM: ObservableObject {
     }
     
     func send(nearStInfo: String, lineInfo: TestSubwayLineColor) {
-        print("SEND: \(nearStInfo) \(lineInfo)")
+        print("🟢", self.stationInfo)
+        print("🟢SEND: \(nearStInfo) \(lineInfo)")
         nearStationInfoFetchSubject.send(nearStInfo)
         lineInfoFetchSubject.send(lineInfo)
     }
@@ -69,28 +70,47 @@ final class MainDetailVM: ObservableObject {
 extension MainDetailVM {
     private func whenNearStationNoInfoSetCloseStation(_ stationName: String) -> String {
         var stationInfos = StationInfo.testList
-        var stationData = stationName
+        let stationData = stationName
         
         stationInfos = stationInfos.filter { $0.subwayId == hosunInfo.subwayId }
  
-        if !stationInfos.contains { $0.statnNm == stationName } {
+        if !stationInfos.contains(where: { $0.statnNm == stationName }) {
             // 선택한 라인에서 역코드가 제일 작은걸 가져온다.
             if let firstData = stationInfos.first {
                 return firstData.statnNm
             }
         }
+        
         return stationData
+    }
+    
+    /// 해당역에 관련된 호선라인 모음
+    private func filterRelateHosuns(_ nowStation: String) {
+        nearStationLines.removeAll() // 초기화
+        
+        let stationDatas = useCase.getNearStationLineInfos(statName: nowStation)
+        let lineData = TestSubwayLineColor.tempData // Color값 가져와야함.
+        
+        nearStationLines = lineData.filter({ info in
+            for stationData in stationDatas where stationData.subwayId == info.subwayId {
+                return true
+            }
+            return false
+        })
+        
     }
     
     /// StationInfo Fetch 메서드
     private func fetchInfo(value: String) {
         getStationInfo(value)
         getRealTimeInfo(value)
+        filterRelateHosuns(value)
     }
     
     /// 이전, 다음역 정보 DTO객체 생성
     private func getStationInfo(_ stationName: String) {
         self.stationInfo = useCase.getStationData(vm: self, stationName)
+        print("🟢 stInfo", stationInfo)
     }
     
     /// 실시간 지하철 위치 정보 fetch
@@ -116,6 +136,7 @@ extension MainDetailVM {
                 self.downRealTimeInfos = Array(data.filter { $0.updnLine == "하행" }.prefix(10))
             }
             .store(in: &anyCancellable)
+        
     }
     
 }
