@@ -50,7 +50,7 @@ extension SubwayRouteMapView {
                 }
                 stationCircle(vm.stationInfo.nowStNm)
             }
-            .padding(.horizontal, 10)
+            .padding(.horizontal)
             
         }
     }
@@ -73,7 +73,7 @@ extension SubwayRouteMapView {
             }
     }
     
-    // TODO: 급행이면 테두리색상을 검정색으로 주기.
+    // TODO: 급행이면 테두리색상을 빨간색으로 주기.
     /// 열차 View
     @ViewBuilder private func subway(geo: GeometryProxy,
                                      _ updn: MainDetailVM.UpDn,

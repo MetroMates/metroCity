@@ -13,7 +13,7 @@ struct ScrollText: View {
     /// Text Content
     let content: String
     /// 스크롤 스피드
-    var transSpeed: Double = 5.5
+    var transSpeed: Double = 2
     
     var body: some View {
         GeometryReader { g in
@@ -39,7 +39,7 @@ struct ScrollText: View {
         .disabled(isdisabled)
         // 부모View가 onAppear 될때 withAnimation은 한번만 써줘야 중첩되지 않음.
         .onAppear {
-            withAnimation(.linear(duration: transSpeed).delay(1).repeatForever(autoreverses: false)) {
+            withAnimation(.linear(duration: transSpeed).delay(0.5).repeatForever(autoreverses: false)) {
                 if parentWidth < textWidth {
                     offset = -textWidth / 3  // text길이의 1/3까지만 움직이면 됨
                 } else {

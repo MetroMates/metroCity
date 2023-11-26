@@ -28,6 +28,8 @@ extension StationInfo {
     
     // 이 데이터를 가지고 예를 들면 statnNm이 신길온천인 모든 호선을 찾아서 
     static var testList: [Self] = [
+        .init(subwayId: 1001, subwayNm: "1호선", statnId: 1001000141, statnNm: "구로"),
+        .init(subwayId: 1001, subwayNm: "1호선", statnId: 1001080149, statnNm: "금정"),
         .init(subwayId: 1004, subwayNm: "4호선", statnId: 1004000443, statnNm: "금정"),
         .init(subwayId: 1004, subwayNm: "4호선", statnId: 1004000444, statnNm: "산본"),
         .init(subwayId: 1004, subwayNm: "4호선", statnId: 1004000445, statnNm: "수리산"),

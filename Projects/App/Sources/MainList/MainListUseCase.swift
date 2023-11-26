@@ -16,7 +16,7 @@ final class MainListUseCase {
     
     /// GPS 기반하여 가장 가까운 역이름, 역코드 반환
     func getNearStation() -> String {
-        return "신길온천" // 테스트 데이터
+        return "구로" // 테스트 데이터
     }
     
     func getNearStationLineInfos(statName: String) -> [StationInfo] {

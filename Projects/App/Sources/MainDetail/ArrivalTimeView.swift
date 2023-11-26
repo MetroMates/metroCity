@@ -46,13 +46,14 @@ extension ArrivalTimeView {
                 VStack(alignment: .leading, spacing: 10) {
                     trainList(title: "이번 열차", trainDatas)
                         .frame(maxWidth: .infinity)
-                        .frame(height: 100) // TODO: 상수로 말고 변수화 시키기.(내부Content비율로)
-                    
+                        .frame(height: 80) // TODO: 상수로 말고 변수화 시키기.(내부Content비율로)
+//                        .border(.black)
                     Divider()
                     
                     trainList(title: "다음 열차", trainNextDatas)
                         .frame(maxWidth: .infinity)
-                        .frame(height: 100)
+                        .frame(height: 80)
+//                        .border(.black)
                 }
                 .font(.callout)
                 .frame(maxWidth: .infinity)
@@ -87,12 +88,14 @@ extension ArrivalTimeView {
                 .frame(maxWidth: .infinity)
                 .frame(height: 1)
             
-            ForEach(data, id: \.id) { info in
-                HStack(spacing: 20) {
-                    ScrollText(content: info.trainDestiStation)
-                    ScrollText(content: info.message)
+            VStack(spacing: 15) {
+                ForEach(data, id: \.id) { info in
+                    HStack(spacing: 20) {
+                        ScrollText(content: info.trainDestiStation)
+                        ScrollText(content: info.message)
+                    }
+                    .padding(.horizontal, 10)
                 }
-                .padding(.horizontal, 10)
             }
             
             Spacer()

@@ -11,19 +11,12 @@ struct MainDetailView: View {
                 SearchContent
                 TitleContent
                 SubTitleContent
-                    .onAppear {
-                        print("🔴", "SubTitleContentAppear")
-                    }
-//                SubMapTitleView(vm: vm)
             }
             .padding(.horizontal)
             
             ScrollView(showsIndicators: false) {
                 ArrivalTimeView(vm: vm)
                     .padding(.top, 10)
-                    .onAppear {
-                        print("🔴", "ArrivalAppear")
-                    }
                 
                 SubwayRouteMapView(vm: vm)
                     .padding(.top, 10)
@@ -75,6 +68,7 @@ extension MainDetailView {
             } label: {
                 HStack {
                     Text("\(vm.hosunInfo.subwayNm)")
+                        .font(.title3)
                     Image(systemName: "chevron.down")
                         .font(.caption)
                     
@@ -145,6 +139,7 @@ extension MainDetailView {
                         }
                     
                     ScrollText(content: vm.stationInfo.nowStNm)
+                        .font(.title3)
                         .padding(.horizontal, 5)
                         .foregroundColor(Color.black)
                         .bold()

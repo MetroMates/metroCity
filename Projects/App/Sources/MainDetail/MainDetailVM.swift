@@ -132,8 +132,10 @@ extension MainDetailVM {
                     break
                 }
             } receiveValue: { data in
-                self.upRealTimeInfos = Array(data.filter { $0.updnLine == "상행" }.prefix(10))
-                self.downRealTimeInfos = Array(data.filter { $0.updnLine == "하행" }.prefix(10))
+//                self.upRealTimeInfos = data.filter { $0.updnLine == "상행" }
+                self.upRealTimeInfos = Array(data.filter { $0.updnLine == "상행" }.prefix(4))
+//                self.downRealTimeInfos = data.filter { $0.updnLine == "하행" }
+                self.downRealTimeInfos = Array(data.filter { $0.updnLine == "하행" }.prefix(4))
             }
             .store(in: &anyCancellable)
         
