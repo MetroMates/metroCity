@@ -3,7 +3,7 @@
 import SwiftUI
 import CoreLocation
 import Combine
-
+/*
 struct LocationViewMain: View {
     @StateObject var LocationVM = LocationViewModel()
 
@@ -42,3 +42,4 @@ struct LocationViewMain_Previews: PreviewProvider {
         LocationViewMain()
     }
 }
+ */
