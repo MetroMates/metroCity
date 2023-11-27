@@ -53,24 +53,24 @@ extension StationInfo {
     
 }
 
-protocol LineColors: Identifiable {
-    var id: String { get }
-    var subwayId: Int { get }
-    var subwayNm: String { get }
-    var lineColorHexCode: String { get }
-    var lineColor: Color { get }
-}
+// protocol LineColors: Identifiable {
+//    var id: String { get }
+//    var subwayId: Int { get }
+//    var subwayNm: String { get }
+//    var lineColorHexCode: String { get }
+//    var lineColor: Color { get }
+// }
 
 /// MainList를 구성하는 SubwayLine 모델
 /// FireStore에서 fetch해온다.
-struct SubwayLineColor: FireStoreCodable, LineColors {
-    let id: String
+struct SubwayLineColor: FireStoreCodable, Identifiable {
+    let id: String = UUID().uuidString
     let subwayId: Int
     let subwayNm: String
     let lineColorHexCode: String
     
     init(subwayId: Int, subwayNm: String, lineColorHexCode: String) {
-        self.id = UUID().uuidString
+//        self.id = UUID().uuidString // -> 여기서 주면 fetch가 안됨.
         self.subwayId = subwayId
         self.subwayNm = subwayNm
         self.lineColorHexCode = lineColorHexCode
@@ -92,7 +92,7 @@ extension SubwayLineColor {
 }
 
 /// Test용 데이터 객체
-struct TestSubwayLineColor: FireStoreCodable, Identifiable, LineColors {
+struct TestSubwayLineColor: FireStoreCodable, Identifiable {
     let id: String
     let subwayId: Int
     let subwayNm: String

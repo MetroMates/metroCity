@@ -46,7 +46,6 @@ struct MainListView: View {
                             .font(.title)
                             .foregroundStyle(Color.primary.opacity(0.6))
                             .padding()
-//                            .padding(.trailing, 15)
                     }
                 }
             }

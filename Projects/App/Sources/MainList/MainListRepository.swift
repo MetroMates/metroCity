@@ -67,7 +67,7 @@ final class MainListRepository: SubwayRepositoryFetch {
         do {
             return try await firestoreFetchAll(colName: colName, type: Content.self)
         } catch {
-            print("Error: \(error.localizedDescription)")
+            print("🍜Error: \(error.localizedDescription)")
         }
         return []
     }
