@@ -4,6 +4,7 @@ import SwiftUI
 
 struct MainDetailView: View {     
     @ObservedObject var vm: MainDetailVM
+    @StateObject var locationVM = LocationViewModel()
     
     var body: some View {
         VStack(spacing: 20) {
@@ -25,7 +26,11 @@ struct MainDetailView: View {
             }
         }
         .refreshable { vm.send(nearStInfo: vm.stationInfo.nowStNm, lineInfo: vm.hosunInfo) }
-        .onAppear { vm.timerStart() }
+        .onAppear {
+            vm.timerStart()
+            locationVM.fetchingData()
+            locationVM.fetchingStationInfo()
+        }
         .onDisappear { vm.timerStop() }
     }
     
@@ -52,7 +57,7 @@ extension MainDetailView {
 //                    .tint(.primary)
 //            }
 //        }
-        SearchBarMain()
+        SearchBarMain(LocationVM: locationVM)
     }
     /// Title 부분
     @ViewBuilder private var TitleContent: some View {

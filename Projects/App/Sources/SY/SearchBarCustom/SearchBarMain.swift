@@ -5,11 +5,13 @@ import SwiftUI
 struct SearchBarMain: View {
     @State private var searchText = ""
     @State private var isSearching = false
-    @ObservedObject var LocationVM = LocationViewModel()
-
+    @ObservedObject var LocationVM: LocationViewModel
+    
     var filteredItems: [StationInfo] {
         if !searchText.isEmpty {
+            print("🎅🏻🎅🏻 \(LocationVM.stationInfo?.filter { $0.statnNm.localizedCaseInsensitiveContains(searchText) } ?? [])")
             return LocationVM.stationInfo?.filter { $0.statnNm.localizedCaseInsensitiveContains(searchText) } ?? []
+            
         }
         return []
     }
@@ -18,14 +20,15 @@ struct SearchBarMain: View {
         VStack {
             SearchBar(searchText: $searchText, isSearching: $isSearching)
             if !searchText.isEmpty {
-                ZStack {
-                    List(filteredItems) { item in
+                List(filteredItems) { item in
+                    HStack(spacing: 5) {
                         Text(item.statnNm)
+                        Text("(\(item.subwayNm))")
                     }
-                    .listStyle(InsetGroupedListStyle())
+                        .foregroundColor(.black)
+                        .listStyle(InsetGroupedListStyle())
                 }
             }
-            
         }
     }
 }
@@ -65,7 +68,7 @@ struct SearchBar: View {
 
 struct SearchBarMain_Previews: PreviewProvider {
     static var previews: some View {
-        SearchBarMain()
+        SearchBarMain(LocationVM: LocationViewModel())
             .previewDisplayName("메인")
         SearchBar(searchText: .constant("apple"), isSearching: .constant(true))
             .previewDisplayName("서치바")
