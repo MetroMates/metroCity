@@ -4,6 +4,7 @@ import SwiftUI
 
 struct MainDetailView: View {     
     @ObservedObject var vm: MainDetailVM
+    @StateObject var locationVM = LocationViewModel()
     
     var body: some View {
         VStack(spacing: 20) {
@@ -34,6 +35,8 @@ struct MainDetailView: View {
         .onAppear {
             // 그렇게 가져온 역정보를 가지고 이전역과 다음역의 정보를 가져온다. -> 서버통신할 필요없이, 가져온 역ID를 -1, +1 하여 표시해주면 된다. -> publisher로 처리함.
             // 여기서 fetch하여 가져와야만하는 데이터는 현재역을 향해서 오고 있는 열차들의 상태와 어디쯤왔는지에대한 시간표이다.
+            locationVM.fetchingData()
+            locationVM.fetchingStationInfo()
         }
         .refreshable {
             // 새로고침
@@ -64,7 +67,7 @@ extension MainDetailView {
 //                    .tint(.primary)
 //            }
 //        }
-        SearchBarMain()
+        SearchBarMain(LocationVM: locationVM)
     }
     /// Title 부분
     @ViewBuilder private var TitleContent: some View {
