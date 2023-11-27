@@ -47,12 +47,25 @@ final class MainListUseCase {
     func dataFetch(vm: MainListVM) async {
         // 정보 Fetch
         print("🍜", "MainListUseCase init & fetch")
-//        StationInfo.list = await self.fetchStationInfos() // static 변수에 할당.
         
-        SubwayLineColor.list = await self.fetchLineColorInfos()
-        vm.subwayLines = SubwayLineColor.list
+        if StationInfo.list.isEmpty {
+            StationInfo.list = await self.fetchStationInfos() // static 변수에 할당.
+        }
         
-//        self.stLocInfos = await self.fetchLocationInfos()
+        print("🍜", StationInfo.list.count)
+        
+        if SubwayLineColor.list.isEmpty {
+            SubwayLineColor.list = await self.fetchLineColorInfos()
+        }
+        print("🍜", SubwayLineColor.list.count)
+        
+        await MainActor.run {
+            vm.subwayLines = SubwayLineColor.list
+        }
+        
+        if stLocInfos.isEmpty {
+            self.stLocInfos = await self.fetchLocationInfos()
+        }
         
         // 데이터는 잘 받아옴.
         stInfosSubject.send(StationInfo.list)

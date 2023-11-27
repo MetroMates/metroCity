@@ -18,12 +18,11 @@ extension FireStoreServiceDelegate {
     
     func firestoreFetchAll<T: FireStoreCodable>(colName: String, type: T.Type) async throws -> [T] {
         guard !colName.isEmpty else { print("컬렉션이름 비어있음.!!"); return [] }
-        
+        print("🍜", colName)
         let collectionRef = db.collection(colName)
         
         do {
             let querySnapshot = try await collectionRef.getDocuments()
-            
             // 일반적인 querySnapshot.documents의 데이터 형식은 [String:Any] = [문서값:필드값]의 딕셔너리 형식이기 때문에
             // 거기서 필드값만 뽑아서 배열로 묶으려고 compactMap을 사용함
             let allLocations = try querySnapshot.documents.compactMap { document in

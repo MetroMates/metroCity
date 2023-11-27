@@ -17,7 +17,7 @@ final class MainListVM: ObservableObject {
     @Published var isDetailPresented: Bool = false
     
     /// 호선정보
-    @Published var subwayLines = SubwayLineColor.list
+    @Published var subwayLines: [SubwayLineColor] = []
     @Published var nearStationSubwayLines: [SubwayLineColor] = []
     
     @Published var isProgressed: Bool = false
@@ -30,7 +30,6 @@ final class MainListVM: ObservableObject {
     init(useCase: MainListUseCase) {
         // 의존성 주입: MainListVM에 MainListUseCase가 외부에서 생성되어 의존성 주입되었다.
         self.useCase = useCase
-//        self.subscribe() // 구독이 필요한 해당 View의 onAppear에 해주는게 더 좋은거 같다.
     }
     
     /// 구독메서드
@@ -56,9 +55,8 @@ final class MainListVM: ObservableObject {
     }
 }
 
+// MARK: - Private Methods
 extension MainListVM {
-    // MARK: - Private Methods
-    
     private func getNearStationLineInfos(value: String) {
         nearStationSubwayLines.removeAll() // 초기화
         
