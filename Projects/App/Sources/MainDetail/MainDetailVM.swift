@@ -15,16 +15,16 @@ final class MainDetailVM: ObservableObject {
     /// 하행 실시간 정보
     @Published var downRealTimeInfos: [RealTimeSubway] = [.emptyData] // 런타임 에러 방지
     /// 근처역 관련 호선들
-    @Published var nearStationLines: [TestSubwayLineColor] = []
+    @Published var nearStationLines: [SubwayLineColor] = []
     
     /// 호선정보 및 색상 MainListModel.swift -> 발행될 필요 없다.
-    var hosunInfo: TestSubwayLineColor = .emptyData
+    var hosunInfo: SubwayLineColor = .emptyData
    
     // MARK: - Private Properties
     private var anyCancellable: Set<AnyCancellable> = []
     private var timerCancel: AnyCancellable = .init {}
     private let nearStationInfoFetchSubject = PassthroughSubject<String, Never>()
-    private let lineInfoFetchSubject = PassthroughSubject<TestSubwayLineColor, Never>()
+    private let lineInfoFetchSubject = PassthroughSubject<SubwayLineColor, Never>()
     private let useCase: MainDetailUseCase
     
     init(useCase: MainDetailUseCase) {
@@ -51,7 +51,7 @@ final class MainDetailVM: ObservableObject {
             .store(in: &anyCancellable)
     }
     
-    func send(nearStInfo: String, lineInfo: TestSubwayLineColor) {
+    func send(nearStInfo: String, lineInfo: SubwayLineColor) {
         nearStationInfoFetchSubject.send(nearStInfo)
         lineInfoFetchSubject.send(lineInfo)
     }
@@ -78,7 +78,7 @@ final class MainDetailVM: ObservableObject {
 // MARK: Private Methods
 extension MainDetailVM {
     private func whenNearStationNoInfoSetCloseStation(_ stationName: String) -> String {
-        var stationInfos = StationInfo.testList
+        var stationInfos = StationInfo.list
         let stationData = stationName
         
         stationInfos = stationInfos.filter { $0.subwayId == hosunInfo.subwayId }
@@ -98,7 +98,7 @@ extension MainDetailVM {
         nearStationLines.removeAll() // 초기화
         
         let stationDatas = useCase.getNearStationLineInfos(statName: nowStation)
-        let lineData = TestSubwayLineColor.tempData // Color값 가져와야함.
+        let lineData = SubwayLineColor.list // Color값 가져와야함.
         
         nearStationLines = lineData.filter({ info in
             for stationData in stationDatas where stationData.subwayId == info.subwayId {

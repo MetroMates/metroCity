@@ -2,7 +2,7 @@
 
 import Foundation
 
-struct StationLocation: Decodable {
+struct StationLocation: FireStoreCodable {
     
     /// 경도
     let crdntX: Double

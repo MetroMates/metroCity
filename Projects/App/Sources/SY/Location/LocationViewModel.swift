@@ -25,16 +25,16 @@ final class LocationViewModel: ObservableObject {
     private var anycancellable = Set<AnyCancellable>()
     
     init() {
-        self.subscribeLocation()
+//        self.subscribeLocation()
     }
 
-    func subscribeLocation() {
-//        locationService.$userLocationInfo.sink { location in
-//            self.userLocation = location
-//        }
-        locationService.$userLocationInfo.assign(to: \.userLocation, on: self)
-        .store(in: &anycancellable)
-    }
+//    func subscribeLocation() {
+////        locationService.$userLocationInfo.sink { location in
+////            self.userLocation = location
+////        }
+//        locationService.$userLocationInfo.assign(to: \.userLocation, on: self)
+//        .store(in: &anycancellable)
+//    }
     
     /// firebase의 stationLocation 컬렉션 패치해오기
     func fetchingData() {

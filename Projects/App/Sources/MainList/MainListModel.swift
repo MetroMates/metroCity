@@ -53,9 +53,17 @@ extension StationInfo {
     
 }
 
+protocol LineColors: Identifiable {
+    var id: String { get }
+    var subwayId: Int { get }
+    var subwayNm: String { get }
+    var lineColorHexCode: String { get }
+    var lineColor: Color { get }
+}
+
 /// MainList를 구성하는 SubwayLine 모델
 /// FireStore에서 fetch해온다.
-struct SubwayLineColor: FireStoreCodable, Identifiable {
+struct SubwayLineColor: FireStoreCodable, LineColors {
     let id: String
     let subwayId: Int
     let subwayNm: String
@@ -73,10 +81,18 @@ extension SubwayLineColor {
     var lineColor: Color {
         return Color(hex: lineColorHexCode)
     }
+    
+    static var list: [Self] = []
+    
+    static var emptyData: Self {
+        .init(subwayId: 0,
+              subwayNm: "",
+              lineColorHexCode: "")
+    }
 }
 
 /// Test용 데이터 객체
-struct TestSubwayLineColor: FireStoreCodable, Identifiable {
+struct TestSubwayLineColor: FireStoreCodable, Identifiable, LineColors {
     let id: String
     let subwayId: Int
     let subwayNm: String

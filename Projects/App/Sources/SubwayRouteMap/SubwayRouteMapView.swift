@@ -94,7 +94,7 @@ extension SubwayRouteMapView {
 
 struct SubwayRouteMapView_Previews: PreviewProvider {
     static var previews: some View {
-        MainDetailView(vm: MainDetailVM(useCase: MainDetailUseCase(repo: MainListRepository(networkStore: SubwayAPIService()))))
+        MainDetailPreviewView()
             .previewDisplayName("디테일")
         
         MainListView()
