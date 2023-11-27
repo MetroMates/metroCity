@@ -94,7 +94,7 @@ extension ArrivalTimeView {
 struct ArrivalTimeView_Previews: PreviewProvider {
     static var previews: some View {
         // 이 부분에서 MainListRepository를 테스트용 데이터를 반환하는 class로 새로 생성하여 주입해주면 테스트용 Preview가 완성.!!
-        MainDetailView(vm: MainDetailVM(useCase: MainDetailUseCase(repo: MainListRepository(networkStore: SubwayAPIService()))))
+        MainDetailPreviewView()
             .previewDisplayName("디테일")
         
         MainListView()

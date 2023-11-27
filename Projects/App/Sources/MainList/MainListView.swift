@@ -13,7 +13,6 @@ import SwiftUI
 /// 전체 호선 리스트 View
 struct MainListView: View {
     @StateObject private var mainVM = MainListVM(useCase: MainListUseCase(repo: MainListRepository(networkStore: SubwayAPIService())))
-    
     @StateObject private var mainDetailVM = MainDetailVM(useCase: MainDetailUseCase(repo: MainDetailRepository(networkService: SubwayAPIService())))
     
     var body: some View {
@@ -41,7 +40,7 @@ struct MainListView: View {
                 .overlay(alignment: .topTrailing) {
                     Button {
                         mainVM.GPScheckNowLocactionTonearStation()
-                        mainVM.nearStation = "서울"
+//                        mainVM.nearStation = "서울"
                     } label: {
                         Image(systemName: "location.circle")
                             .font(.title)
@@ -56,6 +55,9 @@ struct MainListView: View {
             mainVM.GPScheckNowLocactionTonearStation()
             mainVM.subscribe()
             mainDetailVM.subscribe()
+        }
+        .task {
+            await mainVM.fetchDataInfo()
         }
         
     }
@@ -115,7 +117,7 @@ extension MainListView {
 
 // MARK: - Private Methods
 extension MainListView {
-    private func setLineAndstationInfo(line: TestSubwayLineColor) {
+    private func setLineAndstationInfo(line: SubwayLineColor) {
         mainDetailVM.nearStationLines = mainVM.nearStationSubwayLines
         mainDetailVM.send(nearStInfo: mainVM.nearStation,
                           lineInfo: line)
