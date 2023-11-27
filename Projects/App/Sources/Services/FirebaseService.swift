@@ -6,8 +6,8 @@ import FirebaseFirestoreSwift
 import SwiftUI
 import CoreLocation
 
-final class FirebaseLocationManager {
-    static let shared = FirebaseLocationManager()
+final class FirebaseService {
+    static let shared = FirebaseService()
     private let db = Firestore.firestore()
     
     /// 위치정보 가져오는 함수
