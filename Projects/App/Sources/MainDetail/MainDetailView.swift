@@ -9,7 +9,7 @@ struct MainDetailView: View {
     var body: some View {
         VStack(spacing: 20) {
             VStack(spacing: 20) {
-                SearchContent
+                SearchBarMain(LocationVM: locationVM)
                 TitleContent
                 SubTitleContent
             }
@@ -38,27 +38,6 @@ struct MainDetailView: View {
 
 // MARK: - UI 모듈 연산프로퍼티
 extension MainDetailView {
-    /// Search부분
-    @ViewBuilder private var SearchContent: some View {
-//        HStack {
-//            TextField("역이름을 검색해보세요", text: $vm.searchText)
-//                .padding(7)
-//                .padding(.leading, 3)
-//                .font(.caption)
-//                .background {
-//                    RoundedRectangle(cornerRadius: 5)
-//                        .stroke(Color.gray.opacity(0.8), lineWidth: 2)
-//
-//                }
-//            Button {
-//                // 검색 func
-//            } label: {
-//                Image(systemName: "magnifyingglass")
-//                    .tint(.primary)
-//            }
-//        }
-        SearchBarMain(LocationVM: locationVM)
-    }
     /// Title 부분
     @ViewBuilder private var TitleContent: some View {
         ZStack {

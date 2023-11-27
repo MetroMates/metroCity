@@ -5,7 +5,7 @@ import Combine
 import CoreLocation
 
 final class LocationViewModel: ObservableObject {
-    private let firestoreManager = FirebaseLocationManager.shared
+    private let firestoreManager = FirebaseService.shared
     private let locationService = LocationManager()
     /// 3키로 이내로 계산 된 역값들
     private var calculatedStation: [StationLocation]?

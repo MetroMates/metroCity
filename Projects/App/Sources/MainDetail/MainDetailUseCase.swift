@@ -92,6 +92,7 @@ extension MainDetailUseCase {
         
     }
     
+    // TODO: 추후 변경 해야함. 23.11.27
     private func trainMessage(barvlDt: String,
                               arvlMsg2: String,
                               arvlMsg3: String,
