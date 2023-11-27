@@ -15,10 +15,10 @@ struct SubwayRouteMapView: View {
                 GeometryReader { geo in
                     // 0.0 ~ 0.45 까지의 거리로 계산
                     ForEach(vm.upRealTimeInfos, id: \.id) { x in
-                        subway(geo: geo, .up, no: x.trainDestiStation, x: 0.3)
+                        subway(geo: geo, .up, no: x.trainDestiStation, x: 0.4)
                     }
                     ForEach(vm.downRealTimeInfos, id: \.id) { x in
-                        subway(geo: geo, .down, no: x.trainDestiStation, x: 0.3)
+                        subway(geo: geo, .down, no: x.trainDestiStation, x: 0.4)
                     }
                 }
                 .frame(height: 100)
@@ -50,7 +50,7 @@ extension SubwayRouteMapView {
                 }
                 stationCircle(vm.stationInfo.nowStNm)
             }
-            .padding(.horizontal, 10)
+            .padding(.horizontal)
             
         }
     }
@@ -73,7 +73,7 @@ extension SubwayRouteMapView {
             }
     }
     
-    // TODO: 급행이면 테두리색상을 검정색으로 주기.
+    // TODO: 급행이면 테두리색상을 빨간색으로 주기.
     /// 열차 View
     @ViewBuilder private func subway(geo: GeometryProxy,
                                      _ updn: MainDetailVM.UpDn,

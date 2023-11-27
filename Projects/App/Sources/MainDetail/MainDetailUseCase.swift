@@ -53,11 +53,12 @@ final class MainDetailUseCase {
                 
                 // 해당 호선에 맞는 데이터로 필터
                 realDatas = realDatas.filter { $0.subwayID == subwayLine }
-                print("🐹필터된 RealDatas \(realDatas)")
+//                print("🐹필터된 RealDatas \(realDatas)")
                 var stations: [RealTimeSubway] = []
                 
                 for data in realDatas {
-                    let sort: Int = self.trainSortOrder(ordkey: data.ordkey)
+                    let firstSort: Int = self.trainFirstSortKey(ordkey: data.ordkey)
+                    let secondSort: Int = self.trainSecondSortKey(ordkey: data.ordkey)
                     
                     let message: String = self.trainMessage(barvlDt: data.barvlDt,
                                                             arvlMsg2: data.arvlMsg2,
@@ -68,7 +69,8 @@ final class MainDetailUseCase {
                     stations.append(.init(updnLine: data.updnLine,
                                           trainNo: data.btrainNo,
                                           trainType: data.btrainSttus,
-                                          sortOrder: sort,
+                                          stCnt: firstSort,
+                                          sortOrder: secondSort,
                                           message: message,
                                           trainDestiStation: "\(data.bstatnNm)행" ))
                 }
@@ -110,19 +112,22 @@ extension MainDetailUseCase {
         return ""
     }
     
-    private func trainSortOrder(ordkey: String) -> Int {
-        print("👊ordkey : ", ordkey)
-        if ordkey.count >= 2 {
-            let secondCharacter = ordkey[ordkey.index(ordkey.startIndex, offsetBy: 1)]
-            
-            if let intValue = Int(String(secondCharacter)) {
-                return intValue
-            } else {
-                return 0
-            }
-        }
+    /// 현재역 도착까지 몇정거장 남았는지를 반환.
+    private func trainFirstSortKey(ordkey: String) -> Int {
+        let startIndex = ordkey.index(ordkey.startIndex, offsetBy: 2)
+        let endIndex = ordkey.index(startIndex, offsetBy: 3)
+        let slicedString = String(ordkey[startIndex..<endIndex])
         
-        return 0
+        return Int(slicedString) ?? 0
+    }
+    
+    /// 첫번재 도착인지 두번째 도착인지 반환
+    private func trainSecondSortKey(ordkey: String) -> Int {
+        let startIndex = ordkey.index(ordkey.startIndex, offsetBy: 1)
+        let endIndex = ordkey.index(startIndex, offsetBy: 1)
+        let slicedString = String(ordkey[startIndex..<endIndex])
+        
+        return Int(slicedString) ?? 0
     }
     
     private enum ArvlCD: String {

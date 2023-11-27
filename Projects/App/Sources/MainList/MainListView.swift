@@ -26,7 +26,7 @@ struct MainListView: View {
                 VStack(spacing: 30) {
                     Text("호선 선택")
                         .font(.title2)
-                        .padding(.top, 5)
+                        .padding(.top, 18)
                     
                     ScrollView(showsIndicators: false) {
                         VStack(alignment: .leading, spacing: 15) {
@@ -47,7 +47,7 @@ struct MainListView: View {
                             .font(.title)
                             .foregroundStyle(Color.primary.opacity(0.6))
                             .padding()
-                            .padding(.trailing, 15)
+//                            .padding(.trailing, 15)
                     }
                 }
             }
@@ -66,41 +66,49 @@ struct MainListView: View {
 extension MainListView {
     @ViewBuilder private var NearStationLines: some View {
         Section {
-            ForEach(mainVM.nearStationSubwayLines) { line in
-                Button {
-                    self.setLineAndstationInfo(line: line)
-                    mainVM.isDetailPresented = true
-                } label: {
-                    MainListCellView(stationName: line.subwayNm,
-                                     stationColor: line.lineColor)
-                }
-                .navigationDestination(isPresented: $mainVM.isDetailPresented) {
-                    MainDetailView(vm: mainDetailVM)
+            VStack(spacing: 15) {
+                ForEach(mainVM.nearStationSubwayLines) { line in
+                    Button {
+                        self.setLineAndstationInfo(line: line)
+                        mainVM.isDetailPresented = true
+                    } label: {
+                        MainListCellView(stationName: line.subwayNm,
+                                         stationColor: line.lineColor)
+                    }
+                    .navigationDestination(isPresented: $mainVM.isDetailPresented) {
+                        MainDetailView(vm: mainDetailVM)
+                    }
                 }
             }
             
         } header: {
-            HStack(spacing: 0) {
+            HStack(spacing: 5) {
                 Image(systemName: "location.fill")
-                Text("'\(mainVM.nearStation)역'기준 호선")
+                Text("'\(mainVM.nearStation)역' 기준")
             }
         }
     }
     
     @ViewBuilder private var AllStationLines: some View {
-        Section("전체 호선") {
-            ForEach(mainVM.subwayLines) { line in
-                Button {
-                    self.setLineAndstationInfo(line: line)
-                    mainVM.isDetailPresented = true
-                } label: {
-                    MainListCellView(stationName: line.subwayNm,
-                                     stationColor: line.lineColor)
-                }
-                .navigationDestination(isPresented: $mainVM.isDetailPresented) {
-                    MainDetailView(vm: mainDetailVM)
+        Section {
+            VStack(spacing: 15) {
+                ForEach(mainVM.subwayLines) { line in
+                    Button {
+                        self.setLineAndstationInfo(line: line)
+                        mainVM.isDetailPresented = true
+                    } label: {
+                        MainListCellView(stationName: line.subwayNm,
+                                         stationColor: line.lineColor)
+                    }
+                    .navigationDestination(isPresented: $mainVM.isDetailPresented) {
+                        MainDetailView(vm: mainDetailVM)
+                    }
                 }
             }
+
+        } header: {
+            Text("전체")
+                .padding(.top, 30)
         }
     }
 }

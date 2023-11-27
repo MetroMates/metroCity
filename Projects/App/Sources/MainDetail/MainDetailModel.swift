@@ -109,7 +109,9 @@ struct RealTimeSubway: SubwayModelIdentifier {
     let trainNo: String
     /// 열차 종류 ( 급행, ITX, 일반, 특급 )
     let trainType: String
-    /// 정렬 순서
+    /// 정렬 순서 1 (몇번째 전역에 위치한지 정보)
+    let stCnt: Int
+    /// 정렬순서 2 (해당역에 몇번째로 들어오는 열차인지) -> 데이터가 신뢰성은 없음.
     let sortOrder: Int
     /// 표출메세지 : 전역 도착, 130초전 등등
     let message: String
@@ -121,9 +123,21 @@ extension RealTimeSubway {
     var updnIndex: String {
         updnLine == "상행" ? "0" : "1"
     }
+    var trainTypeIndex: String {
+        switch trainType {
+        case "급행":
+            return "1"
+        case "ITX", "일반":
+            return "0"
+        case "특급":
+            return "7"
+        default:
+            return "0"
+        }
+    }
     
     static var emptyData: Self {
-        return .init(updnLine: "", trainNo: "", trainType: "", sortOrder: 0, message: "", trainDestiStation: "")
+        return .init(updnLine: "", trainNo: "", trainType: "", stCnt: 0, sortOrder: 0, message: "", trainDestiStation: "")
     }
     
     // 여러개 들어올 예정.
