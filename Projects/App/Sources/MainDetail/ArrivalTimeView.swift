@@ -5,6 +5,7 @@ import SwiftUI
 /// 도착예정시간 현황 View
 struct ArrivalTimeView: View {
     @ObservedObject var vm: MainDetailVM
+    @Environment(\.colorScheme) private var colorScheme // ViewModel에 넣어봤는데 값을 가져오지를 않음
     
     var body: some View {
         HStack(spacing: 2) {
@@ -17,50 +18,28 @@ struct ArrivalTimeView: View {
 // UI 모듈 Methods
 extension ArrivalTimeView {
     /// 컨텐츠
-    /// (상행, 하행) 구분,
+    /// (상행, 하행) 구분
     @ViewBuilder func contentView(_ updn: MainDetailVM.UpDn) -> some View {
         var destiStation: String {
             updn == .up ? vm.stationInfo.upStNm : vm.stationInfo.downStNm
         }
         
         var trainDatas: [RealTimeSubway] {
-            var timeData = updn == .up ? vm.upRealTimeInfos : vm.downRealTimeInfos
-            timeData = timeData.filter({ info in
-                info.sortOrder == 1
-            })
-            
-            return timeData
-        }
-        
-        var trainNextDatas: [RealTimeSubway] {
-            var timeData = updn == .up ? vm.upRealTimeInfos : vm.downRealTimeInfos
-            timeData = timeData.filter({ info in
-                info.sortOrder == 2
-            })
-            
-            return timeData
+            return updn == .up ? vm.upRealTimeInfos : vm.downRealTimeInfos
         }
         
         LazyVStack(spacing: 0, pinnedViews: .sectionHeaders) {
             Section {
                 VStack(alignment: .leading, spacing: 10) {
-                    trainList(title: "이번 열차", trainDatas)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 80) // TODO: 상수로 말고 변수화 시키기.(내부Content비율로)
-//                        .border(.black)
-                    Divider()
-                    
-                    trainList(title: "다음 열차", trainNextDatas)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 80)
-//                        .border(.black)
+                    trainList(title: "", trainDatas)
+                        .frame(height: 150)
                 }
                 .font(.callout)
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, 3)
                 .padding(.vertical, 10)
                 .background {
-                    Color.gray.opacity(0.2)
+                    colorScheme == .dark ? Color.white.opacity(0.15) : Color.gray.opacity(0.15)
                 }
                 
             } header: {
@@ -80,22 +59,30 @@ extension ArrivalTimeView {
     }
     
     @ViewBuilder private func trainList(title: String, _ data: [RealTimeSubway]) -> some View {
-        VStack(spacing: 5) {
-            Text(title)
-                .font(.subheadline)
-            
-            Rectangle()
-                .frame(maxWidth: .infinity)
-                .frame(height: 1)
-            
-            VStack(spacing: 15) {
-                ForEach(data, id: \.id) { info in
-                    HStack(spacing: 20) {
-                        ScrollText(content: info.trainDestiStation)
-                        ScrollText(content: info.message)
+        GeometryReader { geo in
+            VStack(spacing: 5) {
+//                Text(title)
+//                    .font(.subheadline)
+//
+//                Rectangle()
+//                    .frame(maxWidth: .infinity)
+//                    .frame(height: 1)
+                
+                VStack(spacing: 8) {
+                    ForEach(data, id: \.id) { info in
+                        HStack(spacing: 10) {
+                            ScrollText(content: info.trainDestiStation)
+                                .frame(width: geo.size.width * 0.4)
+                                .foregroundStyle(info.trainTypeIndex != "0" ?
+                                                 Color.blue :
+                                                    Color.primary)
+                            ScrollText(content: info.message)
+                                .frame(width: geo.size.width * 0.5)
+//                                .border(.blue)
+                        }
                     }
-                    .padding(.horizontal, 10)
                 }
+                
             }
             
             Spacer()

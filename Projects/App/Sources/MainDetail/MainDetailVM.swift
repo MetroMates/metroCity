@@ -14,18 +14,17 @@ final class MainDetailVM: ObservableObject {
     @Published var upRealTimeInfos: [RealTimeSubway] = [.emptyData] // 런타임 에러 방지
     /// 하행 실시간 정보
     @Published var downRealTimeInfos: [RealTimeSubway] = [.emptyData] // 런타임 에러 방지
-    
     /// 근처역 관련 호선들
     @Published var nearStationLines: [TestSubwayLineColor] = []
     
-    /// 호선정보 및 색상 MainListModel.swift
+    /// 호선정보 및 색상 MainListModel.swift -> 발행될 필요 없다.
     var hosunInfo: TestSubwayLineColor = .emptyData
    
     // MARK: - Private Properties
     private var anyCancellable: Set<AnyCancellable> = []
+    private var timerCancel: AnyCancellable = .init {}
     private let nearStationInfoFetchSubject = PassthroughSubject<String, Never>()
     private let lineInfoFetchSubject = PassthroughSubject<TestSubwayLineColor, Never>()
-    
     private let useCase: MainDetailUseCase
     
     init(useCase: MainDetailUseCase) {
@@ -33,7 +32,8 @@ final class MainDetailVM: ObservableObject {
     }
     
     deinit {
-        anyCancellable.removeAll()
+        anyCancellable.forEach { $0.cancel() }
+        timerCancel.cancel()
     }
     
     /// 구독 메서드
@@ -44,7 +44,6 @@ final class MainDetailVM: ObservableObject {
         
         lineInfoFetchSubject.zip(nearStationInfoFetchSubject)
             .sink { (hosun, nearStation) in
-//                print("👍🏻Combine!!!")
                 self.hosunInfo = hosun
                 self.fetchInfo(value:
                                 self.whenNearStationNoInfoSetCloseStation(nearStation))
@@ -53,15 +52,25 @@ final class MainDetailVM: ObservableObject {
     }
     
     func send(nearStInfo: String, lineInfo: TestSubwayLineColor) {
-        print("🟢", self.stationInfo)
-        print("🟢SEND: \(nearStInfo) \(lineInfo)")
         nearStationInfoFetchSubject.send(nearStInfo)
         lineInfoFetchSubject.send(lineInfo)
     }
     
-    func timer() {
-        // 1초에 한번씩 실행이 되.
-        // fetch를 해오는 구문이 있어 -> 10초에 한번 실행이되야해.
+    /// 타이머 시작
+    func timerStart() {
+        // 10초에 한번씩 실행.
+        self.timerCancel = Timer.publish(every: 10.0, on: .main, in: .default)
+                    .autoconnect()
+                    .sink { _ in
+                        self.send(nearStInfo: self.stationInfo.nowStNm,
+                                  lineInfo: self.hosunInfo)
+                    }
+        
+    }
+    
+    /// 타이머 정지
+    func timerStop() {
+        timerCancel.cancel()
     }
     
 }
@@ -122,20 +131,27 @@ extension MainDetailVM {
         print("🐹 \(hosunInfo.subwayId)")
         
         useCase.recievePublisher(subwayLine: "\(hosunInfo.subwayId)", whereData: stationName)
-            .print("패치중 : ")
             // sink로 구독시 publisher의 타입의 에러 형태가 Never가 아닐경우에는 receiveCompelete도 무조건 작성해야함.
             .sink { result in
                 switch result {
                 case .finished:
                     print("패치완료")
-                case .failure:
-                    break
+                case .failure(let error as NSError):
+                    if URLError.Code(rawValue: error.code) == .notConnectedToInternet {
+                        // 인터넷 끊겼을 시 알려줘야 함.
+                        print("⓶ 연결끊김")
+                    }
                 }
             } receiveValue: { data in
-//                self.upRealTimeInfos = data.filter { $0.updnLine == "상행" }
-                self.upRealTimeInfos = Array(data.filter { $0.updnLine == "상행" }.prefix(4))
-//                self.downRealTimeInfos = data.filter { $0.updnLine == "하행" }
-                self.downRealTimeInfos = Array(data.filter { $0.updnLine == "하행" }.prefix(4))
+ 
+                let newData = data.sorted { $0.stCnt < $1.stCnt }
+                
+                print("🍎 데이터 갯수", newData.count)
+                
+                // 상행
+                self.upRealTimeInfos = Array(newData.filter { $0.updnIndex == "0" }.prefix(6))
+                // 하행
+                self.downRealTimeInfos = Array(newData.filter { $0.updnIndex == "1" }.prefix(6))
             }
             .store(in: &anyCancellable)
         

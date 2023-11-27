@@ -39,21 +39,38 @@ final class SubwayAPIService: APIServiceDelegate {
         guard let urlString, let urlRequest = self.requestURL(urlString: urlString) else {
             return Fail(error: StatusError.ERR100).eraseToAnyPublisher()
         }
+        // TODO: 추후 앱 백그라운드 상태에서도 지속적인 Fetch가 이루어지게 만들어 주기.
+        let urlsession = URLSession(configuration: .default)
         
-        return URLSession.shared.dataTaskPublisher(for: urlRequest)
-//            .print(urlString)
-            .map(\.data) // data, response 중 data 가져오기
+        // 네트워크 에러같은 경우에는 URLError로 알아서 반환이 된다. Code = -1009
+        return urlsession.dataTaskPublisher(for: urlRequest)
+            .print("⓶")
+            .tryMap { data, response -> Data in
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    throw StatusError.ERR100
+                }
+                
+                // 상태 코드가 200 - 299 이면 데이터와 응답을 반환
+                if httpResponse.statusCode >= 200, httpResponse.statusCode < 300 {
+                    return data
+                } else {
+                    // 서버문제를 throw
+                    throw StatusError.ERR100
+                }
+            }
+//            .map(\.data) // data, response 중 data 가져오기 -> (23.11.27) 대신에 tryMap을 활용하여 response.statusCode로 예외처리 작성.
             .decode(type: Content.self, decoder: JSONDecoder()) // data decoding
             .flatMap { content -> AnyPublisher<Content, Error> in
-                let errStatus = content.errorMessage.status
-
+                let errStatus = content.errorMessage.status // 통신 후 한번더 체크.
+                let errCode = content.errorMessage.code
+                
+                let errStatusCode = StatusError(rawValue: errCode)
+                
                 // 상태값 200이 정상.
                 if errStatus == 200 {
-                    let errCode = content.errorMessage.code
-
-                    if StatusError(rawValue: errCode) != .INF000 {
-                        debugPrint(content.errorMessage.message)
-                        return Fail(error: StatusError.INF000).eraseToAnyPublisher()
+                    if errStatusCode != .INF000 {
+//                        debugPrint(content.errorMessage.message)
+                        return Fail(error: errStatusCode ?? .INF200).eraseToAnyPublisher()
                     } else {
                         return Just(content)
                             .setFailureType(to: Error.self) // flatMap의 반환타입이 AnyPublisher<Content, Error>임 그래서 Error타입을 넣어주는 역할
@@ -61,11 +78,12 @@ final class SubwayAPIService: APIServiceDelegate {
                             .eraseToAnyPublisher()
                     }
                 } else {
-                    return Fail(error: StatusError.ERR100).eraseToAnyPublisher()
+                    return Fail(error: errStatusCode ?? .ERR100).eraseToAnyPublisher()
                 }
             }
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
+
     }
 
     private func requestURL(urlString: String) -> URLRequest? {

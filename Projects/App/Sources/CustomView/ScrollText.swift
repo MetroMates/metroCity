@@ -35,13 +35,13 @@ struct ScrollText: View {
             
         }
         .frame(maxWidth: parentWidth == .zero ? nil : textWidth)
-        .frame(maxHeight: textHeight)
+        .frame(height: textHeight)
         .disabled(isdisabled)
         // 부모View가 onAppear 될때 withAnimation은 한번만 써줘야 중첩되지 않음.
         .onAppear {
             withAnimation(.linear(duration: transSpeed).delay(0.5).repeatForever(autoreverses: false)) {
                 if parentWidth < textWidth {
-                    offset = -textWidth / 3  // text길이의 1/3까지만 움직이면 됨
+                    offset = -((textWidth + 1) / 3)  // text길이의 1/3까지만 움직이면 됨 +1해준이유는 너무 바로 끝나서 조금더 진행 된후에 offset 초기화 시키기 위함.
                 } else {
                     isdisabled = true
                 }

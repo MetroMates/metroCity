@@ -15,10 +15,10 @@ struct SubwayRouteMapView: View {
                 GeometryReader { geo in
                     // 0.0 ~ 0.45 까지의 거리로 계산
                     ForEach(vm.upRealTimeInfos, id: \.id) { x in
-                        subway(geo: geo, .up, no: x.trainDestiStation, x: 0.3)
+                        subway(geo: geo, .up, no: x.trainDestiStation, x: 0.4)
                     }
                     ForEach(vm.downRealTimeInfos, id: \.id) { x in
-                        subway(geo: geo, .down, no: x.trainDestiStation, x: 0.3)
+                        subway(geo: geo, .down, no: x.trainDestiStation, x: 0.4)
                     }
                 }
                 .frame(height: 100)
