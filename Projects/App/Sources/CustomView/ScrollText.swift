@@ -56,7 +56,7 @@ struct ScrollText: View {
         textHeight = geo.size.height
         textWidth = geo.size.width
         parentWidth = g.size.width
-        print("🟢", "|\(content)|", "W: \(textWidth)", "H: \(textHeight)", "ParentW: \(parentWidth)")
+//        print("🟢", "|\(content)|", "W: \(textWidth)", "H: \(textHeight)", "ParentW: \(parentWidth)")
     }
     
 }
@@ -65,7 +65,7 @@ struct ScrollText_Previews: PreviewProvider {
     static var previews: some View {
         ScrollText(content: "남한산성(경마공원어리둥절)")
         
-        MainListView()
+        MainListPreviewView()
             .previewDisplayName("메인리스트")
     }
 }

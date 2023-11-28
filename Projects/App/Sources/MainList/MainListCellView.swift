@@ -26,6 +26,6 @@ struct MainListCellView: View {
 
 struct MainListCellView_Previews: PreviewProvider {
     static var previews: some View {
-        MainListView()
+        MainListPreviewView()
     }
 }

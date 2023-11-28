@@ -91,7 +91,7 @@ struct ArrivalTimeView_Previews: PreviewProvider {
         MainDetailPreviewView()
             .previewDisplayName("디테일")
         
-        MainListView()
+        MainListPreviewView()
             .previewDisplayName("메인리스트")
     }
 }

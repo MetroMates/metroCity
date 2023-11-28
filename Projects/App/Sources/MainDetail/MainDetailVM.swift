@@ -25,10 +25,13 @@ final class MainDetailVM: ObservableObject {
     private var timerCancel: AnyCancellable = .init {}
     private let nearStationInfoFetchSubject = PassthroughSubject<String, Never>()
     private let lineInfoFetchSubject = PassthroughSubject<SubwayLineColor, Never>()
-    private let useCase: MainDetailUseCase
     
-    init(useCase: MainDetailUseCase) {
+    private let useCase: MainDetailUseCase
+    let startVM: StartVM
+    
+    init(useCase: MainDetailUseCase, startVM: StartVM) {
         self.useCase = useCase
+        self.startVM = startVM
     }
     
     deinit {
@@ -46,7 +49,7 @@ final class MainDetailVM: ObservableObject {
             .sink { (hosun, nearStation) in
                 self.hosunInfo = hosun
                 self.fetchInfo(value:
-                                self.whenNearStationNoInfoSetCloseStation(nearStation))
+                                self.whenNearStationNoInfoSetNearStation(nearStation))
             }
             .store(in: &anyCancellable)
     }
@@ -77,8 +80,8 @@ final class MainDetailVM: ObservableObject {
 
 // MARK: Private Methods
 extension MainDetailVM {
-    private func whenNearStationNoInfoSetCloseStation(_ stationName: String) -> String {
-        var stationInfos = StationInfo.list
+    private func whenNearStationNoInfoSetNearStation(_ stationName: String) -> String {
+        var stationInfos = startVM.stationInfos
         let stationData = stationName
         
         stationInfos = stationInfos.filter { $0.subwayId == hosunInfo.subwayId }
@@ -94,11 +97,12 @@ extension MainDetailVM {
     }
     
     /// 해당역에 관련된 호선라인 모음
-    private func filterRelateHosuns(_ nowStation: String) {
+    private func filteredLinesRelateStation(_ nowStation: String) {
         nearStationLines.removeAll() // 초기화
         
-        let stationDatas = useCase.getNearStationLineInfos(statName: nowStation)
-        let lineData = SubwayLineColor.list // Color값 가져와야함.
+        let stationDatas = useCase.getNearStationLineInfos(totalStation: startVM.stationInfos,
+                                                           statName: nowStation)
+        let lineData = startVM.lineInfos // Color값 가져와야함.
         
         nearStationLines = lineData.filter({ info in
             for stationData in stationDatas where stationData.subwayId == info.subwayId {
@@ -113,7 +117,7 @@ extension MainDetailVM {
     private func fetchInfo(value: String) {
         getStationInfo(value)
         getRealTimeInfo(value)
-        filterRelateHosuns(value)
+        filteredLinesRelateStation(value)
     }
     
     /// 이전, 다음역 정보 DTO객체 생성
@@ -135,7 +139,7 @@ extension MainDetailVM {
             .sink { result in
                 switch result {
                 case .finished:
-                    print("패치완료")
+                    print("⓶ 패치완료")
                 case .failure(let error as NSError):
                     if URLError.Code(rawValue: error.code) == .notConnectedToInternet {
                         // 인터넷 끊겼을 시 알려줘야 함.
@@ -146,7 +150,7 @@ extension MainDetailVM {
  
                 let newData = data.sorted { $0.stCnt < $1.stCnt }
                 
-                print("🍎 데이터 갯수", newData.count)
+                print("⓶ 데이터 갯수", newData.count)
                 
                 // 상행
                 self.upRealTimeInfos = Array(newData.filter { $0.updnIndex == "0" }.prefix(6))
@@ -170,10 +174,10 @@ extension MainDetailVM {
 struct MainDetailVM_Previews: PreviewProvider {
     static var previews: some View {
         // 이 부분에서 MainListRepository를 테스트용 데이터를 반환하는 class로 새로 생성하여 주입해주면 테스트용 Preview가 완성.!!
-        MainDetailView(vm: MainDetailVM(useCase: MainDetailUseCase(repo: MainListRepository(networkStore: SubwayAPIService()))))
-            .previewDisplayName("디테일")
+        MainDetailPreviewView()
+            .previewDisplayName("DETAIL")
         
-        MainListView()
+        MainListPreviewView()
             .previewDisplayName("메인리스트")
         
     }

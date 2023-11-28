@@ -26,10 +26,14 @@ final class MainListVM: ObservableObject {
     
     // 도메인 Layer
     private let useCase: MainListUseCase
+    private let startVM: StartVM
     
-    init(useCase: MainListUseCase) {
+    init(useCase: MainListUseCase, startVM: StartVM) {
         // 의존성 주입: MainListVM에 MainListUseCase가 외부에서 생성되어 의존성 주입되었다.
         self.useCase = useCase
+        self.startVM = startVM
+        
+        self.subwayLineInfos = startVM.lineInfos
     }
     
     /// 구독메서드
@@ -43,6 +47,14 @@ final class MainListVM: ObservableObject {
                 self.isProgressed = false
             }
             .store(in: &anyCancellable)
+        
+        useCase.userLocationSubscribe(statnLocInfos: startVM.locationInfos)
+        
+        useCase.nearStationNameSubject
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.nearStNamefromUserLocation, on: self)
+            .store(in: &anyCancellable)
+        
     }
     
     /// GPS 기반 현재위치에서 제일 가까운 역이름 가져오기
@@ -51,9 +63,9 @@ final class MainListVM: ObservableObject {
     }
     
     // 도메인Layer fetchData로직(= 비즈니스 로직 -> 데이터관련 로직) 호출
-    func fetchDataInfos() async {
-        await useCase.dataFetchs(vm: self)
-    }
+//    func fetchDataInfos() async {
+//        await useCase.dataFetchs(vm: self)
+//    }
 }
 
 // MARK: - Private Methods
@@ -61,8 +73,9 @@ extension MainListVM {
     private func filteredLinesfromSelectStation(value: String) {
         subwayLineInfosAtStation.removeAll() // 초기화
         
-        let stationDatas = useCase.filterdLineInfosFromSelectStationName(statName: value)
-        let lineData = SubwayLineColor.list // Color값 가져와야함.
+        let stationDatas = useCase.filterdLineInfosFromSelectStationName(totalStationInfo: startVM.stationInfos,
+                                                                         statName: value)
+        let lineData = startVM.lineInfos // Color값 가져와야함.
         
         self.subwayLineInfosAtStation = lineData.filter({ info in
             for stationData in stationDatas where stationData.subwayId == info.subwayId {

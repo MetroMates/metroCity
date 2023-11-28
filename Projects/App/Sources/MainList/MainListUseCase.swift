@@ -19,16 +19,11 @@ final class MainListUseCase {
     
     private let stInfosSubject = PassthroughSubject<[StationInfo], Never>()
     private let stLocInfosSubject = PassthroughSubject<[StationLocation], Never>()
-    private let nearStationNameSubject = PassthroughSubject<String, Never>()
-    
-//    /// 나와 가장 가까운 역명
-//    @Published var nearLocStationName: String = ""
-//    /// 역 위치 정보( 위도, 경도 )
-//    private var stLocInfos = [StationLocation]()
+    // viewModel에서 구독. -> 근처역명 반환.
+    let nearStationNameSubject = PassthroughSubject<String, Never>()
     
     init(repo: SubwayRepositoryFetch) {
         self.repository = repo
-        self.subscribe() // send로 보내지 않으면 어차피 방출은 발생하지않는다. init할때 미리 구독을 걸어주는게 좋을듯.
     }
     
     deinit {
@@ -39,68 +34,75 @@ final class MainListUseCase {
     func startFetchNearStationFromUserLocation() {
         locationManager.fetchUserLocation()
     }
+    
+    func userLocationSubscribe(statnLocInfos: [StationLocation]) {
+        locationManager.userLocationPublisher
+            .sink { loc in
+                self.findNearStationFromUserLocation(myLoc: loc,
+                                                     statnLoc: statnLocInfos)
+            }
+            .store(in: &anyCancel)
+        
+        // 여기서는 combineLatest를 사용해야 하는 이유: stInfosSubject, stLocInfosSubject는 초반에 한번만 발행이 될것이기 때문.
+        // 이거 불안불안함. 테스트 여러번 해봐야할듯.
+//        locationManager.userLocationPublisher.zip(stInfosSubject, stLocInfosSubject)
+//            .sink { (myLoc, _, stLoc) in
+//                print("🍜 myLOC \(myLoc),  stLOC Cnt : \(stLoc.count)")
+//                self.findNearStationFromUserLocation(myLoc: myLoc, statnLoc: stLoc)
+//            }
+//            .store(in: &anyCancel)
 
-    func filterdLineInfosFromSelectStationName(statName: String) -> [StationInfo] {
-        return StationInfo.list.filter { info in
+    }
+    
+    func filterdLineInfosFromSelectStationName(totalStationInfo: [StationInfo],
+                                               statName: String) -> [StationInfo] {
+        return totalStationInfo.filter { info in
             info.statnNm == statName
         }
     }
     
     /// MainListVM을 통해서 MinaListView가 onAppear 될때 한번만 호출해줄 것.
-    func dataFetchs(vm: MainListVM) async {
-        var stLocInfos = [StationLocation]()
-        
-        // 정보 Fetch
-        print("🍜", "MainListUseCase init & fetch")
-        
-        if StationInfo.list.isEmpty {
-            StationInfo.list = await self.fetchStationInfos() // static 변수에 할당.
-            if !StationInfo.list.isEmpty {
-                stInfosSubject.send(StationInfo.list)
-            }
-        }
-
-        if stLocInfos.isEmpty {
-            stLocInfos = await self.fetchLocationInfos()
-            
-            if !stLocInfos.isEmpty {
-                stLocInfosSubject.send(stLocInfos)
-            }
-        }
-        
-        if SubwayLineColor.list.isEmpty {
-            SubwayLineColor.list = await self.fetchLineColorInfos()
-        }
-        
-        await MainActor.run {
-            vm.subwayLineInfos = SubwayLineColor.list
-        }
-        
-        nearStationNameSubject
-            .receive(on: DispatchQueue.main)
-            .sink { statNm in
-                vm.nearStNamefromUserLocation = statNm
-            }.store(in: &anyCancel)
-        
-    }
+//    func dataFetchs(vm: MainListVM) async {
+//        var stLocInfos = [StationLocation]()
+//
+//        // 정보 Fetch
+//        print("🍜", "MainListUseCase init & fetch")
+//
+//        if StationInfo.list.isEmpty {
+//            StationInfo.list = await self.fetchStationInfos() // static 변수에 할당.
+//            if !StationInfo.list.isEmpty {
+//                stInfosSubject.send(StationInfo.list)
+//            }
+//        }
+//
+//        if stLocInfos.isEmpty {
+//            stLocInfos = await self.fetchLocationInfos()
+//
+//            if !stLocInfos.isEmpty {
+//                stLocInfosSubject.send(stLocInfos)
+//            }
+//        }
+//
+//        if SubwayLineColor.list.isEmpty {
+//            SubwayLineColor.list = await self.fetchLineColorInfos()
+//        }
+//
+//        await MainActor.run {
+//            vm.subwayLineInfos = SubwayLineColor.list
+//        }
+//
+//        nearStationNameSubject
+//            .receive(on: DispatchQueue.main)
+//            .sink { statNm in
+//                vm.nearStNamefromUserLocation = statNm
+//            }.store(in: &anyCancel)
+//
+//    }
     
 }
 
 // MARK: - Private Methods
 extension MainListUseCase {
-    /// 구독 메서드
-    private func subscribe() {
-        // 여기서는 combineLatest를 사용해야 하는 이유: stInfosSubject, stLocInfosSubject는 초반에 한번만 발행이 될것이기 때문.
-        // 이거 불안불안함. 테스트 여러번 해봐야할듯.
-        locationManager.userLocationPublisher.zip(stInfosSubject, stLocInfosSubject)
-            .sink { (myLoc, _, stLoc) in
-                print("🍜 myLOC \(myLoc),  stLOC Cnt : \(stLoc.count)")
-                self.findNearStationFromUserLocation(myLoc: myLoc, statnLoc: stLoc)
-            }
-            .store(in: &anyCancel)
-
-    }
-    
     // 유저의 위치에 가까운 역을 찾아서 역이름을 반환한다.
     private func findNearStationFromUserLocation(myLoc: Location, statnLoc: [StationLocation]) {
         let closeStName = locationManager.calculateDistance(userLoc: myLoc, statnLoc: statnLoc, distance: 3000)
@@ -110,22 +112,23 @@ extension MainListUseCase {
         print("🍜", tempStationInfo)
         
         let nearStationName = tempStationInfo.first?.statnNm ?? ""
+        
         nearStationNameSubject.send(nearStationName)
     }
     
-    /// 역정보 Fetch
-    private func fetchStationInfos() async -> [StationInfo] {
-        return await repository.fetchingData(type: StationInfo.self, colName: "StationInfo")
-    }
-    
-    /// 역위치 정보 Fetch
-    private func fetchLocationInfos() async -> [StationLocation] {
-        return await repository.fetchingData(type: StationLocation.self, colName: "StationLocation")
-    }
-    
-    /// 역라인정보 Fetch
-    private func fetchLineColorInfos() async -> [SubwayLineColor] {
-        return await repository.fetchingData(type: SubwayLineColor.self, colName: "SubwayLineColor")
-    }
+//    /// 역정보 Fetch
+//    private func fetchStationInfos() async -> [StationInfo] {
+//        return await repository.fetchingData(type: StationInfo.self, colName: "StationInfo")
+//    }
+//
+//    /// 역위치 정보 Fetch
+//    private func fetchLocationInfos() async -> [StationLocation] {
+//        return await repository.fetchingData(type: StationLocation.self, colName: "StationLocation")
+//    }
+//
+//    /// 역라인정보 Fetch
+//    private func fetchLineColorInfos() async -> [SubwayLineColor] {
+//        return await repository.fetchingData(type: SubwayLineColor.self, colName: "SubwayLineColor")
+//    }
     
 }
