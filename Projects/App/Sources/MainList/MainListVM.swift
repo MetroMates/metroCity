@@ -12,13 +12,13 @@ import Combine
 // ViewModel에서는 View와 관련된 메서드(로직)만 작성한다.
 /// 메인 리스트 ViewModel
 final class MainListVM: ObservableObject {
-    /// 가까운 역정보
-    @Published var nearStation: String = ""
+    /// 유저위치에서 가장 가까운 역이름
+    @Published var nearStNamefromUserLocation: String = ""
     @Published var isDetailPresented: Bool = false
     
     /// 호선정보
-    @Published var subwayLines: [SubwayLineColor] = []
-    @Published var nearStationSubwayLines: [SubwayLineColor] = []
+    @Published var subwayLineInfos: [SubwayLineColor] = []
+    @Published var subwayLineInfosAtStation: [SubwayLineColor] = []
     
     @Published var isProgressed: Bool = false
     
@@ -34,11 +34,12 @@ final class MainListVM: ObservableObject {
     
     /// 구독메서드
     func subscribe() {
-        $nearStation
+        // 해당역의 호선들의 분류작업.
+        $nearStNamefromUserLocation
             .receive(on: DispatchQueue.main)
             .sink { i in
                 self.isProgressed = true
-                self.getNearStationLineInfos(value: i)
+                self.filteredLinesfromSelectStation(value: i)
                 self.isProgressed = false
             }
             .store(in: &anyCancellable)
@@ -46,24 +47,24 @@ final class MainListVM: ObservableObject {
     
     /// GPS 기반 현재위치에서 제일 가까운 역이름 가져오기
     func GPScheckNowLocactionTonearStation() {
-        useCase.getNearStation()
+        useCase.startFetchNearStationFromUserLocation()
     }
     
     // 도메인Layer fetchData로직(= 비즈니스 로직 -> 데이터관련 로직) 호출
-    func fetchDataInfo() async {
-        await useCase.dataFetch(vm: self)
+    func fetchDataInfos() async {
+        await useCase.dataFetchs(vm: self)
     }
 }
 
 // MARK: - Private Methods
 extension MainListVM {
-    private func getNearStationLineInfos(value: String) {
-        nearStationSubwayLines.removeAll() // 초기화
+    private func filteredLinesfromSelectStation(value: String) {
+        subwayLineInfosAtStation.removeAll() // 초기화
         
-        let stationDatas = useCase.getNearStationLineInfos(statName: value)
+        let stationDatas = useCase.filterdLineInfosFromSelectStationName(statName: value)
         let lineData = SubwayLineColor.list // Color값 가져와야함.
         
-        self.nearStationSubwayLines = lineData.filter({ info in
+        self.subwayLineInfosAtStation = lineData.filter({ info in
             for stationData in stationDatas where stationData.subwayId == info.subwayId {
                 return true
             }

@@ -5,6 +5,7 @@ import Combine
 
 // ViewModel에서 특정 동작이 일어났을경우의 비즈니스 로직이 동작하는 클래스
 // 비즈니스 로직이란 View = 즉 UI와 관련되지 않은 모든 로직을 일컫는다.
+// UseCase에서는 Published를 하지 않는다. 즉, Observabled를 채택하여 사용하지 않는다.
 final class MainListUseCase {
     // SubwayRepositoryFetch 프로토콜을 채택하는 레포지토리를 외부에서 생성하여 주입받는다.
     // 특정 Repository 객체(타입)를 의존하지 않음을 뜻함. => 해당 추상화프로토콜을 따르는 어떤 Repository라도 사용이 가능함을 의미.
@@ -18,14 +19,16 @@ final class MainListUseCase {
     
     private let stInfosSubject = PassthroughSubject<[StationInfo], Never>()
     private let stLocInfosSubject = PassthroughSubject<[StationLocation], Never>()
+    private let nearStationNameSubject = PassthroughSubject<String, Never>()
     
-    /// 나와 가장 가까운 역명
-    @Published var nearLocStationName: String = ""
-    /// 역 위치 정보( 위도, 경도 )
-    private var stLocInfos = [StationLocation]()
+//    /// 나와 가장 가까운 역명
+//    @Published var nearLocStationName: String = ""
+//    /// 역 위치 정보( 위도, 경도 )
+//    private var stLocInfos = [StationLocation]()
     
     init(repo: SubwayRepositoryFetch) {
         self.repository = repo
+        self.subscribe() // send로 보내지 않으면 어차피 방출은 발생하지않는다. init할때 미리 구독을 걸어주는게 좋을듯.
     }
     
     deinit {
@@ -33,68 +36,81 @@ final class MainListUseCase {
     }
     
     /// GPS 기반하여 가장 가까운 역이름, 역코드 반환
-    func getNearStation() {
-        self.fetchLocation()
+    func startFetchNearStationFromUserLocation() {
+        locationManager.fetchUserLocation()
     }
 
-    func getNearStationLineInfos(statName: String) -> [StationInfo] {
-        return StationInfo.testList.filter { info in
+    func filterdLineInfosFromSelectStationName(statName: String) -> [StationInfo] {
+        return StationInfo.list.filter { info in
             info.statnNm == statName
         }
     }
     
     /// MainListVM을 통해서 MinaListView가 onAppear 될때 한번만 호출해줄 것.
-    func dataFetch(vm: MainListVM) async {
+    func dataFetchs(vm: MainListVM) async {
+        var stLocInfos = [StationLocation]()
+        
         // 정보 Fetch
         print("🍜", "MainListUseCase init & fetch")
         
         if StationInfo.list.isEmpty {
             StationInfo.list = await self.fetchStationInfos() // static 변수에 할당.
+            if !StationInfo.list.isEmpty {
+                stInfosSubject.send(StationInfo.list)
+            }
         }
-        
-        print("🍜", StationInfo.list.count)
+
+        if stLocInfos.isEmpty {
+            stLocInfos = await self.fetchLocationInfos()
+            
+            if !stLocInfos.isEmpty {
+                stLocInfosSubject.send(stLocInfos)
+            }
+        }
         
         if SubwayLineColor.list.isEmpty {
             SubwayLineColor.list = await self.fetchLineColorInfos()
         }
-        print("🍜", SubwayLineColor.list.count)
         
         await MainActor.run {
-            vm.subwayLines = SubwayLineColor.list
+            vm.subwayLineInfos = SubwayLineColor.list
         }
         
-        if stLocInfos.isEmpty {
-            self.stLocInfos = await self.fetchLocationInfos()
-        }
+        nearStationNameSubject
+            .receive(on: DispatchQueue.main)
+            .sink { statNm in
+                vm.nearStNamefromUserLocation = statNm
+            }.store(in: &anyCancel)
         
-        // 데이터는 잘 받아옴.
-        stInfosSubject.send(StationInfo.list)
-        stLocInfosSubject.send(stLocInfos)
     }
     
 }
 
 // MARK: - Private Methods
 extension MainListUseCase {
-    /// 나의 위치 정보 구독
-    private func fetchLocation() {
-        locationManager.fetchUserLocation()
+    /// 구독 메서드
+    private func subscribe() {
         // 여기서는 combineLatest를 사용해야 하는 이유: stInfosSubject, stLocInfosSubject는 초반에 한번만 발행이 될것이기 때문.
-        locationManager.locationPublisher.combineLatest(stInfosSubject, stLocInfosSubject)
+        // 이거 불안불안함. 테스트 여러번 해봐야할듯.
+        locationManager.userLocationPublisher.zip(stInfosSubject, stLocInfosSubject)
             .sink { (myLoc, _, stLoc) in
-                self.filterStationName(myLoc: myLoc, statnLoc: stLoc)
+                print("🍜 myLOC \(myLoc),  stLOC Cnt : \(stLoc.count)")
+                self.findNearStationFromUserLocation(myLoc: myLoc, statnLoc: stLoc)
             }
             .store(in: &anyCancel)
+
     }
     
-    // 기존의 역정보를 가지고 역이름을 걸러준다.
-    private func filterStationName(myLoc: Location, statnLoc: [StationLocation]) {
+    // 유저의 위치에 가까운 역을 찾아서 역이름을 반환한다.
+    private func findNearStationFromUserLocation(myLoc: Location, statnLoc: [StationLocation]) {
         let closeStName = locationManager.calculateDistance(userLoc: myLoc, statnLoc: statnLoc, distance: 3000)
-        print("🍜", closeStName)
+        print("🍜 closeStName ", closeStName)
+        
         let tempStationInfo = StationInfo.list.filter { $0.statnNm.contains(closeStName) }
         print("🍜", tempStationInfo)
-        self.nearLocStationName = tempStationInfo.first?.statnNm ?? ""
-        print("🍜", nearLocStationName)
+        
+        let nearStationName = tempStationInfo.first?.statnNm ?? ""
+        nearStationNameSubject.send(nearStationName)
     }
     
     /// 역정보 Fetch
