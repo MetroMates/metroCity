@@ -17,7 +17,7 @@ struct MetroCityTDSApp: App {
     
     var body: some Scene {
         WindowGroup {
-            TabbarView()
+            StartView()
         }
     }
 }

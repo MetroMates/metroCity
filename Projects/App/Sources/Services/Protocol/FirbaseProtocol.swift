@@ -4,12 +4,11 @@ import Foundation
 import FirebaseFirestore
 
 /// FireStore 서버통신용 객체 프로토콜
-protocol FireStoreCodable: Codable { }
-
-protocol FireStoreServiceDelegate: AnyObject {
-    /// Firebase colType에 의 컬렉션의 모든 문서를 Fetch
-//    func firestoreFetchAll<T: FireStoreCodable>(colName: String, type: T.Type) async throws -> [T]
+protocol FireStoreCodable: Codable {
+    static var mockList: [Self] { get set }
 }
+
+protocol FireStoreServiceDelegate: AnyObject {}
 
 extension FireStoreServiceDelegate {
     var db: Firestore {
