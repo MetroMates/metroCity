@@ -31,7 +31,7 @@ extension ArrivalTimeView {
         LazyVStack(spacing: 0, pinnedViews: .sectionHeaders) {
             Section {
                 VStack(alignment: .leading, spacing: 10) {
-                    trainList(title: "", trainDatas)
+                    trainList(trainDatas)
                         .frame(height: 150)
                 }
                 .font(.callout)
@@ -58,20 +58,14 @@ extension ArrivalTimeView {
         
     }
     
-    @ViewBuilder private func trainList(title: String, _ data: [RealTimeSubway]) -> some View {
+    @ViewBuilder private func trainList(title: String = "", _ data: [RealTimeSubway]) -> some View {
         GeometryReader { geo in
             VStack(spacing: 5) {
-//                Text(title)
-//                    .font(.subheadline)
-//
-//                Rectangle()
-//                    .frame(maxWidth: .infinity)
-//                    .frame(height: 1)
                 
                 VStack(spacing: 8) {
                     ForEach(data, id: \.id) { info in
                         HStack(spacing: 10) {
-                            ScrollText(content: info.trainDestiStation)
+                            ScrollText(content: info.trainDestiStation, moveOptn: true)
                                 .frame(width: geo.size.width * 0.4)
                                 .foregroundStyle(info.trainTypeIndex != "0" ?
                                                  Color.blue :

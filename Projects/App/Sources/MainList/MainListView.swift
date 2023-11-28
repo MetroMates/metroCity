@@ -29,12 +29,15 @@ struct MainListView: View {
                     
                     ScrollView(showsIndicators: false) {
                         VStack(alignment: .leading, spacing: 15) {
-                            if !mainVM.nearStation.isEmpty {
+                            if !mainVM.nearStNamefromUserLocation.isEmpty {
                                 NearStationLines
                             }
                             AllStationLines
                         }
                         .padding()
+                        .navigationDestination(isPresented: $mainVM.isDetailPresented) {
+                            MainDetailView(vm: mainDetailVM)
+                        }
                     }
                 }
                 .overlay(alignment: .topTrailing) {
@@ -50,13 +53,12 @@ struct MainListView: View {
                 }
             }
         }
-        .onAppear {
+        .task {
+            // 우선 데이터 fetch를 기다린 후에 그다음로직이 순차적으로 실행된다.
+            await mainVM.fetchDataInfos()
             mainVM.GPScheckNowLocactionTonearStation()
             mainVM.subscribe()
             mainDetailVM.subscribe()
-        }
-        .task {
-            await mainVM.fetchDataInfo()
         }
         
     }
@@ -68,24 +70,22 @@ extension MainListView {
     @ViewBuilder private var NearStationLines: some View {
         Section {
             VStack(spacing: 15) {
-                ForEach(mainVM.nearStationSubwayLines) { line in
+                ForEach(mainVM.subwayLineInfosAtStation) { line in
                     Button {
                         self.setLineAndstationInfo(line: line)
-                        mainVM.isDetailPresented = true
+                        mainVM.isDetailPresented.toggle()
                     } label: {
                         MainListCellView(stationName: line.subwayNm,
                                          stationColor: line.lineColor)
                     }
-                    .navigationDestination(isPresented: $mainVM.isDetailPresented) {
-                        MainDetailView(vm: mainDetailVM)
-                    }
+                    
                 }
             }
             
         } header: {
             HStack(spacing: 5) {
                 Image(systemName: "location.fill")
-                Text("'\(mainVM.nearStation)역' 기준")
+                Text("'\(mainVM.nearStNamefromUserLocation)역' 기준")
             }
         }
     }
@@ -93,16 +93,13 @@ extension MainListView {
     @ViewBuilder private var AllStationLines: some View {
         Section {
             VStack(spacing: 15) {
-                ForEach(mainVM.subwayLines) { line in
+                ForEach(mainVM.subwayLineInfos) { line in
                     Button {
                         self.setLineAndstationInfo(line: line)
-                        mainVM.isDetailPresented = true
+                        mainVM.isDetailPresented.toggle()
                     } label: {
                         MainListCellView(stationName: line.subwayNm,
                                          stationColor: line.lineColor)
-                    }
-                    .navigationDestination(isPresented: $mainVM.isDetailPresented) {
-                        MainDetailView(vm: mainDetailVM)
                     }
                 }
             }
@@ -117,8 +114,8 @@ extension MainListView {
 // MARK: - Private Methods
 extension MainListView {
     private func setLineAndstationInfo(line: SubwayLineColor) {
-        mainDetailVM.nearStationLines = mainVM.nearStationSubwayLines
-        mainDetailVM.send(nearStInfo: mainVM.nearStation,
+        mainDetailVM.nearStationLines = mainVM.subwayLineInfosAtStation
+        mainDetailVM.send(nearStInfo: mainVM.nearStNamefromUserLocation,
                           lineInfo: line)
     }
 }

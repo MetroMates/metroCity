@@ -59,7 +59,7 @@ final class MainDetailVM: ObservableObject {
     /// 타이머 시작
     func timerStart() {
         // 10초에 한번씩 실행.
-        self.timerCancel = Timer.publish(every: 10.0, on: .main, in: .default)
+        self.timerCancel = Timer.publish(every: 3600.0, on: .main, in: .default)
                     .autoconnect()
                     .sink { _ in
                         self.send(nearStInfo: self.stationInfo.nowStNm,

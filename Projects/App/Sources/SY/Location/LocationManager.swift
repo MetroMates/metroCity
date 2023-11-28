@@ -18,7 +18,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     private var userLocationInfo = Location(crdntX: 0.0, crdntY: 0.0)
     
     // 외부에서 사용.
-    var locationPublisher = PassthroughSubject<Location, Never>()
+    var userLocationPublisher = PassthroughSubject<Location, Never>()
     
     override init() {
         super.init()
@@ -29,7 +29,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         // 해당 항목은 plist의 privacy 키값에 의해 제어됨
         // 장치에서 위치 서비스가 활성화되어 있는지 여부를 나타내는 부울 값을 반환합니다 locationServicesEnabled
         self.clLocManager.requestWhenInUseAuthorization()
-        
         
         // 대리인(self)에게 위치 없데이트 전달을 시작함 -> delegate 채택으로 인하여 정의한 didUpdateLocations 대리자 메서드는 사용 가능한 새 위치 데이터가 있을 때마다 호출됩니다.
         // startUpdatingLocation : 유저 위치가져오기
@@ -45,7 +44,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         guard !stationLocation.isEmpty else { return "" }
         
         let userPoint = CLLocation(latitude: userLocation.crdntY, longitude: userLocation.crdntX)
-        
+        print("🍜 userPoint", userPoint)
         var calculatedStation: [StationLocation] = []
         
         for station in stationLocation {
@@ -62,6 +61,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         var rtnStationName: String = ""
         var minDifference: Double = Double.infinity
         
+        print("🍜 caluStation \(calculatedStation)")
         for station in calculatedStation {
             let diffX = abs(station.crdntX - userLocation.crdntX)
             let diffY = abs(station.crdntY - userLocation.crdntY)
@@ -74,7 +74,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             }
         }
         
-        // StationLocation의 이름 기준입니다.
+        // StationLocation데이터의 이름 기준입니다.
         return rtnStationName
         
 //        self.stationName = closestStation?.statnNm ?? ""
@@ -110,20 +110,25 @@ extension LocationManager {
     /// delegate 관련 정의 함수
     /// 사용자의 업데이트된 위치를 나타내는 CLLocation 개체 배열을 중 마지막을 가져옴
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print("🍜")
         guard let userLocation = locations.last else { return } // 사용자 위치가 nil인지 아닌지 판단
         
         // 위도(latitude-37)와 경도(longitude-126) 추출하기
-        let latitude = userLocation.coordinate.latitude
-        let longitude = userLocation.coordinate.longitude
+        var latitude = userLocation.coordinate.latitude
+        var longitude = userLocation.coordinate.longitude
+        
+//        latitude = 37.3366991
+//        longitude = 126.7714132
+        
         locationString = "🍜 위도: \(latitude), 경도: \(longitude)"
         print("⭐️\(locationString)")
+        
+        
         
         // 유저 위치값 추출해서 @Published로 만들어주기
         userLocationInfo.crdntY = latitude
         userLocationInfo.crdntX = longitude
         
-        locationPublisher.send(userLocationInfo) // 데이터 발행
+        userLocationPublisher.send(userLocationInfo) // 데이터 발행
     }
     
     /// delegate 관련 정의 함수

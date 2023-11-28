@@ -28,8 +28,8 @@ struct MainDetailView: View {
         .refreshable { vm.send(nearStInfo: vm.stationInfo.nowStNm, lineInfo: vm.hosunInfo) }
         .onAppear {
             vm.timerStart()
-            locationVM.fetchingData()
-            locationVM.fetchingStationInfo()
+//            locationVM.fetchingData()
+//            locationVM.fetchingStationInfo()
         }
         .onDisappear { vm.timerStop() }
     }
