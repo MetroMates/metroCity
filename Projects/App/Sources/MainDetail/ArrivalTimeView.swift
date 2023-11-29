@@ -21,7 +21,7 @@ extension ArrivalTimeView {
     /// (상행, 하행) 구분
     @ViewBuilder func contentView(_ updn: MainDetailVM.UpDn) -> some View {
         var destiStation: String {
-            updn == .up ? vm.stationInfo.upStNm : vm.stationInfo.downStNm
+            updn == .up ? vm.selectStationInfo.upStNm : vm.selectStationInfo.downStNm
         }
         
         var trainDatas: [RealTimeSubway] {
@@ -31,7 +31,7 @@ extension ArrivalTimeView {
         LazyVStack(spacing: 0, pinnedViews: .sectionHeaders) {
             Section {
                 VStack(alignment: .leading, spacing: 10) {
-                    trainList(title: "", trainDatas)
+                    trainList(trainDatas)
                         .frame(height: 150)
                 }
                 .font(.callout)
@@ -58,20 +58,14 @@ extension ArrivalTimeView {
         
     }
     
-    @ViewBuilder private func trainList(title: String, _ data: [RealTimeSubway]) -> some View {
+    @ViewBuilder private func trainList(title: String = "", _ data: [RealTimeSubway]) -> some View {
         GeometryReader { geo in
             VStack(spacing: 5) {
-//                Text(title)
-//                    .font(.subheadline)
-//
-//                Rectangle()
-//                    .frame(maxWidth: .infinity)
-//                    .frame(height: 1)
                 
                 VStack(spacing: 8) {
                     ForEach(data, id: \.id) { info in
                         HStack(spacing: 10) {
-                            ScrollText(content: info.trainDestiStation)
+                            ScrollText(content: info.trainDestiStation, moveOptn: true)
                                 .frame(width: geo.size.width * 0.4)
                                 .foregroundStyle(info.trainTypeIndex != "0" ?
                                                  Color.blue :
@@ -94,10 +88,10 @@ extension ArrivalTimeView {
 struct ArrivalTimeView_Previews: PreviewProvider {
     static var previews: some View {
         // 이 부분에서 MainListRepository를 테스트용 데이터를 반환하는 class로 새로 생성하여 주입해주면 테스트용 Preview가 완성.!!
-        MainDetailView(vm: MainDetailVM(useCase: MainDetailUseCase(repo: MainListRepository(networkStore: SubwayAPIService()))))
+        MainDetailPreviewView()
             .previewDisplayName("디테일")
         
-        MainListView()
+        MainListPreviewView()
             .previewDisplayName("메인리스트")
     }
 }

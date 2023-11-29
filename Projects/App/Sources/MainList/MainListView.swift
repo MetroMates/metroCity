@@ -3,18 +3,22 @@
 import SwiftUI
 
 /*
-    MainListView.onAppear에서 mainVM.fetchData 함수 호출하기
-    - mainVM.fetchData => coreData에 값이 없으면 FireStore에서 값 불러오기.
-    - FireStore에서 가져온 데이터는 FireStoreCodable 프로토콜을 채택하는 DTO로 받는다.
-    - FireStore fetch는 MainListRepository에서 이루어진다.
-    - FireStoreCodable 프로토콜을 채택하는 프리뷰용 목업 DTO를 하나 더 만들어준다.
+ MainListView.onAppear에서 mainVM.fetchData 함수 호출하기
+ - mainVM.fetchData => coreData에 값이 없으면 FireStore에서 값 불러오기.
+ - FireStore에서 가져온 데이터는 FireStoreCodable 프로토콜을 채택하는 DTO로 받는다.
+ - FireStore fetch는 MainListRepository에서 이루어진다.
  */
 
 /// 전체 호선 리스트 View
 struct MainListView: View {
-    @StateObject private var mainVM = MainListVM(useCase: MainListUseCase(repo: MainListRepository(networkStore: SubwayAPIService())))
+    //    @EnvironmentObject private var startVM: StartVM
+    @StateObject private var mainVM: MainListVM
+    @StateObject private var mainDetailVM: MainDetailVM
     
-    @StateObject private var mainDetailVM = MainDetailVM(useCase: MainDetailUseCase(repo: MainDetailRepository(networkService: SubwayAPIService())))
+    init(mainVM: MainListVM, mainDetailVM: MainDetailVM) {
+        self._mainVM = StateObject(wrappedValue: mainVM)
+        self._mainDetailVM = StateObject(wrappedValue: mainDetailVM)
+    }
     
     var body: some View {
         NavigationStack {
@@ -30,31 +34,32 @@ struct MainListView: View {
                     
                     ScrollView(showsIndicators: false) {
                         VStack(alignment: .leading, spacing: 15) {
-                            if !mainVM.nearStation.isEmpty {
+                            if !mainVM.nearStNamefromUserLocation.isEmpty {
                                 NearStationLines
                             }
                             AllStationLines
                         }
                         .padding()
+                        .navigationDestination(isPresented: $mainVM.isDetailPresented) {
+                            MainDetailView(vm: mainDetailVM)
+                        }
                     }
                 }
                 .overlay(alignment: .topTrailing) {
                     Button {
                         mainVM.GPScheckNowLocactionTonearStation()
-                        mainVM.nearStation = "서울"
                     } label: {
                         Image(systemName: "location.circle")
                             .font(.title)
                             .foregroundStyle(Color.primary.opacity(0.6))
                             .padding()
-//                            .padding(.trailing, 15)
                     }
                 }
             }
         }
         .onAppear {
-            mainVM.GPScheckNowLocactionTonearStation()
-            mainVM.subscribe()
+            //            mainVM.subscribe() -> ViewModel 내부로 옮김.
+            //            mainVM.GPScheckNowLocactionTonearStation() -> 데이터가 fetch된 후로 옮김. mainVM.subscribe 내부로 옮김.
             mainDetailVM.subscribe()
         }
         
@@ -67,24 +72,23 @@ extension MainListView {
     @ViewBuilder private var NearStationLines: some View {
         Section {
             VStack(spacing: 15) {
-                ForEach(mainVM.nearStationSubwayLines) { line in
+                ForEach(mainVM.subwayLineInfosAtStation) { line in
                     Button {
                         self.setLineAndstationInfo(line: line)
-                        mainVM.isDetailPresented = true
+                        mainVM.isDetailPresented.toggle()
                     } label: {
-                        MainListCellView(stationName: line.subwayNm,
-                                         stationColor: line.lineColor)
+                        LineCellView(stationName: line.subwayNm,
+                                     stationColor: line.lineColor)
+                        .border(Color.gray.opacity(0.5))
                     }
-                    .navigationDestination(isPresented: $mainVM.isDetailPresented) {
-                        MainDetailView(vm: mainDetailVM)
-                    }
+                    
                 }
             }
             
         } header: {
             HStack(spacing: 5) {
                 Image(systemName: "location.fill")
-                Text("'\(mainVM.nearStation)역' 기준")
+                Text("'\(mainVM.nearStNamefromUserLocation)역' 기준")
             }
         }
     }
@@ -92,20 +96,18 @@ extension MainListView {
     @ViewBuilder private var AllStationLines: some View {
         Section {
             VStack(spacing: 15) {
-                ForEach(mainVM.subwayLines) { line in
+                ForEach(mainVM.subwayLineInfos) { line in
                     Button {
                         self.setLineAndstationInfo(line: line)
-                        mainVM.isDetailPresented = true
+                        mainVM.isDetailPresented.toggle()
                     } label: {
-                        MainListCellView(stationName: line.subwayNm,
-                                         stationColor: line.lineColor)
-                    }
-                    .navigationDestination(isPresented: $mainVM.isDetailPresented) {
-                        MainDetailView(vm: mainDetailVM)
+                        LineCellView(stationName: line.subwayNm,
+                                     stationColor: line.lineColor)
+                        .border(Color.gray.opacity(0.5))
                     }
                 }
             }
-
+            
         } header: {
             Text("전체")
                 .padding(.top, 30)
@@ -115,15 +117,15 @@ extension MainListView {
 
 // MARK: - Private Methods
 extension MainListView {
-    private func setLineAndstationInfo(line: TestSubwayLineColor) {
-        mainDetailVM.nearStationLines = mainVM.nearStationSubwayLines
-        mainDetailVM.send(nearStInfo: mainVM.nearStation,
+    private func setLineAndstationInfo(line: SubwayLineColor) {
+        mainDetailVM.selectStationLineInfos = mainVM.subwayLineInfosAtStation
+        mainDetailVM.send(selectStationInfo: mainVM.nearStationInfo,
                           lineInfo: line)
     }
 }
 
 struct MainListView_Preview: PreviewProvider {
     static var previews: some View {
-        MainListView()
+        MainListPreviewView()
     }
 }

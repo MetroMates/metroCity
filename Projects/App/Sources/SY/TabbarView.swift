@@ -2,6 +2,7 @@
 
 import SwiftUI
 
+// 추후 StartView에 로직 옮기기 -> StartView에서 TabBar생성.
 struct TabbarView: View {
     @State private var selectedIndex = 0
     
@@ -14,7 +15,8 @@ struct TabbarView: View {
                 ZStack {
                     switch selectedIndex {
                     case 0:
-                        MainListView()
+                        EmptyView()
+//                        MainListView()
                         // MainDetailView(vm: MainDetailVM(useCase: MainDetailUseCase(repo: MainListRepository(networkStore: SubwayAPIService()))))
                     default:
                         BookmarkView()

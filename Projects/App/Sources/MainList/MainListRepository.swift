@@ -5,6 +5,11 @@ import Combine
 
 // 네트워크 통신을 하여 json으로 가져온 데이터를 디코딩까지 하고 객체로 반환해주는 곳.
 final class MainListRepository: SubwayRepositoryFetch {
+    func fetchAllFBdatas<Content>(colType: String, type: Content.Type) async -> [Content] where Content : FireStoreCodable {
+        return []
+    }
+    
+    
     // 약한참조를 걸었더니 init메서드에서 값이 할당이 안된다..?? -> 풀리지않은 의문. 아래 GPT결론.
     /*---------- GPT --------------------------------------------------------------------------------------------------------------------------
          '약함'은 참조가 강하지 않음을 의미합니다. 가리키는 개체의 할당이 취소되는 것을 막지는 않습니다.
@@ -50,6 +55,23 @@ final class MainListRepository: SubwayRepositoryFetch {
             return Empty().setFailureType(to: Error.self).eraseToAnyPublisher()
         }
     }
+    
+    func fetchingData<Content>(type: Content.Type, colName: String) async -> [Content] where Content: FireStoreCodable {
+        guard !colName.isEmpty else { return [] }
+        
+        // TODO: firestoreFetch 만들기 colName, docID, Content.Type -> Content?
+//        let ver = try? await fires
+        
+        // TODO: if ver이 UserDefault가 가진 ver보다 크면 아래 로직 실행. 그렇지 않으면 coreData에서 가져오기.
+        
+        do {
+            return try await firestoreFetchAll(colName: colName, type: Content.self)
+        } catch {
+            print("🍜Error: \(error.localizedDescription)")
+        }
+        return []
+    }
+    
 }
 
 extension MainListRepository {

@@ -2,21 +2,23 @@
 
 import Foundation
 import Combine
+import FirebaseFirestore
 
 protocol SubwayRepository: SubwayRepositoryFetch, SubwayRepositoryUD { }
 
-protocol SubwayRepositoryFetch {
+protocol SubwayRepositoryFetch: FireStoreServiceDelegate {
+//    var db: Firestore { get }
     func receivePublisher<Content>(type: Content.Type,
                                    urlType: URLAddress,
                                    whereData: String) -> AnyPublisher<Content, Error> where Content: SubwayModel2Server
-    /// 서버에서 데이터 fetch. 배열로 받음.
-//    func subwaysFetch<Content>(modelType: Content.Type,
-//                               urlType: URLAddress,
-//                               whereData: String) async -> [Content] where Content: SubwayModelIdentifier
-//    /// 서버에서 데이터 fetch
-//    func subwayFetch<Content>(modelType: Content.Type,
-//                              urlType: URLAddress,
-//                              whereData: String) async -> Content? where Content: SubwayModel
+
+    func fetchingData<Content>(type: Content.Type, colName: String) async -> [Content] where Content: FireStoreCodable
+}
+
+extension SubwayRepositoryFetch {
+    func fetchingData<Content>(type: Content.Type, colName: String) async -> [Content] where Content: FireStoreCodable {
+        return []
+    }
 }
 
 protocol SubwayRepositoryUpdate {

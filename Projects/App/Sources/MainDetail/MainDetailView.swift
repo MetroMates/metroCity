@@ -4,12 +4,11 @@ import SwiftUI
 
 struct MainDetailView: View {     
     @ObservedObject var vm: MainDetailVM
-    @StateObject var locationVM = LocationViewModel()
     
     var body: some View {
         VStack(spacing: 20) {
             VStack(spacing: 20) {
-                SearchContent
+                SearchBarMain(mainDetailVM: vm)
                 TitleContent
                 SubTitleContent
             }
@@ -25,11 +24,14 @@ struct MainDetailView: View {
                 Spacer()
             }
         }
-        .refreshable { vm.send(nearStInfo: vm.stationInfo.nowStNm, lineInfo: vm.hosunInfo) }
+        .overlay {
+            SelectStationLineInfosView(isPresented: $vm.isLineListSheetOpen, lineLists: $vm.selectStationLineInfos)
+        }
+        .refreshable { vm.send(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo) }
         .onAppear {
             vm.timerStart()
-            locationVM.fetchingData()
-            locationVM.fetchingStationInfo()
+//            locationVM.fetchingData()
+//            locationVM.fetchingStationInfo()
         }
         .onDisappear { vm.timerStop() }
     }
@@ -38,34 +40,14 @@ struct MainDetailView: View {
 
 // MARK: - UI 모듈 연산프로퍼티
 extension MainDetailView {
-    /// Search부분
-    @ViewBuilder private var SearchContent: some View {
-//        HStack {
-//            TextField("역이름을 검색해보세요", text: $vm.searchText)
-//                .padding(7)
-//                .padding(.leading, 3)
-//                .font(.caption)
-//                .background {
-//                    RoundedRectangle(cornerRadius: 5)
-//                        .stroke(Color.gray.opacity(0.8), lineWidth: 2)
-//
-//                }
-//            Button {
-//                // 검색 func
-//            } label: {
-//                Image(systemName: "magnifyingglass")
-//                    .tint(.primary)
-//            }
-//        }
-        SearchBarMain(LocationVM: locationVM)
-    }
     /// Title 부분
     @ViewBuilder private var TitleContent: some View {
         ZStack {
             Button {
                 // Sheet Open
-                print(vm.nearStationLines)
-                print("역 호선 정보")
+                vm.isLineListSheetOpen = true
+                print(vm.selectStationLineInfos)
+                print("🦁역 호선 정보")
             } label: {
                 HStack {
                     Text("\(vm.hosunInfo.subwayNm)")
@@ -91,7 +73,7 @@ extension MainDetailView {
                 HStack(spacing: 15) {
                     Button {
                         // 화살표 돌아가게 애니메이션 적용 rotation 사용하면 될듯.
-                        vm.send(nearStInfo: vm.stationInfo.nowStNm, lineInfo: vm.hosunInfo)
+                        vm.send(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
                     } label: {
                         Image(systemName: "arrow.clockwise")
                             .tint(.primary)
@@ -120,13 +102,16 @@ extension MainDetailView {
             
             HStack {
                 Button {
-                    vm.send(nearStInfo: vm.stationInfo.upStNm, lineInfo: vm.hosunInfo)
-                    print("이전역")
+                    if vm.selectStationInfo.upStNm != "종착" {
+                        vm.selectStationInfo.nowStNm = vm.selectStationInfo.upStNm
+                        vm.send(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
+                        print("이전역")
+                    }
                 } label: {
                     HStack {
                         Image(systemName: "chevron.left")
                             .font(.caption)
-                        ScrollText(content: vm.stationInfo.upStNm)
+                        ScrollText(content: vm.selectStationInfo.upStNm)
                             .font(.headline)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -142,7 +127,7 @@ extension MainDetailView {
                                 .fill(Color.white)
                         }
                     
-                    ScrollText(content: vm.stationInfo.nowStNm)
+                    ScrollText(content: vm.selectStationInfo.nowStNm)
                         .font(.title3)
                         .padding(.horizontal, 5)
                         .foregroundColor(Color.black)
@@ -151,11 +136,14 @@ extension MainDetailView {
                 }
                 
                 Button {
-                    vm.send(nearStInfo: vm.stationInfo.downStNm, lineInfo: vm.hosunInfo)
-                    print("다음역")
+                    if vm.selectStationInfo.downStNm != "종착" {
+                        vm.selectStationInfo.nowStNm = vm.selectStationInfo.downStNm
+                        vm.send(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
+                        print("다음역")
+                    }
                 } label: {
                     HStack {
-                        ScrollText(content: vm.stationInfo.downStNm)
+                        ScrollText(content: vm.selectStationInfo.downStNm)
                             .font(.headline)
                         Image(systemName: "chevron.right")
                             .font(.caption)
@@ -177,18 +165,14 @@ extension MainDetailView {
 }
 
 struct MainDetailView_Previews: PreviewProvider {
-    @StateObject static var vm = MainDetailVM(useCase: MainDetailUseCase(repo: MainListRepository(networkStore: SubwayAPIService())))
     
     static var previews: some View {
         // 이 부분에서 MainListRepository를 테스트용 데이터를 반환하는 class로 새로 생성하여 주입해주면 테스트용 Preview가 완성.!!
-        MainDetailView(vm: vm)
+        MainDetailPreviewView()
             .previewDisplayName("디테일")
         
-        MainListView()
+        MainListPreviewView()
             .previewDisplayName("메인리스트")
-        
-        TabbarView()
-            .previewDisplayName("탭바")
-        
+
     }
 }

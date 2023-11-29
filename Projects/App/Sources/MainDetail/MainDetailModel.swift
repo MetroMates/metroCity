@@ -69,7 +69,7 @@ struct MyStation: SubwayModel {
     /// 현재역 id ( statnId )
     let nowSt: Int
     /// 현재역명 (선택한역)
-    let nowStNm: String
+    var nowStNm: String
     /// 상행역 id ( statnFid )
     let upSt: Int
     /// 상행역명
@@ -87,6 +87,16 @@ extension MyStation {
                      upSt: 0, upStNm: "",
                      downSt: 0, downStNm: "")
     }
+    
+    static func nowStNmInit(id: Int, name: String) -> Self {
+        return .init(nowSt: id,
+                     nowStNm: name,
+                     upSt: 0,
+                     upStNm: "",
+                     downSt: 0,
+                     downStNm: "")
+    }
+    
 }
 
 /*

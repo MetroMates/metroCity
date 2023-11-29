@@ -6,9 +6,12 @@ import FirebaseFirestoreSwift
 import SwiftUI
 import CoreLocation
 
-final class FirebaseLocationManager {
-    static let shared = FirebaseLocationManager()
+/// Firebase Service 싱글톤만 제공
+final class FirebaseService {
+    static let shared = FirebaseService()
     private let db = Firestore.firestore()
+    
+    private init() {}
     
     /// 위치정보 가져오는 함수
     func fetchStationLocations<T: Decodable>(collectionName: String, type: T.Type) async throws -> [T] {
@@ -35,15 +38,15 @@ final class FirebaseLocationManager {
     }
 }
 
-extension QueryDocumentSnapshot {
-    func decode<T: Decodable>(as type: T.Type) throws -> T {
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: data(), options: [])
-            let decoder = JSONDecoder()
-            return try decoder.decode(T.self, from: jsonData)
-        } catch {
-            print("Error decoding document data: \(error)")
-            throw error
-        }
-    }
-}
+// extension QueryDocumentSnapshot {
+//    func decode<T: Decodable>(as type: T.Type) throws -> T {
+//        do {
+//            let jsonData = try JSONSerialization.data(withJSONObject: data(), options: [])
+//            let decoder = JSONDecoder()
+//            return try decoder.decode(T.self, from: jsonData)
+//        } catch {
+//            print("Error decoding document data: \(error)")
+//            throw error
+//        }
+//    }
+// }

@@ -44,11 +44,11 @@ extension SubwayRouteMapView {
             
             ZStack {
                 HStack {
-                    stationCircle(vm.stationInfo.upStNm)
+                    stationCircle(vm.selectStationInfo.upStNm)
                     Spacer()
-                    stationCircle(vm.stationInfo.downStNm)
+                    stationCircle(vm.selectStationInfo.downStNm)
                 }
-                stationCircle(vm.stationInfo.nowStNm)
+                stationCircle(vm.selectStationInfo.nowStNm)
             }
             .padding(.horizontal)
             
@@ -94,10 +94,10 @@ extension SubwayRouteMapView {
 
 struct SubwayRouteMapView_Previews: PreviewProvider {
     static var previews: some View {
-        MainDetailView(vm: MainDetailVM(useCase: MainDetailUseCase(repo: MainListRepository(networkStore: SubwayAPIService()))))
+        MainDetailPreviewView()
             .previewDisplayName("디테일")
         
-        MainListView()
+        MainListPreviewView()
             .previewDisplayName("메인리스트")
     }
 }
