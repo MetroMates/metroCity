@@ -7,32 +7,33 @@ import Combine
 final class MainDetailVM: ObservableObject {
     /// 검색 Text
     @Published var searchText: String = ""
+    @Published var isSearching: Bool = false
+    @Published var filteredItems: [StationInfo] = []
+    
     @Published var selectStationInfo: MyStation = .emptyData
     @Published var realTimeInfo: [RealTimeSubway] = [.emptyData]
-    
     /// 상행 실시간 정보
     @Published var upRealTimeInfos: [RealTimeSubway] = [.emptyData] // 런타임 에러 방지
     /// 하행 실시간 정보
     @Published var downRealTimeInfos: [RealTimeSubway] = [.emptyData] // 런타임 에러 방지
-    
     /// 선택된역 관련 호선들
     @Published var selectStationLineInfos: [SubwayLineColor] = []
-    
-    private var lineInfos = [SubwayLineColor]()
-    var stationInfos = [StationInfo]()
-    private var locationInfos = [StationLocation]()
-    
+    @Published var isLineListSheetOpen: Bool = false
+        
     /// 호선정보 및 색상 MainListModel.swift -> 발행될 필요 없다.
     var hosunInfo: SubwayLineColor = .emptyData
-   
+
     // MARK: - Private Properties
+    private var lineInfos = [SubwayLineColor]()
+    private var stationInfos = [StationInfo]()
+    private var locationInfos = [StationLocation]()
     private var anyCancellable: Set<AnyCancellable> = []
     private var timerCancel: AnyCancellable = .init {} // Timer만 생성했다 제거했다를 반복하기 위함.
     private let selectStationInfoFetchSubject = PassthroughSubject<MyStation, Never>()
     private let selectedLineInfoFetchSubject = PassthroughSubject<SubwayLineColor, Never>()
     
     private let useCase: MainDetailUseCase
-    let startVM: StartVM
+    private let startVM: StartVM
     
     init(useCase: MainDetailUseCase, startVM: StartVM) {
         self.useCase = useCase
@@ -57,11 +58,29 @@ final class MainDetailVM: ObservableObject {
                 self.fetchInfo(selectStation)
             }
             .store(in: &anyCancellable)
+        
+        $searchText
+            .receive(on: DispatchQueue.main)
+            .sink { search in
+                if !search.isEmpty {
+                    self.filteredItems = self.stationInfos.filter { $0.statnNm.localizedCaseInsensitiveContains(search) }
+                }
+            }
+            .store(in: &anyCancellable)
     }
     
     func send(selectStationInfo: MyStation, lineInfo: SubwayLineColor) {
         selectStationInfoFetchSubject.send(selectStationInfo)
         selectedLineInfoFetchSubject.send(lineInfo)
+    }
+    
+    func changFilteredStationAndLineInfo(item: StationInfo) {
+        let mystation: MyStation = .nowStNmInit(id: item.statnId,
+                                                name: item.statnNm)
+        let line = lineInfos.filter { $0.subwayId == item.subwayId }.first ?? .emptyData
+        
+        self.send(selectStationInfo: mystation,
+                          lineInfo: line)
     }
     
     /// 타이머 시작

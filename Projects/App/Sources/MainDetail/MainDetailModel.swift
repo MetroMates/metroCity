@@ -87,6 +87,16 @@ extension MyStation {
                      upSt: 0, upStNm: "",
                      downSt: 0, downStNm: "")
     }
+    
+    static func nowStNmInit(id: Int, name: String) -> Self {
+        return .init(nowSt: id,
+                     nowStNm: name,
+                     upSt: 0,
+                     upStNm: "",
+                     downSt: 0,
+                     downStNm: "")
+    }
+    
 }
 
 /*

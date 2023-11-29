@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-struct MainListCellView: View {
+struct LineCellView: View {
     let stationName: String
     let stationColor: Color
     
@@ -19,7 +19,6 @@ struct MainListCellView: View {
         }
         .padding(.vertical, 5)
         .padding(.horizontal, 10)
-        .border(Color.gray.opacity(0.5))
         
     }
 }
