@@ -76,6 +76,7 @@ final class MainDetailUseCase {
                                                             arvlCd: data.arvlCD,
                                                             nowStationName: nowStation)
                     
+                    let trainLocation: CGFloat = self.trainLocation(arvlCd: data.arvlCD)
                     if (data.updnLine == "상행" && upLineEnd == -1) || (data.updnLine == "하행" && downLineEnd == -1) {
                     } else {
                         stations.append(.init(updnLine: data.updnLine,
@@ -84,7 +85,8 @@ final class MainDetailUseCase {
                                               stCnt: firstSort,
                                               sortOrder: secondSort,
                                               message: message,
-                                              trainDestiStation: "\(data.bstatnNm)행" ))
+                                              trainDestiStation: "\(data.bstatnNm)행",
+                                              trainLocation: trainLocation))
                     }
                 }
                 
@@ -125,7 +127,14 @@ extension MainDetailUseCase {
         
         return ""
     }
-    
+   
+    private func trainLocation(arvlCd: String) -> CGFloat {
+        if !arvlCd.isEmpty {
+            return ArvlCD(rawValue: arvlCd)?.subwayShowing ?? -3.0
+        }
+        
+        return -3.0
+    }
     /// 현재역 도착까지 몇정거장 남았는지를 반환.
     private func trainFirstSortKey(ordkey: String) -> Int {
         let startIndex = ordkey.index(ordkey.startIndex, offsetBy: 2)
@@ -172,6 +181,24 @@ extension MainDetailUseCase {
             }
         }
         
+        var subwayShowing: CGFloat {
+            switch self {
+            case .zero:
+                return 0.4
+            case .one:
+                return 0.5
+            case .two:
+                return 0.6
+            case .three:
+                return 0.1
+            case .four:
+                return -0.1
+            case .five:
+                return 0
+            case .ninetynine:
+                return -3.0
+            }
+        }
     }
     
 }
