@@ -53,14 +53,6 @@ extension StationInfo {
     
 }
 
-// protocol LineColors: Identifiable {
-//    var id: String { get }
-//    var subwayId: Int { get }
-//    var subwayNm: String { get }
-//    var lineColorHexCode: String { get }
-//    var lineColor: Color { get }
-// }
-
 /// MainList를 구성하는 SubwayLine 모델
 /// FireStore에서 fetch해온다.
 struct SubwayLineColor: FireStoreCodable, Identifiable {
@@ -96,40 +88,3 @@ extension SubwayLineColor {
               lineColorHexCode: "")
     }
 }
-
-/// Test용 데이터 객체
-// struct TestSubwayLineColor: FireStoreCodable, Identifiable {
-//    let id: String
-//    let subwayId: Int
-//    let subwayNm: String
-//    let lineColorHexCode: String
-//
-//    init(subwayId: Int, subwayNm: String, lineColorHexCode: String) {
-//        self.id = UUID().uuidString
-//        self.subwayId = subwayId
-//        self.subwayNm = subwayNm
-//        self.lineColorHexCode = lineColorHexCode
-//    }
-//}
-//
-// extension TestSubwayLineColor {
-//    var lineColor: Color {
-//        return Color(hex: lineColorHexCode)
-//    }
-//}
-//
-// extension TestSubwayLineColor {
-//    static var mockList: [Self] = [.init(subwayId: 1001, subwayNm: "1호선", lineColorHexCode: "#263B96"),
-//                                   .init(subwayId: 1002, subwayNm: "2호선", lineColorHexCode: "#3CB44A"),
-//                                   .init(subwayId: 1003, subwayNm: "3호선", lineColorHexCode: "#F06F01"),
-//                                   .init(subwayId: 1004, subwayNm: "4호선", lineColorHexCode: "#2C9EDE"),
-//                                   .init(subwayId: 1005, subwayNm: "5호선", lineColorHexCode: "#8836DF"),
-//                                   .init(subwayId: 1006, subwayNm: "6호선", lineColorHexCode: "#B5500A"),
-//                                   .init(subwayId: 1075, subwayNm: "수인분당선", lineColorHexCode: "#EBA900")]
-//
-//    static var emptyData: Self {
-//        .init(subwayId: 0,
-//              subwayNm: "",
-//              lineColorHexCode: "")
-//    }
-// }

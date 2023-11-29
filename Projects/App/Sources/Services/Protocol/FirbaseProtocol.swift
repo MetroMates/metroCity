@@ -17,7 +17,7 @@ extension FireStoreServiceDelegate {
     
     func firestoreFetchAll<T: FireStoreCodable>(colName: String, type: T.Type) async throws -> [T] {
         guard !colName.isEmpty else { print("컬렉션이름 비어있음.!!"); return [] }
-        print("🍜 firestorFetchAll colName ", colName)
+        print("🍜🐷 firestorFetchAll colName ", colName)
         let collectionRef = db.collection(colName)
         
         do {

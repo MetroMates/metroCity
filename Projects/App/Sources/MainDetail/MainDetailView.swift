@@ -25,7 +25,7 @@ struct MainDetailView: View {
                 Spacer()
             }
         }
-        .refreshable { vm.send(nearStInfo: vm.stationInfo.nowStNm, lineInfo: vm.hosunInfo) }
+        .refreshable { vm.send(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo) }
         .onAppear {
             vm.timerStart()
 //            locationVM.fetchingData()
@@ -43,7 +43,7 @@ extension MainDetailView {
         ZStack {
             Button {
                 // Sheet Open
-                print(vm.nearStationLines)
+                print(vm.selectStationLineInfos)
                 print("역 호선 정보")
             } label: {
                 HStack {
@@ -70,7 +70,7 @@ extension MainDetailView {
                 HStack(spacing: 15) {
                     Button {
                         // 화살표 돌아가게 애니메이션 적용 rotation 사용하면 될듯.
-                        vm.send(nearStInfo: vm.stationInfo.nowStNm, lineInfo: vm.hosunInfo)
+                        vm.send(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
                     } label: {
                         Image(systemName: "arrow.clockwise")
                             .tint(.primary)
@@ -99,13 +99,16 @@ extension MainDetailView {
             
             HStack {
                 Button {
-                    vm.send(nearStInfo: vm.stationInfo.upStNm, lineInfo: vm.hosunInfo)
-                    print("이전역")
+                    if vm.selectStationInfo.upStNm != "종착" {
+                        vm.selectStationInfo.nowStNm = vm.selectStationInfo.upStNm
+                        vm.send(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
+                        print("이전역")
+                    }
                 } label: {
                     HStack {
                         Image(systemName: "chevron.left")
                             .font(.caption)
-                        ScrollText(content: vm.stationInfo.upStNm)
+                        ScrollText(content: vm.selectStationInfo.upStNm)
                             .font(.headline)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -121,7 +124,7 @@ extension MainDetailView {
                                 .fill(Color.white)
                         }
                     
-                    ScrollText(content: vm.stationInfo.nowStNm)
+                    ScrollText(content: vm.selectStationInfo.nowStNm)
                         .font(.title3)
                         .padding(.horizontal, 5)
                         .foregroundColor(Color.black)
@@ -130,11 +133,14 @@ extension MainDetailView {
                 }
                 
                 Button {
-                    vm.send(nearStInfo: vm.stationInfo.downStNm, lineInfo: vm.hosunInfo)
-                    print("다음역")
+                    if vm.selectStationInfo.downStNm != "종착" {
+                        vm.selectStationInfo.nowStNm = vm.selectStationInfo.downStNm
+                        vm.send(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
+                        print("다음역")
+                    }
                 } label: {
                     HStack {
-                        ScrollText(content: vm.stationInfo.downStNm)
+                        ScrollText(content: vm.selectStationInfo.downStNm)
                             .font(.headline)
                         Image(systemName: "chevron.right")
                             .font(.caption)

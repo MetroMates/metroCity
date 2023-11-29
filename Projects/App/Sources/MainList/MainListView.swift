@@ -58,17 +58,10 @@ struct MainListView: View {
             }
         }
         .onAppear {
-            mainVM.subscribe()
-            mainVM.GPScheckNowLocactionTonearStation()
+//            mainVM.subscribe() -> ViewModel 내부로 옮김.
+//            mainVM.GPScheckNowLocactionTonearStation() -> 데이터가 fetch된 후로 옮김. mainVM.subscribe 내부로 옮김.
             mainDetailVM.subscribe()
         }
-//        .task {
-//            // 우선 데이터 fetch를 기다린 후에 그다음로직이 순차적으로 실행된다.
-//            await mainVM.fetchDataInfos()
-//            mainVM.GPScheckNowLocactionTonearStation()
-//            mainVM.subscribe()
-//            mainDetailVM.subscribe()
-//        }
         
     }
     
@@ -123,8 +116,15 @@ extension MainListView {
 // MARK: - Private Methods
 extension MainListView {
     private func setLineAndstationInfo(line: SubwayLineColor) {
-        mainDetailVM.nearStationLines = mainVM.subwayLineInfosAtStation
-        mainDetailVM.send(nearStInfo: mainVM.nearStNamefromUserLocation,
+//        let selectInfoData: MyStation = .init(nowSt: <#T##Int#>,
+//                                              nowStNm: <#T##String#>,
+//                                              upSt: <#T##Int#>,
+//                                              upStNm: <#T##String#>,
+//                                              downSt: <#T##Int#>,
+//                                              downStNm: <#T##String#>)
+        
+        mainDetailVM.selectStationLineInfos = mainVM.subwayLineInfosAtStation // 
+        mainDetailVM.send(selectStationInfo: mainVM.nearStationInfo,
                           lineInfo: line)
     }
 }

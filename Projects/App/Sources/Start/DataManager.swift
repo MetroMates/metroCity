@@ -23,6 +23,7 @@ final class RealDataManager: DataManager, FireStoreServiceDelegate {
                 let subwayLineInfos = try await firestoreFetchAll(colName: "SubwayLineColor", type: SubwayLine.self)
                 let locInfos = try await firestoreFetchAll(colName: "StationLocation", type: LocInfo.self)
                 
+//                print("👍🏻", subwayLineInfos)
                 completion(stationInfos, subwayLineInfos, locInfos)
             } catch {
                 print(error.localizedDescription)

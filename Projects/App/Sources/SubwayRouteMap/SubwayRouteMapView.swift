@@ -44,11 +44,11 @@ extension SubwayRouteMapView {
             
             ZStack {
                 HStack {
-                    stationCircle(vm.stationInfo.upStNm)
+                    stationCircle(vm.selectStationInfo.upStNm)
                     Spacer()
-                    stationCircle(vm.stationInfo.downStNm)
+                    stationCircle(vm.selectStationInfo.downStNm)
                 }
-                stationCircle(vm.stationInfo.nowStNm)
+                stationCircle(vm.selectStationInfo.nowStNm)
             }
             .padding(.horizontal)
             
