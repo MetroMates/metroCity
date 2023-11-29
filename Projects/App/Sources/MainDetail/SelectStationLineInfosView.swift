@@ -22,8 +22,7 @@ struct SelectStationLineInfosView: View {
                                 .frame(width: 20, height: 20)
                             Text(list.subwayNm)
                         }
-                        .onTapGesture { // 선택한 호선 뽑아내기..
-                            print("\(list)")
+                        .onTapGesture { // 선택한 호선 뽑아내기
                             mainDetailVM.send(selectStationInfo: mainDetailVM.selectStationInfo, lineInfo: list)
                         }
                     }
@@ -44,7 +43,7 @@ struct SelectStationLineInfosView: View {
                         )
                 )
                 .padding(.horizontal, 20)
-                Spacer()
+                .padding(.bottom, geometry.size.height * 0.4)
             }
         }
         .opacity(isPresented ? 1.0 : 0.0)
