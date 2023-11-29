@@ -11,19 +11,29 @@ struct Location {
 
 /// 현재 위치의 위도 경도를 관리.
 final class LocationManager: NSObject, CLLocationManagerDelegate {
-    // 외부에서 사용.
-    var userLocationPublisher = PassthroughSubject<Location, Never>()
+    // 외부에서 사용. -> 외부에서 사용시에 구독을 걸어둔 로직을 먼저 호출할 것이기 때문에 Passthrough로 사용. 처음부터 값을 방출할 필요가 없기 때문. 함수로 return
+    private let userLocationPublisher = PassthroughSubject<Location, Never>()
     
     private let clLocManager = CLLocationManager()
     
-    override init() {
+    static let shared: LocationManager = .init()
+    
+    override private init() {
         super.init()
+        print("👻 LocationManager")
         locationManagerSetting()
+    }
+    
+    func userLocPublisher() -> AnyPublisher<Location, Never> {
+        return userLocationPublisher
+            .share()
+            .eraseToAnyPublisher()
     }
     
     /// 버튼을 누를 때마다 위치 업데이트를 하기 위해 함수로 따로 뺌!
     func fetchUserLocation() {
-        self.clLocManager.requestLocation() // 한번만 가져오는 것.
+//        self.clLocManager.requestLocation() // 한번만 가져오는 것.
+        self.clLocManager.startUpdatingLocation()
     }
     
     /// 3키로 반경 이내 역중에 위경도 값 기준으로 가장 근사한 역 하나를 리턴해줌
@@ -47,8 +57,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             }
         }
         
-//        var closestStation: StationLocation = .init(crdntX: <#T##Double#>, crdntY: <#T##Double#>, route: <#T##String#>, statnId: <#T##Int#>, statnNm: <#T##String#>)
-        var rtnStationName: String = ""
+        var returnStationName: String = ""
         var minDifference: Double = Double.infinity
         
         print("🍜 caluStation \(calculatedStation)")
@@ -60,18 +69,13 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
 
             if totalDifference < minDifference {
                 minDifference = totalDifference
-                rtnStationName = station.statnNm
+                returnStationName = station.statnNm
             }
         }
         
         // StationLocation데이터의 이름 기준입니다.
-        return rtnStationName
-        
-//        self.stationName = closestStation?.statnNm ?? ""
-        
-        /// stationInfo 컬렉션 기준으로 역이름 찾아내기 없으면 "" 리턴
-//        let tempStaitonInfo = self.stationInfo?.filter { $0.statnNm.contains(self.stationName) }
-//        self.findStationInfoNm = tempStaitonInfo?.first?.statnNm ?? ""
+        return returnStationName
+
     }
 }
 
@@ -81,12 +85,12 @@ extension LocationManager {
         switch manager.authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse, .notDetermined:
             // 위치를 가져오면 됨
-            self.clLocManager.requestLocation()
-            
+            self.clLocManager.startUpdatingLocation()
+
         case .denied, .restricted:
             // 다시 권한 체크창 띄워야함.
             self.clLocManager.requestWhenInUseAuthorization()
-            
+
         @unknown default:
             fatalError()
         }
@@ -95,18 +99,21 @@ extension LocationManager {
     /// delegate 관련 정의 함수
     /// 사용자의 업데이트된 위치를 나타내는 CLLocation 개체 배열을 중 마지막을 가져옴
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        print("🦕 locationManager 실행!")
         guard let userLocation = locations.last else { return } // 사용자 위치가 nil인지 아닌지 판단
-        
+        print("🦕 locationManager 진입!")
         // 위도(latitude-37)와 경도(longitude-126) 추출하기
         var latitude = userLocation.coordinate.latitude
         var longitude = userLocation.coordinate.longitude
         
-        latitude = 37.3366991
-        longitude = 126.7714132
+//        latitude = 37.3366991
+//        longitude = 126.7714132
         
-        debugPrint("⭐️🍜 위도: \(latitude), 경도: \(longitude)")
+        
+        print("⭐️🍜 위도: \(latitude), 경도: \(longitude)")
         
         self.locationSet(crdntY: latitude, crdntX: longitude)
+        self.clLocManager.stopUpdatingLocation()
     }
     
     /// delegate 관련 정의 함수

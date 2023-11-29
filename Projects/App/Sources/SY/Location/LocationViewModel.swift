@@ -6,7 +6,7 @@ import CoreLocation
 
 final class LocationViewModel: ObservableObject {
     private let firestoreManager = FirebaseService.shared
-    private let locationService = LocationManager()
+//    private let locationService = LocationManager()
     /// 3키로 이내로 계산 된 역값들
     private var calculatedStation: [StationLocation]?
     /// 유저 위치값
@@ -107,7 +107,7 @@ final class LocationViewModel: ObservableObject {
     
     /// 유저 버튼 패치 버튼
     func locationButtonTapped() {
-        locationService.fetchUserLocation()
+//        locationService.fetchUserLocation()
     }
     
 }

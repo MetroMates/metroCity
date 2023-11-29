@@ -16,11 +16,15 @@ final class MainListVM: ObservableObject {
     @Published var nearStNamefromUserLocation: String = ""
     @Published var isDetailPresented: Bool = false
     
-    /// 호선정보
+    /// 호선정보 -> View에서 사용
     @Published var subwayLineInfos: [SubwayLineColor] = []
     @Published var subwayLineInfosAtStation: [SubwayLineColor] = []
     
     @Published var isProgressed: Bool = false
+    @Published var nearStationInfo: MyStation = .emptyData
+    
+    private var stationInfos: [StationInfo] = []
+    private var locationInfos: [StationLocation] = []
     
     private var anyCancellable: Set<AnyCancellable> = []
     
@@ -29,32 +33,43 @@ final class MainListVM: ObservableObject {
     private let startVM: StartVM
     
     init(useCase: MainListUseCase, startVM: StartVM) {
+        print("👻 MainListVM")
         // 의존성 주입: MainListVM에 MainListUseCase가 외부에서 생성되어 의존성 주입되었다.
         self.useCase = useCase
         self.startVM = startVM
-        
-        self.subwayLineInfos = startVM.lineInfos
+        startVMSubscribe()
+    }
+    
+    deinit {
+        anyCancellable.forEach { $0.cancel() }
     }
     
     /// 구독메서드
-    func subscribe() {
+    private func subscribe(stationInfo: [StationInfo],
+                           lineInfo: [SubwayLineColor],
+                           locInfo: [StationLocation]) {
+        
         // 해당역의 호선들의 분류작업.
         $nearStNamefromUserLocation
             .receive(on: DispatchQueue.main)
-            .sink { i in
-                self.isProgressed = true
-                self.filteredLinesfromSelectStation(value: i)
-                self.isProgressed = false
+            .sink { nearStName in
+                self.nearStationInfo.nowStNm = nearStName
+                self.filteredLinesfromSelectStation(value: nearStName)
             }
             .store(in: &anyCancellable)
         
-        useCase.userLocationSubscribe(statnLocInfos: startVM.locationInfos)
+        print("🍜 userLocationSubscribe 진입전.")
+        useCase.userLocationSubscribe(statnLocInfos: locInfo)
+        print("🍜", "userLocationSubscribe 진입 후")
         
         useCase.nearStationNameSubject
             .receive(on: DispatchQueue.main)
-            .assign(to: \.nearStNamefromUserLocation, on: self)
+            .sink(receiveValue: { userLoc in
+                print("🍜 nearStationNameSubject 내부@!! \(userLoc)")
+                self.nearStNamefromUserLocation = userLoc
+            })
             .store(in: &anyCancellable)
-        
+
     }
     
     /// GPS 기반 현재위치에서 제일 가까운 역이름 가져오기
@@ -62,10 +77,6 @@ final class MainListVM: ObservableObject {
         useCase.startFetchNearStationFromUserLocation()
     }
     
-    // 도메인Layer fetchData로직(= 비즈니스 로직 -> 데이터관련 로직) 호출
-//    func fetchDataInfos() async {
-//        await useCase.dataFetchs(vm: self)
-//    }
 }
 
 // MARK: - Private Methods
@@ -73,9 +84,9 @@ extension MainListVM {
     private func filteredLinesfromSelectStation(value: String) {
         subwayLineInfosAtStation.removeAll() // 초기화
         
-        let stationDatas = useCase.filterdLineInfosFromSelectStationName(totalStationInfo: startVM.stationInfos,
+        let stationDatas = useCase.filterdLineInfosFromSelectStationName(totalStationInfo: stationInfos,
                                                                          statName: value)
-        let lineData = startVM.lineInfos // Color값 가져와야함.
+        let lineData = subwayLineInfos // Color값 가져와야함.
         
         self.subwayLineInfosAtStation = lineData.filter({ info in
             for stationData in stationDatas where stationData.subwayId == info.subwayId {
@@ -86,4 +97,30 @@ extension MainListVM {
         
     }
     
+    private func startVMSubscribe() {
+        print("🍜 startVMSubscribe")
+        startVM.dataPublisher()
+            .receive(on: DispatchQueue.main)
+            .sink { (station, line, location) in
+                print("🍜 여기 진입 함. MainListVM startVMSubscribe")
+                
+                self.stationInfos = station
+                self.subwayLineInfos = line
+                self.locationInfos = location
+                
+                if !station.isEmpty,
+                    !line.isEmpty,
+                    !location.isEmpty {
+                    // 초기 발행시 딱 한번 실행됨. -> 각 데이터 fetch가 완료되었을때 실행!
+                    self.subscribe(stationInfo: station,
+                                   lineInfo: line,
+                                   locInfo: location)
+                    
+                    self.GPScheckNowLocactionTonearStation() // 내 위치 가져오기.
+                }
+                
+            }
+            .store(in: &anyCancellable)
+
+    }
 }

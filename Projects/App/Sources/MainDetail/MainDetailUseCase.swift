@@ -11,22 +11,28 @@ final class MainDetailUseCase {
         self.repository = repo
     }
     
-    func getStationData(vm: MainDetailVM, _ value: String) -> MyStation {
-        let stations = vm.startVM.stationInfos
-        guard !stations.isEmpty else { return .emptyData }
+    /// MyStation 에 값 넣어서 반환.  선택된 역정보.
+    func getStationData(subwayID: Int,
+                        totalStatInfos: [StationInfo],
+                        selectStationName value: String) -> MyStation {
+        
+        guard !totalStatInfos.isEmpty else { return .emptyData }
         
         // 역명이 같고 호선이 클릭한 호선의 데이터를 찾아온다. -> 1개만 나와야 정상.
-        let newDatas = stations.filter { st in
-            st.statnNm == value && st.subwayId == vm.hosunInfo.subwayId
+        let newDatas = totalStatInfos.filter { st in
+            st.statnNm == value && st.subwayId == subwayID
         }.first
         
         if let newDatas {
             // 상행일때 -1
-            let upSt = newDatas.statnId - 1
-            let downSt = newDatas.statnId + 1
+            var upSt = newDatas.statnId - 1
+            var downSt = newDatas.statnId + 1
             
-            let upStNm = stations.filter { $0.statnId == upSt }.first?.statnNm ?? "[none]"
-            let downStNm = stations.filter { $0.statnId == downSt }.first?.statnNm ?? "[none]"
+            let upStNm = totalStatInfos.filter { $0.statnId == upSt }.first?.statnNm ?? "종착"
+            let downStNm = totalStatInfos.filter { $0.statnId == downSt }.first?.statnNm ?? "종착"
+            
+            if upStNm == "종착" { upSt = -1 }
+            if downStNm == "종착" { downSt = -1 }
             
             return .init(nowSt: newDatas.statnId,
                          nowStNm: value,
@@ -44,8 +50,14 @@ final class MainDetailUseCase {
     }
     
     // Never타입은 못씀. 에러를 발생시키지 않기 때문...!! -> api통신중의 발생한 Error를 생성해주어야함.
-    func recievePublisher(subwayLine: String, whereData: String) -> AnyPublisher<[RealTimeSubway], Error> {
-        return repository.receivePublisher(type: Arrived.self, urlType: .subwayArrive, whereData: whereData)
+    func recievePublisher(subwayLine: String, stationInfo: MyStation) -> AnyPublisher<[RealTimeSubway], Error> {
+        let nowStation = stationInfo.nowStNm
+        let upLineEnd = stationInfo.upSt // 0 일경우 종착지 -> realTime을 받아오지 않는다.
+        let downLineEnd = stationInfo.downSt // 0 일경우 종착지 -> realTime을 받아오지 않는다.
+        
+//        print("👊 upLine \(upLineEnd) downLine \(downLineEnd)")
+        
+        return repository.receivePublisher(type: Arrived.self, urlType: .subwayArrive, whereData: nowStation)
             .flatMap { rdata -> AnyPublisher<[RealTimeSubway], Error> in
                 var realDatas = rdata.realtimeArrivalList
                 
@@ -62,15 +74,18 @@ final class MainDetailUseCase {
                                                             arvlMsg2: data.arvlMsg2,
                                                             arvlMsg3: data.arvlMsg3,
                                                             arvlCd: data.arvlCD,
-                                                            nowStationName: whereData)
+                                                            nowStationName: nowStation)
                     
-                    stations.append(.init(updnLine: data.updnLine,
-                                          trainNo: data.btrainNo,
-                                          trainType: data.btrainSttus,
-                                          stCnt: firstSort,
-                                          sortOrder: secondSort,
-                                          message: message,
-                                          trainDestiStation: "\(data.bstatnNm)행" ))
+                    if (data.updnLine == "상행" && upLineEnd == -1) || (data.updnLine == "하행" && downLineEnd == -1) {
+                    } else {
+                        stations.append(.init(updnLine: data.updnLine,
+                                              trainNo: data.btrainNo,
+                                              trainType: data.btrainSttus,
+                                              stCnt: firstSort,
+                                              sortOrder: secondSort,
+                                              message: message,
+                                              trainDestiStation: "\(data.bstatnNm)행" ))
+                    }
                 }
                 
                 if !stations.isEmpty {

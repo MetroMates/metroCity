@@ -14,7 +14,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct MetroCityTDSApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    
+
     var body: some Scene {
         WindowGroup {
             StartView()
