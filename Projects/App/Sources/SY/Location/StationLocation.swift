@@ -2,7 +2,7 @@
 
 import Foundation
 
-struct StationLocation: Decodable {
+struct StationLocation: FireStoreCodable {
     let id = UUID().uuidString
     /// 경도
     let crdntX: Double

@@ -23,15 +23,16 @@ struct MainDetailView: View {
                 
                 Spacer()
             }
+            .refreshable {
+                vm.send(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
+            }
+
         }
         .overlay {
             SelectStationLineInfosView(isPresented: $vm.isLineListSheetOpen, lineLists: $vm.selectStationLineInfos)
         }
-        .refreshable { vm.send(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo) }
         .onAppear {
             vm.timerStart()
-//            locationVM.fetchingData()
-//            locationVM.fetchingStationInfo()
         }
         .onDisappear { vm.timerStop() }
     }

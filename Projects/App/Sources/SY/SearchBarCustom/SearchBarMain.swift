@@ -16,14 +16,16 @@ struct SearchBarMain: View {
                         Text("(\(item.subwayNm))")
                     }
                     .foregroundColor(.black)
-                    .listStyle(InsetGroupedListStyle())
                     .onTapGesture {
                         outFocused()
                         mainDetailVM.changFilteredStationAndLineInfo(item: item)
                     }
-                    
                 }
+                .listStyle(.plain)
             }
+        }
+        .onDisappear {
+            outFocused()
         }
     }
     

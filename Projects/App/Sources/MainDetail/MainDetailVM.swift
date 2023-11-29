@@ -75,7 +75,7 @@ final class MainDetailVM: ObservableObject {
     }
     
     func changFilteredStationAndLineInfo(item: StationInfo) {
-        let mystation: MyStation = .nowStNmInit(id: item.statnId,
+        let mystation: MyStation = .nowStNmInit(id: Int(item.statnId),
                                                 name: item.statnNm)
         let line = lineInfos.filter { $0.subwayId == item.subwayId }.first ?? .emptyData
         

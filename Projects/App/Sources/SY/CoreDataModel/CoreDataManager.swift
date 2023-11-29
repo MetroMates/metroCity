@@ -3,14 +3,14 @@
 import Foundation
 import CoreData
 
-class CoreDataManger {
+final class CoreDataManger {
     
     static let shared = CoreDataManger()
     
     let container: NSPersistentContainer
     let context: NSManagedObjectContext
     
-    init() {
+    private init() {
         container = NSPersistentContainer(name: "MetroCity")
         container.loadPersistentStores { description, error in
             if let error = error {

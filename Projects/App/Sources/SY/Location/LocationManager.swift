@@ -103,12 +103,11 @@ extension LocationManager {
         guard let userLocation = locations.last else { return } // 사용자 위치가 nil인지 아닌지 판단
         print("🦕 locationManager 진입!")
         // 위도(latitude-37)와 경도(longitude-126) 추출하기
-        var latitude = userLocation.coordinate.latitude
-        var longitude = userLocation.coordinate.longitude
+        let latitude = userLocation.coordinate.latitude
+        let longitude = userLocation.coordinate.longitude
         
 //        latitude = 37.3366991
 //        longitude = 126.7714132
-        
         
         print("⭐️🍜 위도: \(latitude), 경도: \(longitude)")
         
