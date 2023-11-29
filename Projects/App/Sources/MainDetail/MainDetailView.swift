@@ -29,7 +29,7 @@ struct MainDetailView: View {
 
         }
         .overlay {
-            SelectStationLineInfosView(isPresented: $vm.isLineListSheetOpen, lineLists: $vm.selectStationLineInfos)
+            SelectStationLineInfosView(mainDetailVM: vm, isPresented: $vm.isLineListSheetOpen, lineLists: $vm.selectStationLineInfos)
         }
         .onAppear {
             vm.timerStart()

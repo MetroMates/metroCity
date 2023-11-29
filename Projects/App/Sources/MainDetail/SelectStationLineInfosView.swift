@@ -3,41 +3,59 @@
 import SwiftUI
 
 struct SelectStationLineInfosView: View {
+    @ObservedObject var mainDetailVM: MainDetailVM
     @Binding var isPresented: Bool
     @Binding var lineLists: [SubwayLineColor]
     
     var body: some View {
-        ZStack {
-            Color.black.opacity(0.2)
-            
-            VStack(spacing: 10) {
-                ForEach(lineLists, id: \.id) { list in
-                    LineCellView(stationName: list.subwayNm,
-                                     stationColor: list.lineColor)
-                    .frame(maxWidth: 180)
-                    .onTapGesture {
-                        isPresented = false
+        GeometryReader { geometry in
+            ZStack {
+                Color.black
+                    .opacity(0.3)
+                    .ignoresSafeArea()
+                
+                VStack(alignment: .center) {
+                    List(lineLists) { list in
+                        HStack {
+                            Circle()
+                                .fill(list.lineColor)
+                                .frame(width: 20, height: 20)
+                            Text(list.subwayNm)
+                        }
+                        .onTapGesture { // 선택한 호선 뽑아내기..
+                            print("\(list)")
+                            mainDetailVM.send(selectStationInfo: mainDetailVM.selectStationInfo, lineInfo: list)
+                        }
                     }
+                    .listStyle(.plain)
+                    .frame(height: CGFloat(lineLists.count) * 50)
+                    
                 }
-                .padding(.horizontal)
+                .padding(.vertical, 20)
+                .frame(maxWidth: .infinity)
+                .frame(height: CGFloat(lineLists.count) * 50)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 30)
+                        .stroke(.blue.opacity(0.1))
+                        .background(
+                            RoundedRectangle(cornerRadius: 30)
+                                .fill(.white)
+                        )
+                )
+                .padding(.horizontal, 20)
                 Spacer()
             }
-            .padding()
-            .padding(.top, 70)
         }
         .opacity(isPresented ? 1.0 : 0.0)
         .onTapGesture {
             isPresented = false
         }
-        .onAppear {
-            print("🦁 \(lineLists)")
-        }
-        
     }
 }
 
-struct SelectStationLineInfosView_Previews: PreviewProvider {
-    static var previews: some View {
-        SelectStationLineInfosView(isPresented: .constant(true), lineLists: .constant(SubwayLineColor.mockList))
-    }
-}
+//struct SelectStationLineInfosView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SelectStationLineInfosView(isPresented: .constant(true), mainDetailVM: MainDetailVM, lineLists: .constant(SubwayLineColor.mockList))
+//    }
+//}
