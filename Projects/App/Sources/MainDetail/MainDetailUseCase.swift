@@ -34,11 +34,11 @@ final class MainDetailUseCase {
             if upStNm == "종착" { upSt = -1 }
             if downStNm == "종착" { downSt = -1 }
             
-            return .init(nowSt: newDatas.statnId,
+            return .init(nowSt: Int(newDatas.statnId),
                          nowStNm: value,
-                         upSt: upSt,
+                         upSt: Int(upSt),
                          upStNm: upStNm,
-                         downSt: downSt,
+                         downSt: Int(downSt),
                          downStNm: downStNm)
         }
         

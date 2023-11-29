@@ -5,10 +5,10 @@ import CoreLocation
 import Combine
 
 struct LocationViewMain: View {
-//    @StateObject var LocationVM = LocationViewModel()
+    @StateObject var LocationVM = LocationViewModel()
     @Environment(\.dismiss) private var dismiss: DismissAction
     @State var toast: Toast?
-    
+ 
     var body: some View {
         
         VStack(spacing: 30) {
@@ -20,7 +20,53 @@ struct LocationViewMain: View {
             } label: {
                 Text("토스트뷰 테스트")
             }
+            
+            Button {
+                /// stationLocation 데이터 추가
+                if LocationVM.stationLocationCoreData.isEmpty {
+                    LocationVM.fetchingData()
+                    print("🥶 stationLocation 코어데이터 없음")
+                    LocationVM.checkAddStationLocation()
+                    print("🥶 코어데이터에 stationLocation 추가완료")
+                } else {
+                    print("🥶 stationLocation 코어데이터 있음 \(LocationVM.stationLocationCoreData.count)")
+                }
+            } label: {
+                Text("StationLocation 데이터")
+            }
 
+            List {
+                ForEach(LocationVM.stationLocationCoreData.prefix(5), id: \.self) { data in
+                    VStack {
+                        Text("\(data.crdntX)")
+                        Text("\(data.crdntY)")
+                        Text(data.statnNm)
+                    }
+                }
+            }
+            
+            Button {
+                /// stationInfo 데이터 추가
+                if LocationVM.stationInfoCoreData.isEmpty {
+                    LocationVM.fetchingStationInfo()
+                    print("🥵 stationInfo 코어데이터 없음")
+                    LocationVM.checkAddStationInfo()
+                    print("🥵 코어데이터에 stationInfo 추가완료")
+                } else {
+                    print("🥵 stationInfo 코어데이터 있음 \(LocationVM.stationInfoCoreData.count)")
+                }
+            } label: {
+                Text("StationInfo 데이터")
+            }
+            
+            List {
+                ForEach(LocationVM.stationInfoCoreData.prefix(5), id: \.self) { data in
+                    VStack {
+                        Text(data.subwayNm)
+                        Text(data.statnNm)
+                    }
+                }
+            }
 //            Button {
 //                LocationVM.locationButtonTapped()
 //            } label: {
@@ -41,11 +87,9 @@ struct LocationViewMain: View {
 //                }
 //            }
         }
-//        .onAppear {
-//            LocationVM.fetchingData()
-//            LocationVM.fetchingStationInfo()
-//        }
-        // toastView 추가
+        .onAppear {
+            
+        }
         .toastView(toast: $toast)
     }
 }
