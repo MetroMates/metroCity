@@ -4,12 +4,11 @@ import SwiftUI
 
 struct MainDetailView: View {     
     @ObservedObject var vm: MainDetailVM
-    @StateObject var locationVM = LocationViewModel()
     
     var body: some View {
         VStack(spacing: 20) {
             VStack(spacing: 20) {
-                SearchBarMain(LocationVM: locationVM)
+                SearchBarMain(mainDetailVM: vm)
                 TitleContent
                 SubTitleContent
             }
@@ -24,6 +23,9 @@ struct MainDetailView: View {
                 
                 Spacer()
             }
+        }
+        .overlay {
+            SelectStationLineInfosView(isPresented: $vm.isLineListSheetOpen, lineLists: $vm.selectStationLineInfos)
         }
         .refreshable { vm.send(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo) }
         .onAppear {
@@ -43,8 +45,9 @@ extension MainDetailView {
         ZStack {
             Button {
                 // Sheet Open
+                vm.isLineListSheetOpen = true
                 print(vm.selectStationLineInfos)
-                print("역 호선 정보")
+                print("🦁역 호선 정보")
             } label: {
                 HStack {
                     Text("\(vm.hosunInfo.subwayNm)")
@@ -170,9 +173,6 @@ struct MainDetailView_Previews: PreviewProvider {
         
         MainListPreviewView()
             .previewDisplayName("메인리스트")
-        
-        StartView()
-            .previewDisplayName("탭바")
-        
+
     }
 }

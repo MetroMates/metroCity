@@ -3,15 +3,15 @@
 import SwiftUI
 
 /*
-    MainListView.onAppear에서 mainVM.fetchData 함수 호출하기
-    - mainVM.fetchData => coreData에 값이 없으면 FireStore에서 값 불러오기.
-    - FireStore에서 가져온 데이터는 FireStoreCodable 프로토콜을 채택하는 DTO로 받는다.
-    - FireStore fetch는 MainListRepository에서 이루어진다.
+ MainListView.onAppear에서 mainVM.fetchData 함수 호출하기
+ - mainVM.fetchData => coreData에 값이 없으면 FireStore에서 값 불러오기.
+ - FireStore에서 가져온 데이터는 FireStoreCodable 프로토콜을 채택하는 DTO로 받는다.
+ - FireStore fetch는 MainListRepository에서 이루어진다.
  */
 
 /// 전체 호선 리스트 View
 struct MainListView: View {
-//    @EnvironmentObject private var startVM: StartVM
+    //    @EnvironmentObject private var startVM: StartVM
     @StateObject private var mainVM: MainListVM
     @StateObject private var mainDetailVM: MainDetailVM
     
@@ -58,8 +58,8 @@ struct MainListView: View {
             }
         }
         .onAppear {
-//            mainVM.subscribe() -> ViewModel 내부로 옮김.
-//            mainVM.GPScheckNowLocactionTonearStation() -> 데이터가 fetch된 후로 옮김. mainVM.subscribe 내부로 옮김.
+            //            mainVM.subscribe() -> ViewModel 내부로 옮김.
+            //            mainVM.GPScheckNowLocactionTonearStation() -> 데이터가 fetch된 후로 옮김. mainVM.subscribe 내부로 옮김.
             mainDetailVM.subscribe()
         }
         
@@ -77,8 +77,9 @@ extension MainListView {
                         self.setLineAndstationInfo(line: line)
                         mainVM.isDetailPresented.toggle()
                     } label: {
-                        MainListCellView(stationName: line.subwayNm,
-                                         stationColor: line.lineColor)
+                        LineCellView(stationName: line.subwayNm,
+                                     stationColor: line.lineColor)
+                        .border(Color.gray.opacity(0.5))
                     }
                     
                 }
@@ -100,12 +101,13 @@ extension MainListView {
                         self.setLineAndstationInfo(line: line)
                         mainVM.isDetailPresented.toggle()
                     } label: {
-                        MainListCellView(stationName: line.subwayNm,
-                                         stationColor: line.lineColor)
+                        LineCellView(stationName: line.subwayNm,
+                                     stationColor: line.lineColor)
+                        .border(Color.gray.opacity(0.5))
                     }
                 }
             }
-
+            
         } header: {
             Text("전체")
                 .padding(.top, 30)
@@ -116,14 +118,7 @@ extension MainListView {
 // MARK: - Private Methods
 extension MainListView {
     private func setLineAndstationInfo(line: SubwayLineColor) {
-//        let selectInfoData: MyStation = .init(nowSt: <#T##Int#>,
-//                                              nowStNm: <#T##String#>,
-//                                              upSt: <#T##Int#>,
-//                                              upStNm: <#T##String#>,
-//                                              downSt: <#T##Int#>,
-//                                              downStNm: <#T##String#>)
-        
-        mainDetailVM.selectStationLineInfos = mainVM.subwayLineInfosAtStation // 
+        mainDetailVM.selectStationLineInfos = mainVM.subwayLineInfosAtStation
         mainDetailVM.send(selectStationInfo: mainVM.nearStationInfo,
                           lineInfo: line)
     }
