@@ -116,7 +116,10 @@ extension MainDetailUseCase {
         }
         
         if !arvlMsg2.isEmpty || !arvlMsg3.isEmpty {
-            return nowStationName == arvlMsg3 ? "당역 도착" : arvlMsg2
+            if nowStationName == arvlMsg3 {
+               return arvlMsg2.replacingOccurrences(of: nowStationName, with: "당역")
+            }            
+            return arvlMsg2
         }
         
         if !arvlCd.isEmpty {

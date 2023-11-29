@@ -21,7 +21,7 @@ let appTarget = Target.makeTarget(name: "MetroCity",
                                   scripts: [.swiftLintPath],
                                   isResource: true,
                                   coreDataModels: [CoreDataModel("App/Resources/**")],
-                                  //CoreDataModel(from: "Sources/SY/CoreDataModel/MetroCity.xcdatamodeld")
+                                  // CoreDataModel(from: "Sources/SY/CoreDataModel/MetroCity.xcdatamodeld")
                                   isTestAt: true)
 
 // ↑↑↑ 만들어진 타겟으로 프로젝트 생성

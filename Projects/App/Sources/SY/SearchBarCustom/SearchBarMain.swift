@@ -68,39 +68,6 @@ extension SearchBarMain {
     }
 }
 
-// struct SearchBar: View {
-//    @Binding var searchText: String
-//    @Binding var isSearching: Bool
-//
-//    var body: some View {
-//        HStack {
-//            TextField("Search", text: $searchText, onEditingChanged: { editing in
-//                isSearching = editing
-//            })
-//            .padding(.horizontal)
-//            .padding(.vertical, 8)
-//            .background(Color(.systemGray6))
-//            .cornerRadius(10)
-//
-//            // textfield에 값이 있을때
-//            if isSearching {
-//                Button {
-//                    searchText = ""
-//                    isSearching = false
-//                } label: {
-//                    Image(systemName: "x.circle")
-//                        .foregroundColor(.black)
-//                }
-//                .padding(.trailing)
-//                .transition(.move(edge: .trailing))
-//            } else {
-//                Image(systemName: "magnifyingglass")
-//            }
-//        }
-//        .padding(.horizontal, 5)
-//    }
-//}
-
 struct SearchBarMain_Previews: PreviewProvider {
     static var previews: some View {
         StartView()

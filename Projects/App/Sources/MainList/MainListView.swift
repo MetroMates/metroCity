@@ -34,7 +34,7 @@ struct MainListView: View {
                     
                     ScrollView(showsIndicators: false) {
                         VStack(alignment: .leading, spacing: 15) {
-                            if !mainVM.nearStNamefromUserLocation.isEmpty {
+                            if !mainVM.subwayLineInfosAtStation.isEmpty {
                                 NearStationLines
                             }
                             AllStationLines

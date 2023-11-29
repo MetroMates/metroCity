@@ -141,6 +141,8 @@ extension LocationManager {
         // 장치에서 위치 서비스가 활성화되어 있는지 여부를 나타내는 부울 값을 반환합니다 locationServicesEnabled
         self.clLocManager.requestWhenInUseAuthorization()
         
+//        self.clLocManager.desiredAccuracy = kCLLocationAccuracyBest
+        
         // 대리인(self)에게 위치 없데이트 전달을 시작함 -> delegate 채택으로 인하여 정의한 didUpdateLocations 대리자 메서드는 사용 가능한 새 위치 데이터가 있을 때마다 호출됩니다.
         // startUpdatingLocation : 유저 위치가져오기
         // Manager를 init할때는 가져올 필요없다. -> LoginManager를 사용하는 곳에서 필요에 의해 호출될 것. !!

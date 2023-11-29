@@ -18,50 +18,6 @@ struct Temp: SubwayModelIdentifier {
 //    / 열차종류(급행, ITX, 일반, 특급)
 }
 
-/*
-    필요한 필드값들
-    호선ID, 호선명, ( 역ID, 역명 => 호선에 대한 ), 호선색상(=라인색상),
-
-    현재 역, 이전역, 다음역, 지하철상태, 데이터수신시간, ( 무슨행인지(ex:소요산행, 진접행) = 종점 ), 급행여부
-
-    필요한 DTO Data Transfer Object
-    1. 해당호선에 대한 모든 역정보
-       statnID, statnNM
-    2. 해당호선 색상, 전반적인 UI의 색상
- 
- */
-
-/// 호선 정보 ( subwayList의 값에 따라서 넣어준다. ) 여러개 있을수 있음.
-///
-/// Arrived에서 가져온다.
-/// - subwayID: 호선ID
-/// - subwayNm: 호선명
-/// - hosunColor: 호선대표색상 (ex: 4호선 하늘색, 1호선 파란색)
-/// - lineColor: 실시간 열차위치를 표시할 라인 색상
-// struct HosunInfo: SubwayModelIdentifier {
-//    let id: String = UUID().uuidString
-//    let subwayID: String
-//    let subwayNm: String
-//    let hosunColor: Color
-//    let lineColor: Color
-//}
-//
-// extension HosunInfo {
-//    static var emptyData: Self {
-//        return .init(subwayID: "",
-//                     subwayNm: "",
-//                     hosunColor: .black,
-//                     lineColor: .black)
-//    }
-// }
-
-///// 현재역 열차 도착 상태 (0:진입, 1:도착, 2:출발, 3:전역출발, 4:전역진입, 5:전역도착, 99:운행중)
-// let nowStatus: String
-///// 상하행선구분  (0 : 상행/내선, 1 : 하행/외선)  상행이면 다음역을 상행에 이전역을 하행에 배치.
-// let updnLine: String
-///// 열차종류 (급행,ITX,일반,특급)
-// let trainType: String
-
 /// 역정보 (호선 내부용) -> 호선에 대한 현재역, 이전역, 다음역
 ///
 /// Arrived에서 데이터 가져올수 있다.
@@ -98,10 +54,6 @@ extension MyStation {
     }
     
 }
-
-/*
-    
- */
 
 /// 실시간 지하철 위치 정보
 /// 내가 현재 선택한 역 기준으로 데이터 가져와야 함.

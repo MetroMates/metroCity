@@ -4,7 +4,7 @@ import SwiftUI
 import CoreLocation
 import Combine
 
-//struct LocationViewMain: View {
+// struct LocationViewMain: View {
 //    @StateObject var LocationVM = LocationViewModel()
 //    @Environment(\.dismiss) private var dismiss: DismissAction
 //    @State var toast: Toast?
@@ -92,11 +92,11 @@ import Combine
 //        }
 //        .toastView(toast: $toast)
 //    }
-//}
+// }
 //
-//struct LocationViewMain_Previews: PreviewProvider {
+// struct LocationViewMain_Previews: PreviewProvider {
 //    static var previews: some View {
 //        LocationViewMain()
 //    }
-//}
+// }
 //

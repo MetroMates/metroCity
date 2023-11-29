@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22G74" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22G91" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="StationInfoEntity" representedClassName="StationInfoEntity" syncable="YES">
         <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="statnId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
@@ -14,5 +14,11 @@
         <attribute name="route" optional="YES" attributeType="String"/>
         <attribute name="statnId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="statnNm" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="SubwayLineColorEntity" representedClassName="SubwayLineColorEntity" syncable="YES">
+        <attribute name="id" attributeType="String"/>
+        <attribute name="lineColorHexCode" attributeType="String"/>
+        <attribute name="subwayId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="subwayNm" attributeType="String"/>
     </entity>
 </model>

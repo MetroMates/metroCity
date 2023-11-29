@@ -17,7 +17,7 @@ final class CoreDataManger {
                 print("코어데이터 로딩 중 에러 발생 \(error.localizedDescription)")
             } else {
                 print("코어데이터 로딩 성공!")
-                print(description)
+                print(description) // 저장소 list 호출
             }
         }
         context = container.viewContext
@@ -26,8 +26,9 @@ final class CoreDataManger {
     func save() {
         do {
             try context.save()
+            print("🫣저장 성공 !!")
         } catch let error {
-            print("코어데이터 변경사항 저장 실패! \(error)")
+            print("🫣코어데이터 변경사항 저장 실패! \(error)")
         }
     }
     

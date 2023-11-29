@@ -11,7 +11,7 @@ final class LocationViewModel: ObservableObject {
     @Published var stationInfoCoreData: [StationInfoEntity] = []
     @Published var stationLocationCoreData: [StationLocationEntity] = []
     
-    /// 기존 코어데이터에 있던 StationInfo 데이터 패치
+    // 기존 코어데이터에 있던 StationInfo 데이터 패치
 //    func getStationInfoEnities() -> [StationInfoEntity] {
 //        let request = NSFetchRequest<StationInfoEntity>(entityName: "StationInfoEntity")
 //
@@ -112,7 +112,7 @@ final class LocationViewModel: ObservableObject {
 //        .store(in: &anycancellable)
 //    }
     
-    /// firebase의 stationLocation 컬렉션 패치해오기
+    // firebase의 stationLocation 컬렉션 패치해오기
 //    func fetchingData() {
 //        Task {
 //            do {
@@ -142,7 +142,7 @@ final class LocationViewModel: ObservableObject {
 //        }
 //    }
     
-    /// 3키로 반경 이내 역중에 위경도 값 기준으로 가장 근사한 역 하나를 리턴해줌
+    // 3키로 반경 이내 역중에 위경도 값 기준으로 가장 근사한 역 하나를 리턴해줌
 //    func calculateDistance() {
 //        guard !stationLocation.isEmpty else { return }
 //

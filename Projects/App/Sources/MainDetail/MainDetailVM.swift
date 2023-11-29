@@ -158,7 +158,7 @@ extension MainDetailVM {
     
     /// 이전, 다음역 정보 DTO객체 생성
     private func getStationInfo(_ stationName: String) -> MyStation {
-        return useCase.getStationData(subwayID: hosunInfo.subwayId,
+        return useCase.getStationData(subwayID: Int(hosunInfo.subwayId),
                                       totalStatInfos: stationInfos,
                                       selectStationName: stationName)
     }

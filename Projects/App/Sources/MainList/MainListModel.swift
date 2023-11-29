@@ -1,6 +1,7 @@
 // Copyright © 2023 TDS. All rights reserved. 2023-11-14 화 오후 12:30 린다꿀꿀이🐷
 
 import SwiftUI
+import CoreData
 
 /// 모든 호선별 역정보 파이어베이스에서 가져올 것.
 ///
@@ -57,11 +58,11 @@ extension StationInfo {
 /// FireStore에서 fetch해온다.
 struct SubwayLineColor: FireStoreCodable, Identifiable {
     let id: String = UUID().uuidString
-    let subwayId: Int
+    let subwayId: Int32
     let subwayNm: String
     let lineColorHexCode: String
     
-    init(subwayId: Int, subwayNm: String, lineColorHexCode: String) {
+    init(subwayId: Int32, subwayNm: String, lineColorHexCode: String) {
 //        self.id = UUID().uuidString // -> 여기서 주면 fetch가 안됨.
         self.subwayId = subwayId
         self.subwayNm = subwayNm
