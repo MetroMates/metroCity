@@ -3,7 +3,7 @@
 import Foundation
 
 struct StationLocation: Decodable {
-    
+    let id = UUID().uuidString
     /// 경도
     let crdntX: Double
     /// 위도
@@ -11,7 +11,7 @@ struct StationLocation: Decodable {
     /// 지하철 호선
     let route: String
     /// 지하철 역 코드명
-    let statnId: Int
+    let statnId: Int32
     /// 지하철 역명
     let statnNm: String
 }

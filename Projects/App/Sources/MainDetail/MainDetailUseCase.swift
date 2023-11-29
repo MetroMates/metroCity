@@ -28,11 +28,11 @@ final class MainDetailUseCase {
             let upStNm = stations.filter { $0.statnId == upSt }.first?.statnNm ?? "[none]"
             let downStNm = stations.filter { $0.statnId == downSt }.first?.statnNm ?? "[none]"
             
-            return .init(nowSt: newDatas.statnId,
+            return .init(nowSt: Int(newDatas.statnId),
                          nowStNm: value,
-                         upSt: upSt,
+                         upSt: Int(upSt),
                          upStNm: upStNm,
-                         downSt: downSt,
+                         downSt: Int(downSt),
                          downStNm: downStNm)
         }
         

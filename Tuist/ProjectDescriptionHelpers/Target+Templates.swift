@@ -22,6 +22,8 @@ extension Target {
                                           infoPlistPath: String = "",
                                           scripts: [TargetScript] = [],
                                           isResource: Bool = false,
+                                  // 코어데이터 수정
+                                  coreDataModels: [CoreDataModel] = [],
                                           isTestAt: Bool = false) -> [Self] {
         
         // Target 생성 폴더명

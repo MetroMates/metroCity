@@ -7,14 +7,14 @@ import SwiftUI
 /// 역정보 (전체) -> 엑셀양식을 다운받아서 FireStore에 올릴 예정. -> 추후 Firestore에서 내려바당서 사용.
 struct StationInfo: FireStoreCodable, SubwayModelIdentifier {
     let id = UUID().uuidString
-    let subwayId: Int
+    let subwayId: Int32
     let subwayNm: String
     /// 역 ID
-    let statnId: Int
+    let statnId: Int32
     /// 역명
     let statnNm: String
     
-    init(subwayId: Int, subwayNm: String, statnId: Int, statnNm: String) {
+    init(subwayId: Int32, subwayNm: String, statnId: Int32, statnNm: String) {
         self.subwayId = subwayId
         self.subwayNm = subwayNm
         self.statnId = statnId
