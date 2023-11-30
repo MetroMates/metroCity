@@ -10,9 +10,9 @@ final class StartVM: ObservableObject {
     
     private let type: DataType
     private let dataManager: DataManager!
-//    private let stationInfoSubject = PassthroughSubject<[StationInfo], Never>()
-//    private let lineInfoSubject = PassthroughSubject<[SubwayLineColor], Never>()
-//    private let locInfoSubject = PassthroughSubject<[StationLocation], Never>()
+    //    private let stationInfoSubject = PassthroughSubject<[StationInfo], Never>()
+    //    private let lineInfoSubject = PassthroughSubject<[SubwayLineColor], Never>()
+    //    private let locInfoSubject = PassthroughSubject<[StationLocation], Never>()
     private let stationInfoSubject = CurrentValueSubject<[StationInfo], Never>([])
     private let lineInfoSubject = CurrentValueSubject<[SubwayLineColor], Never>([])
     private let locInfoSubject = CurrentValueSubject<[StationLocation], Never>([])
@@ -47,7 +47,7 @@ final class StartVM: ObservableObject {
         dataManager.fetchDatas(statType: StationInfo.self,
                                subwayLineType: SubwayLineColor.self,
                                locationInfoType: StationLocation.self) { serverVer, statInfos, lineInfos, locInfos  in
-
+            
             // 여기의 send부분이 해당 publisher에 구독, 즉 sink가 달리기도 전에 먼저 실행이 되게 되면
             // 추후 해당 publisher는 발행자로서의 기능을 상실하게 된다. 그래서 Passthrough가 아닌 CurrentValueSubject로 진행.
             self.stationInfoSubject.send(statInfos)
@@ -69,7 +69,7 @@ final class StartVM: ObservableObject {
         let coreDataManager = CoreDataManger.shared
         
         // 백그라운드 스레드에서 CoreData에 값 넣어주는 작업. -> CoreData에서 자체적으로 UI관련되지 않은 작업들은 백그라운드에서 처리함.
-//        DispatchQueue.global().async { [self] in
+        DispatchQueue.global().async { [self] in
             
             for dataGroup in datas {
                 for data in dataGroup {
@@ -82,7 +82,7 @@ final class StartVM: ObservableObject {
                         newStationInfo.subwayId = stationInfo.subwayId
                         newStationInfo.subwayNm = stationInfo.subwayNm
                         newStationInfo.statnNm = stationInfo.statnNm
-
+                        
                     case let subwayLineColor as SubwayLineColor:
                         // SubwayLineColor에 대한 CoreData 로직
                         let newSubwayLineColor = SubwayLineColorEntity(context: coreDataManager.context)
@@ -90,7 +90,7 @@ final class StartVM: ObservableObject {
                         newSubwayLineColor.subwayId = subwayLineColor.subwayId
                         newSubwayLineColor.subwayNm = subwayLineColor.subwayNm
                         newSubwayLineColor.lineColorHexCode = subwayLineColor.lineColorHexCode
-
+                        
                     case let stationLocation as StationLocation:
                         let newStationLocation = StationLocationEntity(context: coreDataManager.context)
                         newStationLocation.id = UUID().uuidString
@@ -99,7 +99,7 @@ final class StartVM: ObservableObject {
                         newStationLocation.route = stationLocation.route
                         newStationLocation.statnId = stationLocation.statnId
                         newStationLocation.statnNm = stationLocation.statnNm
-
+                        
                     default:
                         // 처리할 타입이 추가될 경우에 대한 로직
                         break
@@ -110,7 +110,7 @@ final class StartVM: ObservableObject {
             coreDataManager.save()
             // UserDefaults에 데이터 버전 저장
             UserDefaults.standard.set(ver, forKey: self.userDefaultKEY)
-//    }
+        }
     }
     
 }
