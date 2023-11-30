@@ -4,6 +4,7 @@ import SwiftUI
 
 struct MainDetailView: View {     
     @ObservedObject var vm: MainDetailVM
+    @ObservedObject var mainVM: MainListVM
     
     var body: some View {
         VStack(spacing: 20) {
@@ -30,6 +31,9 @@ struct MainDetailView: View {
         }
         .overlay {
             SelectStationLineInfosView(mainDetailVM: vm, isPresented: $vm.isLineListSheetOpen, lineLists: $vm.selectStationLineInfos)
+        }
+        .overlay {
+            SelectStationInfo(mainDetailVM: vm, userChoice: $mainVM.userChoice, totalStationInfo: $vm.totalStationInfo)
         }
         .onAppear {
             vm.timerStart()

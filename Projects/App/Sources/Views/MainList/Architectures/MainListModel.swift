@@ -58,8 +58,11 @@ extension StationInfo {
 /// FireStore에서 fetch해온다.
 struct SubwayLineColor: FireStoreCodable, Identifiable {
     let id: String = UUID().uuidString
+    /// 호선 정보 1002
     let subwayId: Int32
+    /// 호선 이름
     let subwayNm: String
+    /// 호선별 색상정보
     let lineColorHexCode: String
     
     init(subwayId: Int32, subwayNm: String, lineColorHexCode: String) {

@@ -18,8 +18,14 @@ final class MainDetailVM: ObservableObject {
     @Published var downRealTimeInfos: [RealTimeSubway] = [.emptyData] // 런타임 에러 방지
     /// 선택된역 관련 호선들
     @Published var selectStationLineInfos: [SubwayLineColor] = []
+    
     @Published var isLineListSheetOpen: Bool = false
-        
+    
+    /// 서연추가) 선택된 호선에 대한 역정보 프로퍼티
+    @Published var totalStationInfo: [StationInfo] = []
+    /// 서연추가) 선택된 호선 색상 값 저장 -> 역 버튼 테두리 색상으로 활용
+    @Published var selectedStationBorderColor: String = ""
+    
     /// 호선정보 및 색상 MainListModel.swift -> 발행될 필요 없다.
     var hosunInfo: SubwayLineColor = .emptyData
 
@@ -216,5 +222,18 @@ struct MainDetailVM_Previews: PreviewProvider {
         MainListPreviewView()
             .previewDisplayName("메인리스트")
         
+    }
+}
+
+extension MainDetailVM {
+    func getStationTotal(subwayNm: String) {
+        self.totalStationInfo = []
+        for station in self.stationInfos {
+            if station.subwayNm == subwayNm {
+                print("📖 \(station.subwayNm)")
+                print("📖📖 \(subwayNm)")
+                totalStationInfo.append(station)
+            }
+        }
     }
 }
