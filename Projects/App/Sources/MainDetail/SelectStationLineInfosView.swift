@@ -27,6 +27,7 @@ struct SelectStationLineInfosView: View {
                         .onTapGesture { // 선택한 호선 뽑아내기
                             mainDetailVM.send(selectStationInfo: mainDetailVM.selectStationInfo, lineInfo: list)
                         }
+                        .listRowSeparator(.hidden)
                     }
                     .background(.white)
                     .listStyle(.plain)
