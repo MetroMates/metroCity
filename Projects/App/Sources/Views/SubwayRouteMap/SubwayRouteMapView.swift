@@ -15,10 +15,10 @@ struct SubwayRouteMapView: View {
                 GeometryReader { geo in
                     // 0.0 ~ 0.45 까지의 거리로 계산
                     ForEach(vm.upRealTimeInfos, id: \.id) { x in
-                        subway(geo: geo, .up, no: x.trainDestiStation, x: 0.4)
+                        subway(geo: geo, .up, no: x.trainDestiStation, x: x.trainLocation, express: x.trainTypeIndex)
                     }
                     ForEach(vm.downRealTimeInfos, id: \.id) { x in
-                        subway(geo: geo, .down, no: x.trainDestiStation, x: 0.4)
+                        subway(geo: geo, .down, no: x.trainDestiStation, x: x.trainLocation, express: x.trainTypeIndex)
                     }
                 }
                 .frame(height: 100)
@@ -77,14 +77,19 @@ extension SubwayRouteMapView {
     /// 열차 View
     @ViewBuilder private func subway(geo: GeometryProxy,
                                      _ updn: MainDetailVM.UpDn,
-                                     no: String, x: CGFloat) -> some View {
-        Text(no)
+                                     no: String, x: CGFloat, express: String) -> some View {
+        
+        Text("\(no)")
             .font(.caption)
             .foregroundStyle(Color.white)
             .padding(3)
             .background {
                 RoundedRectangle(cornerRadius: 6)
                     .fill(vm.hosunInfo.lineColor)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 6)
+                            .stroke(express == "0" ? vm.hosunInfo.lineColor : .blue, lineWidth: 2)
+                    )
             }
             .offset(y: geo.size.height * (updn == .up ? 0.12 : 0.68))
         // 0.0 곱하면 맨 왼쪽, 0.9는 맨 오른쪽
