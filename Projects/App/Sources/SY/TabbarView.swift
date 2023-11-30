@@ -19,7 +19,7 @@ struct TabbarView: View {
 //                        MainListView()
                         // MainDetailView(vm: MainDetailVM(useCase: MainDetailUseCase(repo: MainListRepository(networkStore: SubwayAPIService()))))
                     default:
-                        BookmarkView()
+                        EmptyView()
                     }
                 }
                

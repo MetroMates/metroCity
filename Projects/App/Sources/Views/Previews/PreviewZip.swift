@@ -5,9 +5,10 @@ import SwiftUI
 /// 프리뷰용.... MainDetailpreview
 struct MainDetailPreviewView: View {
     private let startVM = StartVM(type: .test)
-    
+
     var body: some View {
-        MainDetailView(vm: MainDetailVM(useCase: MainDetailUseCase(repo: MainDetailRepository(networkService: SubwayAPIService())), startVM: startVM))
+//        MainDetailView(vm: MainDetailVM(useCase: MainDetailUseCase(repo: MainDetailRepository(networkService: SubwayAPIService())), startVM: startVM))
+        Text("dd")
     }
 }
 

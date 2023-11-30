@@ -41,7 +41,7 @@ struct MainListView: View {
                         }
                         .padding()
                         .navigationDestination(isPresented: $mainVM.isDetailPresented) {
-                            MainDetailView(vm: mainDetailVM)
+                            MainDetailView(vm: mainDetailVM, mainVM: mainVM)
                         }
                     }
                 }
@@ -76,6 +76,11 @@ extension MainListView {
                     Button {
                         self.setLineAndstationInfo(line: line)
                         mainVM.isDetailPresented.toggle()
+                        
+                        // 역 선택 PopView 확인을 위함
+                        mainVM.userChoicedSubwayNm = line.subwayNm
+                        mainVM.checkUserChoice()
+                        
                     } label: {
                         LineCellView(stationName: line.subwayNm,
                                      stationColor: line.lineColor)
@@ -100,6 +105,12 @@ extension MainListView {
                     Button {
                         self.setLineAndstationInfo(line: line)
                         mainVM.isDetailPresented.toggle()
+                        
+                        // 역 선택 PopView 확인을 위함
+                        mainDetailVM.getStationTotal(subwayNm: line.subwayNm)
+                        mainVM.userChoicedSubwayNm = line.subwayNm
+                        mainVM.checkUserChoice()
+                        mainDetailVM.selectedStationBorderColor = line.lineColorHexCode
                     } label: {
                         LineCellView(stationName: line.subwayNm,
                                      stationColor: line.lineColor)
@@ -107,7 +118,6 @@ extension MainListView {
                     }
                 }
             }
-            
         } header: {
             Text("전체")
                 .padding(.top, 30)
@@ -117,6 +127,7 @@ extension MainListView {
 
 // MARK: - Private Methods
 extension MainListView {
+    /// 유저 맞춤 역정보데이터 mainDetailVm에도 똑같이 추가하는 함수
     private func setLineAndstationInfo(line: SubwayLineColor) {
         mainDetailVM.selectStationLineInfos = mainVM.subwayLineInfosAtStation
         mainDetailVM.send(selectStationInfo: mainVM.nearStationInfo,
