@@ -34,7 +34,6 @@ final class StartVM {
     }
     
     func dataPublisher() -> AnyPublisher<(Array<StationInfo>, Array<SubwayLineColor>, Array<StationLocation>), Never> {
-
         return stationInfoSubject.zip(lineInfoSubject, locInfoSubject)
             .share()
             .eraseToAnyPublisher()
@@ -54,6 +53,7 @@ final class StartVM {
             // MARK: 테스트 다한후, .real로 변경
             if self.type == .test {
                 if serverVer > self.localVer {
+                    print("🐷 setCoreData실행")
                     self.setCoreData(ver: serverVer, datas: statInfos, lineInfos, locInfos)
                 }
             }
@@ -103,7 +103,7 @@ final class StartVM {
                 }
             }
 
-            // CoreData에 변경 사항 저장
+            // CoreData에 변경 사항 저장 -> 내용을 덮기도 하고, 새로운 내용을 추가하기도 하고, 삭제하기도 합니다.
             coreDataManager.save()
 
             // UserDefaults에 데이터 버전 저장

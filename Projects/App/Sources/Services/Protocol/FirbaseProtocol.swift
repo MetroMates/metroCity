@@ -15,6 +15,21 @@ extension FireStoreServiceDelegate {
         return Firestore.firestore()
     }
     
+    func firestoreFetch<T: FireStoreCodable>(colName: String, docID: String, type: T.Type) async throws -> T? {
+        guard !colName.isEmpty, !docID.isEmpty else { print("컬렉션이름, 문서번호 비어있음.!!"); return nil }
+        
+        let docRef: DocumentReference = db.document("\(colName)/\(docID)")
+
+        do {
+            print("🐷 col : \(colName), doc : \(docID) Fetch 성공")
+            return try await docRef.getDocument(as: T.self)
+        } catch {
+            print(error.localizedDescription)
+        }
+        
+        return nil
+    }
+    
     func firestoreFetchAll<T: FireStoreCodable>(colName: String, type: T.Type) async throws -> [T] {
         guard !colName.isEmpty else { print("컬렉션이름 비어있음.!!"); return [] }
         print("🍜🐷 firestorFetchAll colName ", colName)

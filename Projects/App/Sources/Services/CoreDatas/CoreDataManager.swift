@@ -26,7 +26,7 @@ final class CoreDataManger {
     func save() {
         do {
             try context.save()
-            print("🫣저장 성공 !!")
+            print("🫣코어데이터 저장 성공 !!")
         } catch let error {
             print("🫣코어데이터 변경사항 저장 실패! \(error)")
         }
