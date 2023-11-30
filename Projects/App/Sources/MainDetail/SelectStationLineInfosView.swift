@@ -21,13 +21,17 @@ struct SelectStationLineInfosView: View {
                                 .fill(list.lineColor)
                                 .frame(width: 20, height: 20)
                             Text(list.subwayNm)
+                                .foregroundColor(.black)
                         }
+                        .listRowBackground(Color.white)
                         .onTapGesture { // 선택한 호선 뽑아내기
                             mainDetailVM.send(selectStationInfo: mainDetailVM.selectStationInfo, lineInfo: list)
                         }
                     }
+                    .background(.white)
                     .listStyle(.plain)
                     .frame(height: CGFloat(lineLists.count) * 50)
+                    .background(.white)
                     
                 }
                 .padding(.vertical, 20)
