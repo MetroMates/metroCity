@@ -76,6 +76,7 @@ final class MainDetailUseCase {
                                                             arvlCd: data.arvlCD,
                                                             nowStationName: nowStation)
                     
+                    let trainLocation: CGFloat = self.trainLocation(arvlCd: data.arvlCD)
                     if (data.updnLine == "상행" && upLineEnd == -1) || (data.updnLine == "하행" && downLineEnd == -1) {
                     } else {
                         stations.append(.init(updnLine: data.updnLine,
@@ -84,7 +85,8 @@ final class MainDetailUseCase {
                                               stCnt: firstSort,
                                               sortOrder: secondSort,
                                               message: message,
-                                              trainDestiStation: "\(data.bstatnNm)행" ))
+                                              trainDestiStation: "\(data.bstatnNm)행",
+                                              trainLocation: trainLocation))
                     }
                 }
                 
@@ -128,7 +130,21 @@ extension MainDetailUseCase {
         
         return ""
     }
+   
+    private func trainLocation(arvlCd: String) -> CGFloat {
+        if !arvlCd.isEmpty {
+            return ArvlCD(rawValue: arvlCd)?.subwayShowing ?? -3.0
+        }
+        
+        return -3.0
+    }
     
+    private func trainTimer(arvlCd: String, recptnDt: String) -> String {
+        if ArvlCD(rawValue: arvlCd)?.name == "전역 도착" {
+            return recptnDt
+        }
+        return ""
+    }
     /// 현재역 도착까지 몇정거장 남았는지를 반환.
     private func trainFirstSortKey(ordkey: String) -> Int {
         let startIndex = ordkey.index(ordkey.startIndex, offsetBy: 2)
@@ -159,22 +175,40 @@ extension MainDetailUseCase {
         var name: String {
             switch self {
             case .zero:
-                return "진입"
+                return "당역 진입"
             case .one:
-                return "도착"
+                return "당역 도착"
             case .two:
                 return "출발"
             case .three:
-                return "전역출발"
+                return "전역 출발"
             case .four:
-                return "전역진입"
+                return "전역 진입"
             case .five:
-                return "전역도착"
+                return "전역 도착"
             case .ninetynine:
                 return "운행중"
             }
         }
         
+        var subwayShowing: CGFloat {
+            switch self {
+            case .zero:
+                return 0.35
+            case .one:
+                return 0.45
+            case .two:
+                return 0.55
+            case .three:
+                return 0.1
+            case .four:
+                return -0.1
+            case .five:
+                return -0.05
+            case .ninetynine:
+                return -3.0
+            }
+        }
     }
     
 }
