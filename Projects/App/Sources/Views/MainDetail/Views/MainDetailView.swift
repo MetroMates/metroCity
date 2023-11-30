@@ -28,6 +28,7 @@ struct MainDetailView: View {
             }
 
         }
+        .toastView(toast: $vm.networkDiedToastMessage)
         .overlay {
             SelectStationLineInfosView(mainDetailVM: vm, isPresented: $vm.isLineListSheetOpen, lineLists: $vm.selectStationLineInfos)
         }

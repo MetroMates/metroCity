@@ -1,10 +1,13 @@
 // Copyright © 2023 TDS. All rights reserved. 2023-11-28 화 오후 05:50 꿀꿀🐷
 
-import Foundation
+import SwiftUI
 import Combine
 import CoreData
 
-final class StartVM {
+final class StartVM: ObservableObject {
+    @Published var selectTabIndex: Int = 0
+    @Published var selectLineInfo: SubwayLineColor = .emptyData
+    
     private let type: DataType
     private let dataManager: DataManager!
 //    private let stationInfoSubject = PassthroughSubject<[StationInfo], Never>()
@@ -19,6 +22,7 @@ final class StartVM {
     init(type: DataType) {
         self.type = type
         debugPrint("1️⃣ \(type)")
+        
         switch type {
         case .real:
             dataManager = RealDataManager()

@@ -19,9 +19,12 @@ final class MainDetailVM: ObservableObject {
     /// 선택된역 관련 호선들
     @Published var selectStationLineInfos: [SubwayLineColor] = []
     @Published var isLineListSheetOpen: Bool = false
-        
-    /// 호선정보 및 색상 MainListModel.swift -> 발행될 필요 없다.
-    var hosunInfo: SubwayLineColor = .emptyData
+    
+    // 네트워크 끊겼을 경우 메세지
+    @Published var networkDiedToastMessage: Toast? = nil
+    
+    /// 호선정보 및 색상 MainListModel.swift
+    @Published var hosunInfo: SubwayLineColor = .emptyData
 
     // MARK: - Private Properties
     private var lineInfos = [SubwayLineColor]()
@@ -67,6 +70,14 @@ final class MainDetailVM: ObservableObject {
                 }
             }
             .store(in: &anyCancellable)
+        
+        // 선택된 호선 색상을 startVM쪽에 넘겨서 탭바 shadow색상 변경
+        $hosunInfo
+            .receive(on: DispatchQueue.main)
+            .sink { lineColor in
+                self.startVM.selectLineInfo = lineColor
+            }
+            .store(in: &anyCancellable)
     }
     
     func send(selectStationInfo: MyStation, lineInfo: SubwayLineColor) {
@@ -85,7 +96,6 @@ final class MainDetailVM: ObservableObject {
     
     /// 타이머 시작
     func timerStart() {
-        // 10초에 한번씩 실행.
         self.timerCancel = Timer.publish(every: apiFetchTimeSecond, on: .main, in: .default)
                     .autoconnect()
                     .sink { _ in
@@ -180,6 +190,8 @@ extension MainDetailVM {
                     if URLError.Code(rawValue: error.code) == .notConnectedToInternet {
                         // 인터넷 끊겼을 시 알려줘야 함.
                         print("⓶ 연결끊김")
+                        self.networkDiedToastMessage = .init(style: .error, message: "네트워크 상태가 불안정합니다.\n네트워크 상태를 확인 후 재시도 바랍니다.")
+                        
                     }
                 }
             } receiveValue: { data in

@@ -5,7 +5,7 @@ import SwiftUI
 /// 즐겨찾기 View
 struct FavoritesView: View {
     var body: some View {
-        Text("Hello, World!")
+        Text("즐겨찾기")
     }
 }
 
