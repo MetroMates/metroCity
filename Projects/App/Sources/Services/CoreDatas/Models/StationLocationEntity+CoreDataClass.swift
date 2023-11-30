@@ -2,7 +2,7 @@
 //  StationLocationEntity+CoreDataClass.swift
 //  
 //
-//  Created by 박서연 on 2023/11/29.
+//  Created by woojin Shin on 2023/11/30.
 //
 //
 

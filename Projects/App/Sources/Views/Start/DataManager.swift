@@ -23,7 +23,7 @@ protocol DataManager {
 }
 
 final class RealDataManager: DataManager, FireStoreServiceDelegate {
-    private let coreManage = CoreDataManger.shared
+    let coreManager = CoreDataManger.shared
 
     func fetchDatas<Station, SubwayLine, LocInfo>(statType: Station.Type,
                                                   subwayLineType: SubwayLine.Type,
@@ -73,21 +73,21 @@ final class RealDataManager: DataManager, FireStoreServiceDelegate {
     }
     
     private func getCoreData(completion: @escaping ([StationInfo], [SubwayLineColor], [StationLocation]) -> Void) {
-        let stationEntity: [StationInfoEntity] = coreManage.getEntities(entityName: "StationInfoEntity")
+        let stationEntity: [StationInfoEntity] = coreManager.getEntities(entityName: "StationInfoEntity")
         let stationInfo = stationEntity.flatMap { info -> [StationInfo] in
             var infos: [StationInfo] = []
             infos.append(.init(subwayId: info.subwayId, subwayNm: info.subwayNm, statnId: info.statnId, statnNm: info.statnNm))
             return infos
         }
         
-        let lineEntity: [SubwayLineColorEntity] = coreManage.getEntities(entityName: "SubwayLineColorEntity")
+        let lineEntity: [SubwayLineColorEntity] = coreManager.getEntities(entityName: "SubwayLineColorEntity")
         let lineInfo = lineEntity.flatMap { info -> [SubwayLineColor] in
             var infos: [SubwayLineColor] = []
             infos.append(.init(subwayId: info.subwayId, subwayNm: info.subwayNm, lineColorHexCode: info.lineColorHexCode))
             return infos
         }.sorted { $0.subwayId < $1.subwayId }
         
-        let locationEntity: [StationLocationEntity] = coreManage.getEntities(entityName: "StationLocationEntity")
+        let locationEntity: [StationLocationEntity] = coreManager.getEntities(entityName: "StationLocationEntity")
         let locInfo = locationEntity.flatMap { info -> [StationLocation] in
             var infos: [StationLocation] = []
             infos.append(.init(crdntX: info.crdntX, crdntY: info.crdntY, route: info.route, statnId: info.statnId, statnNm: info.statnNm))
@@ -101,63 +101,17 @@ final class RealDataManager: DataManager, FireStoreServiceDelegate {
 }
 
 final class TestDataManager: DataManager {
-    private let coreManage = CoreDataManger.shared
-
     func fetchDatas<Station, SubwayLine, LocInfo>(statType: Station.Type,
                                                   subwayLineType: SubwayLine.Type,
                                                   locationInfoType: LocInfo.Type,
                                                   completion: @escaping (Int, [Station], [SubwayLine], [LocInfo]) -> Void) where Station: FireStoreCodable, SubwayLine: FireStoreCodable, LocInfo: FireStoreCodable {
         
-        let serverVer: Int = 3
-        let localVer: Int = UserDefaults.standard.integer(forKey: "testDataVersion")
-        
-        print("🆚Test server: \(serverVer) local: \(localVer)")
-        if serverVer > localVer {
             let stationInfos = Station.mockList
             let subwayLineInfos = SubwayLine.mockList
             let locInfos = LocInfo.mockList
 
-            completion(serverVer, stationInfos, subwayLineInfos, locInfos)
+            completion(-1, stationInfos, subwayLineInfos, locInfos)
 
-        } else {
-            print("🫣CoreData로딩")
-            // 무조건 coreData에서 Fetch.
-            getCoreData { stationInfo, lineInfo, locInfo in
-                let statInfos = stationInfo as? [Station] ?? []
-                let lineInfos = lineInfo as? [SubwayLine] ?? []
-                let locInfos = locInfo as? [LocInfo] ?? []
-                
-                completion(serverVer, statInfos, lineInfos, locInfos)
-            }
-            
-        }
-
-    }
-    
-    private func getCoreData(completion: @escaping ([StationInfo], [SubwayLineColor], [StationLocation]) -> Void) {
-        let stationEntity: [StationInfoEntity] = coreManage.getEntities(entityName: "StationInfoEntity")
-        let stationInfo = stationEntity.flatMap { info -> [StationInfo] in
-            var infos: [StationInfo] = []
-            infos.append(.init(subwayId: info.subwayId, subwayNm: info.subwayNm, statnId: info.statnId, statnNm: info.statnNm))
-            return infos
-        }
-        
-        let lineEntity: [SubwayLineColorEntity] = coreManage.getEntities(entityName: "SubwayLineColorEntity")
-        let lineInfo = lineEntity.flatMap { info -> [SubwayLineColor] in
-            var infos: [SubwayLineColor] = []
-            infos.append(.init(subwayId: info.subwayId, subwayNm: info.subwayNm, lineColorHexCode: info.lineColorHexCode))
-            return infos
-        }.sorted { $0.subwayId < $1.subwayId }
-        
-        let locationEntity: [StationLocationEntity] = coreManage.getEntities(entityName: "StationLocationEntity")
-        let locInfo = locationEntity.flatMap { info -> [StationLocation] in
-            var infos: [StationLocation] = []
-            infos.append(.init(crdntX: info.crdntX, crdntY: info.crdntY, route: info.route, statnId: info.statnId, statnNm: info.statnNm))
-            return infos
-        }
-        
-        completion(stationInfo, lineInfo, locInfo)
-        
     }
     
 }

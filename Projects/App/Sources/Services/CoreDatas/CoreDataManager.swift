@@ -4,14 +4,14 @@ import Foundation
 import CoreData
 
 final class CoreDataManger {
-    
-    static let shared = CoreDataManger()
+    /// 싱글톤으로 쓸경우는 컨테이너 -> MetroCity
+    static let shared = CoreDataManger(containerName: "MetroCity")
     
     let container: NSPersistentContainer
     let context: NSManagedObjectContext
     
-    private init() {
-        container = NSPersistentContainer(name: "MetroCity")
+    init(containerName: String) {
+        container = NSPersistentContainer(name: containerName)
         container.loadPersistentStores { description, error in
             if let error = error {
                 print("코어데이터 로딩 중 에러 발생 \(error.localizedDescription)")
@@ -24,6 +24,7 @@ final class CoreDataManger {
     }
     
     func save() {
+        guard context.hasChanges else { return }
         do {
             try context.save()
             print("🫣코어데이터 저장 성공 !!")
