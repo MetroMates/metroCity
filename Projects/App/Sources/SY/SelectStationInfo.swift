@@ -25,7 +25,6 @@ struct SelectStationInfo: View {
                             VStack(alignment: .leading, spacing: 12) {
                                 ForEach(totalStationInfo.prefix(totalStationInfo.count / 2)) { station in
                                     ScrollText(content: station.statnNm)
-//                                        .lineLimit(1)
                                         .foregroundColor(.black)
                                         .frame(maxWidth: geometry.size.width / 2 - 15)
                                         .padding(.vertical, 10)
@@ -45,9 +44,7 @@ struct SelectStationInfo: View {
                             
                             VStack(alignment: .leading, spacing: 12) {
                                 ForEach(totalStationInfo.suffix(totalStationInfo.count / 2)) { station in
-//                                    Text(station.statnNm)
                                     ScrollText(content: station.statnNm)
-//                                        .lineLimit(1)
                                         .foregroundColor(.black)
                                         .frame(maxWidth: geometry.size.width / 2 - 15)
                                         .padding(.vertical, 10)

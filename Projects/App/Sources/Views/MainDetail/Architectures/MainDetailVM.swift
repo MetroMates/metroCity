@@ -230,8 +230,6 @@ extension MainDetailVM {
         self.totalStationInfo = []
         for station in self.stationInfos {
             if station.subwayNm == subwayNm {
-                print("📖 \(station.subwayNm)")
-                print("📖📖 \(subwayNm)")
                 totalStationInfo.append(station)
             }
         }
