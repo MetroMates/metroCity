@@ -3,12 +3,10 @@
 import SwiftUI
 
 struct StartView: View {
-    private let startVM: StartVM = .init(type: .real)
+    private let startVM: StartVM = .init(type: .test)
     
     var body: some View {
-        MainListView(mainVM: MainListVM(useCase: MainListUseCase(repo: MainListRepository(networkStore: SubwayAPIService())),
-                                        startVM: startVM),
-                     
+        MainListView(mainVM: MainListVM(useCase: MainListUseCase(repo: MainListRepository(networkStore: SubwayAPIService())), startVM: startVM),
                      mainDetailVM: MainDetailVM(useCase: MainDetailUseCase(repo: MainDetailRepository(networkService: SubwayAPIService())),
                                                 startVM: startVM))
     }
