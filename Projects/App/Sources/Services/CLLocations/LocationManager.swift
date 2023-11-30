@@ -32,8 +32,8 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     
     /// 버튼을 누를 때마다 위치 업데이트를 하기 위해 함수로 따로 뺌!
     func fetchUserLocation() {
-//        self.clLocManager.requestLocation() // 한번만 가져오는 것.
-        self.clLocManager.startUpdatingLocation()
+        self.clLocManager.requestLocation() // 한번만 가져오는 것.
+//        self.clLocManager.startUpdatingLocation()
     }
     
     /// 3키로 반경 이내 역중에 위경도 값 기준으로 가장 근사한 역 하나를 리턴해줌
@@ -85,7 +85,7 @@ extension LocationManager {
         switch manager.authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse, .notDetermined:
             // 위치를 가져오면 됨
-            self.clLocManager.startUpdatingLocation()
+            self.clLocManager.requestLocation()
 
         case .denied, .restricted:
             // 다시 권한 체크창 띄워야함.

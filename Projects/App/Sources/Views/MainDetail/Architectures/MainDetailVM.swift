@@ -21,7 +21,7 @@ final class MainDetailVM: ObservableObject {
     @Published var isLineListSheetOpen: Bool = false
     
     // 네트워크 끊겼을 경우 메세지
-    @Published var networkDiedToastMessage: Toast? = nil
+    @Published var networkDiedToastMessage: Toast?
     
     /// 호선정보 및 색상 MainListModel.swift
     @Published var hosunInfo: SubwayLineColor = .emptyData
