@@ -35,6 +35,9 @@ struct MainDetailView: View {
             vm.timerStart()
         }
         .onDisappear { vm.timerStop() }
+        .onTapGesture {
+            self.endTextEditing()
+        }
     }
     
 }
