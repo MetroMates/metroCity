@@ -135,6 +135,13 @@ extension MainDetailUseCase {
         
         return -3.0
     }
+    
+    private func trainTimer(arvlCd: String, recptnDt: String) -> String {
+        if ArvlCD(rawValue: arvlCd)?.name == "전역 도착" {
+            return recptnDt
+        }
+        return ""
+    }
     /// 현재역 도착까지 몇정거장 남았는지를 반환.
     private func trainFirstSortKey(ordkey: String) -> Int {
         let startIndex = ordkey.index(ordkey.startIndex, offsetBy: 2)
@@ -165,17 +172,17 @@ extension MainDetailUseCase {
         var name: String {
             switch self {
             case .zero:
-                return "진입"
+                return "당역 진입"
             case .one:
-                return "도착"
+                return "당역 도착"
             case .two:
                 return "출발"
             case .three:
-                return "전역출발"
+                return "전역 출발"
             case .four:
-                return "전역진입"
+                return "전역 진입"
             case .five:
-                return "전역도착"
+                return "전역 도착"
             case .ninetynine:
                 return "운행중"
             }
@@ -184,17 +191,17 @@ extension MainDetailUseCase {
         var subwayShowing: CGFloat {
             switch self {
             case .zero:
-                return 0.4
+                return 0.35
             case .one:
-                return 0.5
+                return 0.45
             case .two:
-                return 0.6
+                return 0.55
             case .three:
                 return 0.1
             case .four:
                 return -0.1
             case .five:
-                return 0
+                return -0.05
             case .ninetynine:
                 return -3.0
             }

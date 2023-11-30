@@ -93,7 +93,7 @@ extension SubwayRouteMapView {
             }
             .offset(y: geo.size.height * (updn == .up ? 0.12 : 0.68))
         // 0.0 곱하면 맨 왼쪽, 0.9는 맨 오른쪽
-            .offset(x: geo.size.width * (updn == .up ? (1.0 - x) : x))
+            .offset(x: geo.size.width * (updn == .up ? (0.9 - x) : x))
     }
 }
 
