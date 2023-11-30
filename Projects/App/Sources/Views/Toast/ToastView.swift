@@ -7,13 +7,13 @@ struct ToastView: View {
     var message: String
     var width = CGFloat.infinity
     var body: some View {
-        HStack(alignment: .center, spacing: 12) {
+        VStack(alignment: .center, spacing: 12) {
             Image(systemName: style.iconStyle)
                 .foregroundColor(style.themeColor)
             Text(message)
                 .font(Font.caption)
                 .foregroundColor(Color.black)
-                .lineLimit(1)
+//                .lineLimit(1)
         }
         .background(Color.white)
         .tint(Color.white)

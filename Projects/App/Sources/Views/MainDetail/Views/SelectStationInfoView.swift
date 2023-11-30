@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-struct SelectStationInfo: View {
+struct SelectStationInfoView: View {
     @ObservedObject var mainDetailVM: MainDetailVM
     @Binding var userChoice: Bool
     @Binding var totalStationInfo: [StationInfo]
