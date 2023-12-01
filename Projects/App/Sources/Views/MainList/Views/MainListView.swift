@@ -45,7 +45,7 @@ struct MainListView: View {
                         }
                         .padding()
                         .navigationDestination(isPresented: $mainVM.isDetailPresented) {
-                            MainDetailView(vm: mainDetailVM)
+                            MainDetailView(vm: mainDetailVM, mainVM: mainVM)
                         }
                     }
                 }
@@ -80,6 +80,11 @@ extension MainListView {
                     Button {
                         self.setLineAndstationInfo(line: line)
                         mainVM.isDetailPresented.toggle()
+                        
+                        // 역 선택 PopView 확인을 위함
+                        mainVM.userChoicedSubwayNm = line.subwayNm
+                        mainVM.checkUserChoice()
+                        
                     } label: {
                         LineCellView(stationName: line.subwayNm,
                                      stationColor: line.lineColor)
@@ -102,7 +107,6 @@ extension MainListView {
     }
     
     @ViewBuilder private var AllStationLines: some View {
-        Group {
             Section {
                 VStack(spacing: 15) {
                     ForEach(mainVM.subwayLineInfos) { line in
@@ -118,20 +122,21 @@ extension MainListView {
                                     .shadow(color: line.lineColor.opacity(0.4), radius: 3, x: 2, y: 1)
                             }
                         }
+
                     }
                 }
                 
             } header: {
                 Text("전체")
                     .padding(.top, 30)
-            }
-        }
+            }        
     }
     
 }
 
 // MARK: - Private Methods
 extension MainListView {
+    /// 유저 맞춤 역정보데이터 mainDetailVm에도 똑같이 추가하는 함수
     private func setLineAndstationInfo(line: SubwayLineColor) {
         mainDetailVM.selectStationLineInfos = mainVM.subwayLineInfosAtStation
         mainDetailVM.send(selectStationInfo: mainVM.nearStationInfo,

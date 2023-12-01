@@ -23,6 +23,10 @@ final class MainListVM: ObservableObject {
     @Published var isProgressed: Bool = false
     @Published var nearStationInfo: MyStation = .emptyData
     
+    /// 유저 선택에 따라 역정보 popView 값을 설정하기 위한 변수
+    @Published var userChoice: Bool = true
+    @Published var userChoicedSubwayNm: String = ""
+    
     private var stationInfos: [StationInfo] = []
     private var locationInfos: [StationLocation] = []
     
@@ -120,5 +124,25 @@ extension MainListVM {
             }
             .store(in: &anyCancellable)
 
+    }
+}
+
+extension MainListVM {
+    func checkUserChoice() {
+        for lineInfo in subwayLineInfosAtStation {
+            if self.userChoicedSubwayNm != lineInfo.subwayNm {
+                self.userChoice = false
+            }
+        }
+        
+        if subwayLineInfosAtStation.isEmpty {
+            self.userChoice = false
+        }
+        
+        for lineInfo in subwayLineInfosAtStation {
+            if self.userChoicedSubwayNm == lineInfo.subwayNm {
+                self.userChoice = true
+            }
+        }
     }
 }
