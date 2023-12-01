@@ -15,7 +15,7 @@ struct SearchBarMain: View {
                         Text(item.statnNm)
                         Text("(\(item.subwayNm))")
                     }
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
                     .onTapGesture {
                         outFocused()
                         mainDetailVM.changFilteredStationAndLineInfo(item: item)
@@ -57,12 +57,13 @@ extension SearchBarMain {
                     outFocused()
                 } label: {
                     Image(systemName: "x.circle")
-                        .foregroundColor(.black)
+                        .foregroundColor(.primary)
                 }
                 .padding(.trailing)
                 .transition(.move(edge: .trailing))
             } else {
                 Image(systemName: "magnifyingglass")
+                    .foregroundColor(.primary)
             }
         }
         .padding(.horizontal, 5)
