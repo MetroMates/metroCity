@@ -53,8 +53,6 @@ final class MainDetailVM: ObservableObject {
     func subscribe() {
         // 2개의 Publisher가 모두 값이 들어왔을때 실행된다. -> combineLatest, zip의 기능.
         // 아래 구문에서는 combineLatest를 사용하게 되면 처음 방출했던 이벤트를 기억하고 또 방출한다. 그래서 zip으로 묶어준다.
-//        lineInfoFetchSubject.combineLatest(nearStationInfoFetchSubject)
-        
         selectedLineInfoFetchSubject.zip(selectStationInfoFetchSubject)
             .sink { (hosun, selectStation) in
                 self.hosunInfo = hosun
@@ -190,7 +188,7 @@ extension MainDetailVM {
                     if URLError.Code(rawValue: error.code) == .notConnectedToInternet {
                         // 인터넷 끊겼을 시 알려줘야 함.
                         print("⓶ 연결끊김")
-                        self.networkDiedToastMessage = .init(style: .error, message: "네트워크 상태가 불안정합니다.\n네트워크 상태를 확인 후 재시도 바랍니다.")
+                        self.networkDiedToastMessage = .init(style: .error, message: "네트워크 상태가 불안정합니다. 네트워크 상태를 확인 후 재시도 바랍니다.")
                         
                     }
                 }
