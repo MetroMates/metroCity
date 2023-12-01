@@ -103,23 +103,13 @@ final class MainDetailUseCase {
 }
 
 extension MainDetailUseCase {
-    private func calculateLocation() {
-        
-    }
-    
     private func convertSecondsToMinutesAndSeconds(seconds: Int) -> (minutes: Int, remainingSeconds: Int) {
         let minutes = seconds / 60
         let remainingSeconds = seconds % 60
         return (minutes, remainingSeconds)
     }
     
-    // TODO: 추후 변경 해야함. 23.11.27
-    /*
-        99 : 달리는 중에는 msg2를 뿌려주자.
-        
-        ArvlCD를 먼저 체크하고
-     
-     */
+    // TODO: 추후 변경 해야함. 23.11.27 -> 12.01 변경중.
     private func trainMessage(barvlDt: String,
                               arvlMsg2: String,
                               arvlMsg3: String,
@@ -230,7 +220,7 @@ extension MainDetailUseCase {
             case .zero:
                 return 0.35
             case .one:
-                return 0.45
+                return 0.4
             case .two:
                 return 0.55
             case .three:
@@ -240,6 +230,7 @@ extension MainDetailUseCase {
             case .five:
                 return -0.05
             case .ninetynine:
+                // 화면에서 안보이게 조정.
                 return -3.0
             }
         }

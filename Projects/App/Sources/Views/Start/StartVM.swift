@@ -70,6 +70,9 @@ final class StartVM: ObservableObject {
         
         // 백그라운드 스레드에서 CoreData에 값 넣어주는 작업. -> CoreData에서 자체적으로 UI관련되지 않은 작업들은 백그라운드에서 처리함.
         DispatchQueue.global().async { [self] in
+//            coreDataManager.context.delete(StationInfoEntity.self)
+//            coreDataManager.context.delete(SubwayLineColorEntity.self)
+//            coreDataManager.context.delete(StationLocationEntity.self)
             
             for dataGroup in datas {
                 for data in dataGroup {
@@ -77,7 +80,7 @@ final class StartVM: ObservableObject {
                     case let stationInfo as StationInfo:
                         // StationInfo에 대한 CoreData 로직
                         let newStationInfo = StationInfoEntity(context: coreDataManager.context)
-                        newStationInfo.id = UUID().uuidString
+                        newStationInfo.id = "\(stationInfo.subwayId)-\(stationInfo.statnId)"
                         newStationInfo.statnId = stationInfo.statnId
                         newStationInfo.subwayId = stationInfo.subwayId
                         newStationInfo.subwayNm = stationInfo.subwayNm
@@ -86,14 +89,14 @@ final class StartVM: ObservableObject {
                     case let subwayLineColor as SubwayLineColor:
                         // SubwayLineColor에 대한 CoreData 로직
                         let newSubwayLineColor = SubwayLineColorEntity(context: coreDataManager.context)
-                        newSubwayLineColor.id = UUID().uuidString
+                        newSubwayLineColor.id = "\(subwayLineColor.subwayId)"
                         newSubwayLineColor.subwayId = subwayLineColor.subwayId
                         newSubwayLineColor.subwayNm = subwayLineColor.subwayNm
                         newSubwayLineColor.lineColorHexCode = subwayLineColor.lineColorHexCode
                         
                     case let stationLocation as StationLocation:
                         let newStationLocation = StationLocationEntity(context: coreDataManager.context)
-                        newStationLocation.id = UUID().uuidString
+                        newStationLocation.id = "\(stationLocation.statnId)"
                         newStationLocation.crdntX = stationLocation.crdntX
                         newStationLocation.crdntY = stationLocation.crdntY
                         newStationLocation.route = stationLocation.route

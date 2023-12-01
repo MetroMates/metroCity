@@ -4,27 +4,27 @@ import SwiftUI
 
 struct SubwayRouteMapView: View {
     @ObservedObject var vm: MainDetailVM
+    @State private var timer: Timer?
     
     var body: some View {
         VStack(spacing: 0 ) {
-            Image(systemName: "arrow.left")
+            Label("상행", systemImage: "arrow.left")
+                .font(.callout)
+//            Image(systemName: "arrow.left")
             
             ZStack {
                 StationLine
                 
                 GeometryReader { geo in
-                    // 0.0 ~ 0.45 까지의 거리로 계산
-                    ForEach(vm.upRealTimeInfos, id: \.id) { x in
-                        subway(geo: geo, .up, no: x.trainDestiStation, x: x.trainLocation, express: x.trainTypeIndex)
-                    }
-                    ForEach(vm.downRealTimeInfos, id: \.id) { x in
-                        subway(geo: geo, .down, no: x.trainDestiStation, x: x.trainLocation, express: x.trainTypeIndex)
-                    }
+                    SubwayShapeView(vm: vm, geo: geo, updn: .up)
+                    SubwayShapeView(vm: vm, geo: geo, updn: .down)
                 }
                 .frame(height: 100)
             }
             
-            Image(systemName: "arrow.right")
+            Label("하행", systemImage: "arrow.right")
+                .font(.callout)
+//            Image(systemName: "arrow.right")
             
         }
     }
@@ -78,22 +78,35 @@ extension SubwayRouteMapView {
     @ViewBuilder private func subway(geo: GeometryProxy,
                                      _ updn: MainDetailVM.UpDn,
                                      no: String, x: CGFloat, express: String) -> some View {
-        
-        Text("\(no)")
-            .font(.caption)
-            .foregroundStyle(Color.white)
-            .padding(3)
-            .background {
-                RoundedRectangle(cornerRadius: 6)
-                    .fill(vm.hosunInfo.lineColor)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 6)
-                            .stroke(express == "0" ? vm.hosunInfo.lineColor : .blue, lineWidth: 2)
-                    )
-            }
-            .offset(y: geo.size.height * (updn == .up ? 0.12 : 0.68))
-        // 0.0 곱하면 맨 왼쪽, 0.9는 맨 오른쪽
-            .offset(x: geo.size.width * (updn == .up ? (0.9 - x) : x))
+
+        EmptyView()
+//        Text("\(no)")
+//            .font(.caption)
+//            .foregroundStyle(Color.white)
+//            .padding(3)
+//            .background {
+//                RoundedRectangle(cornerRadius: 6)
+//                    .fill(vm.hosunInfo.lineColor)
+//                    .overlay(
+//                        RoundedRectangle(cornerRadius: 6)
+//                            .stroke(express == "0" ? vm.hosunInfo.lineColor : .blue, lineWidth: 2)
+//                    )
+//            }
+//            .offset(y: geo.size.height * (updn == .up ? 0.12 : 0.68))
+//        // 0.0 곱하면 맨 왼쪽, 0.9는 맨 오른쪽
+//            .offset(x: geo.size.width * (updn == .down ? (1.0 - x) : x))
+//            .onAppear {
+////                timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+////                    DispatchQueue.main.async {
+////                        withAnimation {
+////                            moveOffset -= 0.1
+////                        }
+////                    }
+////                }
+//            }
+//            .onDisappear {
+//                timer?.invalidate()
+//            }
     }
 }
 

@@ -11,13 +11,17 @@ import SwiftUI
 
 /// 전체 호선 리스트 View
 struct MainListView: View {
-    //    @EnvironmentObject private var startVM: StartVM
+    @Environment(\.colorScheme) private var colorScheme
     @StateObject private var mainVM: MainListVM
     @StateObject private var mainDetailVM: MainDetailVM
     
     init(mainVM: MainListVM, mainDetailVM: MainDetailVM) {
         self._mainVM = StateObject(wrappedValue: mainVM)
         self._mainDetailVM = StateObject(wrappedValue: mainDetailVM)
+    }
+    
+    var contentBackColor: Color {
+        return colorScheme == .light ? Color.white : Color.gray.opacity(0.15)
     }
     
     var body: some View {
@@ -81,7 +85,7 @@ extension MainListView {
                                      stationColor: line.lineColor)
                         .background {
                             RoundedRectangle(cornerRadius: 10)
-                                .fill(Color.init(uiColor: .systemBackground))
+                                .fill(contentBackColor)
                                 .shadow(color: line.lineColor.opacity(0.4), radius: 3, x: 2, y: 1)
                         }
                     }
@@ -110,7 +114,7 @@ extension MainListView {
                                          stationColor: line.lineColor)
                             .background {
                                 RoundedRectangle(cornerRadius: 10)
-                                    .fill(Color.init(uiColor: .systemBackground))
+                                    .fill(contentBackColor)
                                     .shadow(color: line.lineColor.opacity(0.4), radius: 3, x: 2, y: 1)
                             }
                         }

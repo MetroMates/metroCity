@@ -9,7 +9,7 @@ struct TabItem: Identifiable {
     
     static let items: [Self] = [
         .init(name: "메인", image: "house"),
-        .init(name: "즐겨찾기", image: "star"),
+        .init(name: "즐겨찾기", image: "bookmark"),
         .init(name: "설정", image: "gearshape")
     ]
 }

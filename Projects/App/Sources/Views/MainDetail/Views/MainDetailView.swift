@@ -90,7 +90,7 @@ extension MainDetailView {
                         print("Bookmark Button tapped!")
                     } label: {
                         // TODO: 코어데이터 가져와서 선택되었던 역인지 아닌지 체크
-                        Image(systemName: "star")
+                        Image(systemName: "bookmark")
                             .tint(.primary)
                     }
                 }

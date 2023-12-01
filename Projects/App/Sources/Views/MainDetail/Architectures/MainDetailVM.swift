@@ -25,13 +25,17 @@ final class MainDetailVM: ObservableObject {
     
     /// 호선정보 및 색상 MainListModel.swift
     @Published var hosunInfo: SubwayLineColor = .emptyData
-
+    
+    /// 열차 움직임 변수값만큼 해당 x offset에 적용
+    @Published var moveXoffSet: CGFloat = .zero
+    
     // MARK: - Private Properties
     private var lineInfos = [SubwayLineColor]()
     private var stationInfos = [StationInfo]()
     private var locationInfos = [StationLocation]()
     private var anyCancellable: Set<AnyCancellable> = []
     private var timerCancel: AnyCancellable = .init {} // Timer만 생성했다 제거했다를 반복하기 위함.
+    private var trainTimerCancel: AnyCancellable = .init {}
     private let selectStationInfoFetchSubject = PassthroughSubject<MyStation, Never>()
     private let selectedLineInfoFetchSubject = PassthroughSubject<SubwayLineColor, Never>()
     
@@ -46,7 +50,8 @@ final class MainDetailVM: ObservableObject {
     
     deinit {
         anyCancellable.forEach { $0.cancel() }
-        timerCancel.cancel()
+        timerStop()
+        trainTimerStop()
     }
     
     /// 구독 메서드
@@ -57,6 +62,8 @@ final class MainDetailVM: ObservableObject {
             .sink { (hosun, selectStation) in
                 self.hosunInfo = hosun
                 self.fetchInfo(selectStation)
+                // 열차 x offset값 초기화
+                self.moveXoffSet = .zero
             }
             .store(in: &anyCancellable)
         
@@ -106,6 +113,18 @@ final class MainDetailVM: ObservableObject {
     /// 타이머 정지
     func timerStop() {
         timerCancel.cancel()
+    }
+    
+    func trainTimerStart(handler: @escaping () -> Void) {
+        self.trainTimerCancel = Timer.publish(every: 1.0, on: .main, in: .default)
+            .autoconnect()
+            .sink(receiveValue: { _ in
+                handler()
+            })
+    }
+    
+    func trainTimerStop() {
+        trainTimerCancel.cancel()
     }
     
 }
