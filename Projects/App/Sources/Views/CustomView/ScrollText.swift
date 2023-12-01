@@ -63,9 +63,9 @@ struct ScrollText: View {
     private func startAnimation() {
         if moveOptn {
             withAnimation(.linear(duration: transSpeed).delay(0.5).repeatForever(autoreverses: false)) {
-                print("🔴🟢", "|\(content)|", "W: \(textWidth)", "ParentW: \(parentWidth)")
+//                print("🔴🟢", "|\(content)|", "W: \(textWidth)", "ParentW: \(parentWidth)")
                 if parentWidth < textWidth {
-                    print("🔴🟢 애니메이션 시작!")
+//                    print("🔴🟢 애니메이션 시작!")
                     isdisabled = false
                     offset = -((textWidth + 1) / 3)  // text길이의 1/3까지만 움직이면 됨 +1해준이유는 너무 바로 끝나서 조금더 진행 된후에 offset 초기화 시키기 위함.
                 } else {
