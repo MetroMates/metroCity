@@ -86,9 +86,7 @@ extension StartView {
         .background {
             RoundedCorners(radius: 17, corners: [.topLeft, .topRight])
                 .fill(tabBarColor.gradient)
-//                .fill(colorScheme == .light ? Color.white : Color.black)
                 .shadow(color: shadowColor, radius: 3, x: 0, y: -2)
-            
                 .edgesIgnoringSafeArea(.bottom)
         }
     }
