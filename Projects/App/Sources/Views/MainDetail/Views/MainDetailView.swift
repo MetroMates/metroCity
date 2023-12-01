@@ -30,6 +30,7 @@ struct MainDetailView: View {
 
         }
         .toastView(toast: $vm.networkDiedToastMessage)
+        .customBackButton()
         .overlay {
             SelectStationLineInfosView(mainDetailVM: vm, isPresented: $vm.isLineListSheetOpen, lineLists: $vm.selectStationLineInfos)
         }
@@ -92,6 +93,7 @@ extension MainDetailView {
                     Button {
                         print("Bookmark Button tapped!")
                     } label: {
+                        // TODO: 코어데이터 가져와서 선택되었던 역인지 아닌지 체크
                         Image(systemName: "bookmark")
                             .tint(.primary)
                     }

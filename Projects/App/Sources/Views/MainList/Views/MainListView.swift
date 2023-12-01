@@ -11,13 +11,17 @@ import SwiftUI
 
 /// 전체 호선 리스트 View
 struct MainListView: View {
-    //    @EnvironmentObject private var startVM: StartVM
+    @Environment(\.colorScheme) private var colorScheme
     @StateObject private var mainVM: MainListVM
     @StateObject private var mainDetailVM: MainDetailVM
     
     init(mainVM: MainListVM, mainDetailVM: MainDetailVM) {
         self._mainVM = StateObject(wrappedValue: mainVM)
         self._mainDetailVM = StateObject(wrappedValue: mainDetailVM)
+    }
+    
+    var contentBackColor: Color {
+        return colorScheme == .light ? Color.white : Color.gray.opacity(0.15)
     }
     
     var body: some View {
@@ -84,7 +88,11 @@ extension MainListView {
                     } label: {
                         LineCellView(stationName: line.subwayNm,
                                      stationColor: line.lineColor)
-                        .border(Color.gray.opacity(0.5))
+                        .background {
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(contentBackColor)
+                                .shadow(color: line.lineColor.opacity(0.4), radius: 3, x: 2, y: 1)
+                        }
                     }
                     
                 }
@@ -99,30 +107,31 @@ extension MainListView {
     }
     
     @ViewBuilder private var AllStationLines: some View {
-        Section {
-            VStack(spacing: 15) {
-                ForEach(mainVM.subwayLineInfos) { line in
-                    Button {
-                        self.setLineAndstationInfo(line: line)
-                        mainVM.isDetailPresented.toggle()
-                        
-                        // 역 선택 PopView 확인을 위함
-                        mainDetailVM.getStationTotal(subwayNm: line.subwayNm)
-                        mainVM.userChoicedSubwayNm = line.subwayNm
-                        mainVM.checkUserChoice()
-                        mainDetailVM.selectedStationBorderColor = line.lineColorHexCode
-                    } label: {
-                        LineCellView(stationName: line.subwayNm,
-                                     stationColor: line.lineColor)
-                        .border(Color.gray.opacity(0.5))
+            Section {
+                VStack(spacing: 15) {
+                    ForEach(mainVM.subwayLineInfos) { line in
+                        Button {
+                            self.setLineAndstationInfo(line: line)
+                            mainVM.isDetailPresented.toggle()
+                        } label: {
+                            LineCellView(stationName: line.subwayNm,
+                                         stationColor: line.lineColor)
+                            .background {
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(contentBackColor)
+                                    .shadow(color: line.lineColor.opacity(0.4), radius: 3, x: 2, y: 1)
+                            }
+                        }
+
                     }
                 }
-            }
-        } header: {
-            Text("전체")
-                .padding(.top, 30)
-        }
+                
+            } header: {
+                Text("전체")
+                    .padding(.top, 30)
+            }        
     }
+    
 }
 
 // MARK: - Private Methods
@@ -137,6 +146,7 @@ extension MainListView {
 
 struct MainListView_Preview: PreviewProvider {
     static var previews: some View {
-        MainListPreviewView()
+        StartView()
+        //        MainListPreviewView()
     }
 }

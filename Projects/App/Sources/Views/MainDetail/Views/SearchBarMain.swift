@@ -40,6 +40,7 @@ extension SearchBarMain {
     @ViewBuilder private var SearchBar: some View {
         
         HStack {
+            CustomBackButton()
             TextField("Search",
                       text: $mainDetailVM.searchText,
                       onEditingChanged: { edited in
@@ -70,6 +71,6 @@ extension SearchBarMain {
 
 struct SearchBarMain_Previews: PreviewProvider {
     static var previews: some View {
-        StartView()
+        MainListPreviewView()
     }
 }

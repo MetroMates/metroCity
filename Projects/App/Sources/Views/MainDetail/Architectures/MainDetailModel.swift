@@ -85,8 +85,12 @@ struct RealTimeSubway: SubwayModelIdentifier {
 
 extension RealTimeSubway {
     var updnIndex: String {
-        updnLine == "상행" ? "0" : "1"
+        if updnLine == "상행" || updnLine == "외선" {
+            return "0"
+        }
+        return "1"
     }
+    
     var trainTypeIndex: String {
         switch trainType {
         case "급행":

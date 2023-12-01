@@ -62,14 +62,12 @@ final class MainListVM: ObservableObject {
             }
             .store(in: &anyCancellable)
         
-        print("🍜 userLocationSubscribe 진입전.")
         useCase.userLocationSubscribe(statnLocInfos: locInfo)
-        print("🍜", "userLocationSubscribe 진입 후")
         
         useCase.nearStationNameSubject
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { userLoc in
-                print("🍜 nearStationNameSubject 내부@!! \(userLoc)")
+//                debugPrint("🍜 nearStationNameSubject 내부@!! \(userLoc)")
                 self.nearStNamefromUserLocation = userLoc
             })
             .store(in: &anyCancellable)

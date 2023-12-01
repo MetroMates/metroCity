@@ -103,32 +103,55 @@ final class MainDetailUseCase {
 }
 
 extension MainDetailUseCase {
-    private func calculateLocation() {
-        
+    private func convertSecondsToMinutesAndSeconds(seconds: Int) -> (minutes: Int, remainingSeconds: Int) {
+        let minutes = seconds / 60
+        let remainingSeconds = seconds % 60
+        return (minutes, remainingSeconds)
     }
     
-    // TODO: 추후 변경 해야함. 23.11.27
+    // TODO: 추후 변경 해야함. 23.11.27 -> 12.01 변경중.
     private func trainMessage(barvlDt: String,
                               arvlMsg2: String,
                               arvlMsg3: String,
                               arvlCd: String,
                               nowStationName: String) -> String {
+        var times: String = ""
         if barvlDt != "0" {
-            return "\(barvlDt)초전"
+            let (min, sec) = convertSecondsToMinutesAndSeconds(seconds: Int(barvlDt) ?? 0)
+          
+            if sec == 0 {
+                times = "\(min)분"
+            } else {
+                if min == 0 {
+                    times = "\(sec)초"
+                } else {
+                    times = "\(min)분 \(sec)초"
+                }
+            }
         }
         
-        if !arvlMsg2.isEmpty || !arvlMsg3.isEmpty {
-            if nowStationName == arvlMsg3 {
-               return arvlMsg2.replacingOccurrences(of: nowStationName, with: "당역")
-            }            
-            return arvlMsg2
+        var arvlMsg: String = ""
+        // ↓ 99가 아닐경우에는 얘를 띄워주기.
+        if arvlCd != "99" {
+            arvlMsg = ArvlCD(rawValue: arvlCd)?.name ?? ""
+        } else {
+            // 99: 운행중 일경우에는 메세지 분석해서 띄우기.
+            if !arvlMsg2.isEmpty || !arvlMsg3.isEmpty {
+                if nowStationName == arvlMsg3 {
+                    arvlMsg =  arvlMsg2.replacingOccurrences(of: nowStationName, with: "당역")
+                }
+                arvlMsg = arvlMsg2
+            }
         }
         
-        if !arvlCd.isEmpty {
-            return ArvlCD(rawValue: arvlCd)?.name ?? ""
+        var rtnMsg: String = ""
+        if !times.isEmpty {
+            rtnMsg = "\(times) (\(arvlMsg3))"
+        } else {
+            rtnMsg = arvlMsg
         }
         
-        return ""
+        return rtnMsg
     }
    
     private func trainLocation(arvlCd: String) -> CGFloat {
@@ -139,12 +162,13 @@ extension MainDetailUseCase {
         return -3.0
     }
     
-    private func trainTimer(arvlCd: String, recptnDt: String) -> String {
-        if ArvlCD(rawValue: arvlCd)?.name == "전역 도착" {
-            return recptnDt
-        }
-        return ""
-    }
+//    private func trainTimer(arvlCd: String, recptnDt: String) -> String {
+//        if ArvlCD(rawValue: arvlCd)?.name == "전역 도착" {
+//            return recptnDt
+//        }
+//        return ""
+//    }
+    
     /// 현재역 도착까지 몇정거장 남았는지를 반환.
     private func trainFirstSortKey(ordkey: String) -> Int {
         let startIndex = ordkey.index(ordkey.startIndex, offsetBy: 2)
@@ -154,7 +178,7 @@ extension MainDetailUseCase {
         return Int(slicedString) ?? 0
     }
     
-    /// 첫번재 도착인지 두번째 도착인지 반환
+    /// 첫번재 도착인지 두번째 도착인지 반환 -> 추후 삭제할듯 23.12.01
     private func trainSecondSortKey(ordkey: String) -> Int {
         let startIndex = ordkey.index(ordkey.startIndex, offsetBy: 1)
         let endIndex = ordkey.index(startIndex, offsetBy: 1)
@@ -196,7 +220,7 @@ extension MainDetailUseCase {
             case .zero:
                 return 0.35
             case .one:
-                return 0.45
+                return 0.4
             case .two:
                 return 0.55
             case .three:
@@ -206,6 +230,7 @@ extension MainDetailUseCase {
             case .five:
                 return -0.05
             case .ninetynine:
+                // 화면에서 안보이게 조정.
                 return -3.0
             }
         }
