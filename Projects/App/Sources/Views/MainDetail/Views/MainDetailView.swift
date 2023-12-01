@@ -142,8 +142,9 @@ extension MainDetailView {
                         .font(.title3)
                         .padding(.horizontal, 5)
                         .foregroundColor(Color.black)
-                        .bold()
-                        
+                        .bold()       
+                }.onTapGesture {
+                    mainVM.userChoice.toggle()
                 }
                 
                 Button {

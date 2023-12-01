@@ -25,6 +25,8 @@ final class MainDetailVM: ObservableObject {
     @Published var totalStationInfo: [StationInfo] = []
     /// 서연추가) 선택된 호선 색상 값 저장 -> 역 버튼 테두리 색상으로 활용
     @Published var selectedStationBorderColor: String = ""
+    /// 서연추가) 유저가 역팝업뷰에서 역 선택하였을 때 배경 분기처리를 위한 프로퍼티
+    @Published var userSelectedStation: String?
   
     // 네트워크 끊겼을 경우 메세지
     @Published var networkDiedToastMessage: Toast?

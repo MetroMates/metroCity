@@ -33,57 +33,15 @@ struct SelectStationInfoView: View {
                                         RoundedRectangle(cornerRadius: 10)
                                             .stroke(Color(hex: mainDetailVM.selectedStationBorderColor), lineWidth: 0.5)
                                     )
+                                    .background(mainDetailVM.selectedStationBorderColor == station.statnNm ? Color.blue : Color.clear)
                                     .onTapGesture {
-                                        print(station)
+                                        mainDetailVM.userSelectedStation = station.statnNm
                                         let temp = MyStation(nowSt: Int(station.statnId), nowStNm: station.statnNm, upSt: 0, upStNm: "", downSt: 0, downStNm: "")
                                         mainDetailVM.send(selectStationInfo: temp, lineInfo: mainDetailVM.hosunInfo)
                                         userChoice = true
                                     }
                                     .padding(.horizontal, 10)
                             }
-                            
-//                        }
-                        
-//                        HStack {
-//                            VStack(alignment: .leading, spacing: 12) {
-//                                ForEach(totalStationInfo.prefix(totalStationInfo.count / 2)) { station in
-//                                    ScrollText(content: station.statnNm)
-//                                        .foregroundColor(.black)
-//                                        .frame(maxWidth: geometry.size.width / 2 - 15)
-//                                        .padding(.vertical, 10)
-//                                        .overlay(
-//                                            RoundedRectangle(cornerRadius: 10)
-//                                                .stroke(Color(hex: mainDetailVM.selectedStationBorderColor), lineWidth: 0.5)
-//                                        )
-//                                        .onTapGesture {
-//                                            print(station)
-//                                            let temp = MyStation(nowSt: Int(station.statnId), nowStNm: station.statnNm, upSt: 0, upStNm: "", downSt: 0, downStNm: "")
-//                                            mainDetailVM.send(selectStationInfo: temp, lineInfo: mainDetailVM.hosunInfo)
-//                                            userChoice = true
-//                                        }
-//                                }
-//                            }
-//                            .padding(.horizontal, 3)
-//
-//                            VStack(alignment: .leading, spacing: 12) {
-//                                ForEach(totalStationInfo.suffix(totalStationInfo.count / 2)) { station in
-//                                    ScrollText(content: station.statnNm)
-//                                        .foregroundColor(.black)
-//                                        .frame(maxWidth: geometry.size.width / 2 - 15)
-//                                        .padding(.vertical, 10)
-//                                        .overlay(
-//                                            RoundedRectangle(cornerRadius: 10)
-//                                                .stroke(Color(hex: mainDetailVM.selectedStationBorderColor), lineWidth: 0.5)
-//                                        )
-//                                        .onTapGesture {
-//                                            print(station)
-//                                            let temp = MyStation(nowSt: Int(station.statnId), nowStNm: station.statnNm, upSt: 0, upStNm: "", downSt: 0, downStNm: "")
-//                                            mainDetailVM.send(selectStationInfo: temp, lineInfo: mainDetailVM.hosunInfo)
-//                                            userChoice = true
-//                                        }
-//                                }
-//                            }
-//                            .padding(.horizontal, 3)
                         }
                         .padding(.vertical, 1)
                         .padding(.horizontal, 15)

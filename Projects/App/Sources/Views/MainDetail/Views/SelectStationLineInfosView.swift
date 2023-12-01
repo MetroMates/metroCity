@@ -31,13 +31,11 @@ struct SelectStationLineInfosView: View {
                     }
                     .background(.white)
                     .listStyle(.plain)
-                    .frame(height: CGFloat(lineLists.count) * 50)
-                    .background(.white)
-                    
+                    .frame(height: CGFloat(lineLists.count) * 45)
                 }
-                .padding(.vertical, 20)
+                .padding(.vertical, 10)
                 .frame(maxWidth: .infinity)
-                .frame(height: CGFloat(lineLists.count) * 50)
+                .frame(height: CGFloat(lineLists.count) * 45)
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 30)
@@ -47,7 +45,7 @@ struct SelectStationLineInfosView: View {
                                 .fill(.white)
                         )
                 )
-                .padding(.horizontal, 20)
+                .padding(.horizontal, 100)
                 .padding(.bottom, geometry.size.height * 0.4)
             }
         }
