@@ -84,7 +84,8 @@ extension MainListView {
                         // 역 선택 PopView 확인을 위함
                         mainVM.userChoicedSubwayNm = line.subwayNm
                         mainVM.checkUserChoice()
-                        
+                        mainDetailVM.getStationTotal(subwayNm: line.subwayNm)
+                        mainDetailVM.selectedStationBorderColor = line.lineColorHexCode
                     } label: {
                         LineCellView(stationName: line.subwayNm,
                                      stationColor: line.lineColor)
@@ -113,6 +114,12 @@ extension MainListView {
                         Button {
                             self.setLineAndstationInfo(line: line)
                             mainVM.isDetailPresented.toggle()
+                            
+                            // 역 선택 PopView 확인을 위함
+                            mainVM.userChoicedSubwayNm = line.subwayNm
+                            mainVM.checkUserChoice()
+                            mainDetailVM.getStationTotal(subwayNm: line.subwayNm)
+                            mainDetailVM.selectedStationBorderColor = line.lineColorHexCode
                         } label: {
                             LineCellView(stationName: line.subwayNm,
                                          stationColor: line.lineColor)

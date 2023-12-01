@@ -16,52 +16,77 @@ struct SelectStationInfoView: View {
                     .ignoresSafeArea()
                 
                 VStack {
-                    Text("찾고 싶은 역을 선택해주세요.")
+                    Text("찾으시는 역을 선택해주세요")
                         .font(.system(size: 18, weight: .semibold))
                         .foregroundColor(.black)
+                    Divider()
                         .padding(.bottom, 10)
+                    
                     ScrollView {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 12) {
-                                ForEach(totalStationInfo.prefix(totalStationInfo.count / 2)) { station in
-                                    ScrollText(content: station.statnNm)
-                                        .foregroundColor(.black)
-                                        .frame(maxWidth: geometry.size.width / 2 - 15)
-                                        .padding(.vertical, 10)
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 10)
-                                                .stroke(Color(hex: mainDetailVM.selectedStationBorderColor), lineWidth: 0.5)
-                                        )
-                                        .onTapGesture {
-                                            print(station)
-                                            let temp = MyStation(nowSt: Int(station.statnId), nowStNm: station.statnNm, upSt: 0, upStNm: "", downSt: 0, downStNm: "")
-                                            mainDetailVM.send(selectStationInfo: temp, lineInfo: mainDetailVM.hosunInfo)
-                                            userChoice = true
-                                        }
-                                }
+                        VStack(alignment: .leading, spacing: 12) {
+                            ForEach(totalStationInfo) { station in
+                                ScrollText(content: station.statnNm)
+                                    .foregroundColor(.black)
+                                    .frame(maxWidth: geometry.size.width)
+                                    .padding(.vertical, 12)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .stroke(Color(hex: mainDetailVM.selectedStationBorderColor), lineWidth: 0.5)
+                                    )
+                                    .onTapGesture {
+                                        print(station)
+                                        let temp = MyStation(nowSt: Int(station.statnId), nowStNm: station.statnNm, upSt: 0, upStNm: "", downSt: 0, downStNm: "")
+                                        mainDetailVM.send(selectStationInfo: temp, lineInfo: mainDetailVM.hosunInfo)
+                                        userChoice = true
+                                    }
+                                    .padding(.horizontal, 10)
                             }
-                            .padding(.horizontal, 3)
                             
-                            VStack(alignment: .leading, spacing: 12) {
-                                ForEach(totalStationInfo.suffix(totalStationInfo.count / 2)) { station in
-                                    ScrollText(content: station.statnNm)
-                                        .foregroundColor(.black)
-                                        .frame(maxWidth: geometry.size.width / 2 - 15)
-                                        .padding(.vertical, 10)
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 10)
-                                                .stroke(Color(hex: mainDetailVM.selectedStationBorderColor), lineWidth: 0.5)
-                                        )
-                                        .onTapGesture {
-                                            print(station)
-                                            let temp = MyStation(nowSt: Int(station.statnId), nowStNm: station.statnNm, upSt: 0, upStNm: "", downSt: 0, downStNm: "")
-                                            mainDetailVM.send(selectStationInfo: temp, lineInfo: mainDetailVM.hosunInfo)
-                                            userChoice = true
-                                        }
-                                }
-                            }
-                            .padding(.horizontal, 3)
+//                        }
+                        
+//                        HStack {
+//                            VStack(alignment: .leading, spacing: 12) {
+//                                ForEach(totalStationInfo.prefix(totalStationInfo.count / 2)) { station in
+//                                    ScrollText(content: station.statnNm)
+//                                        .foregroundColor(.black)
+//                                        .frame(maxWidth: geometry.size.width / 2 - 15)
+//                                        .padding(.vertical, 10)
+//                                        .overlay(
+//                                            RoundedRectangle(cornerRadius: 10)
+//                                                .stroke(Color(hex: mainDetailVM.selectedStationBorderColor), lineWidth: 0.5)
+//                                        )
+//                                        .onTapGesture {
+//                                            print(station)
+//                                            let temp = MyStation(nowSt: Int(station.statnId), nowStNm: station.statnNm, upSt: 0, upStNm: "", downSt: 0, downStNm: "")
+//                                            mainDetailVM.send(selectStationInfo: temp, lineInfo: mainDetailVM.hosunInfo)
+//                                            userChoice = true
+//                                        }
+//                                }
+//                            }
+//                            .padding(.horizontal, 3)
+//
+//                            VStack(alignment: .leading, spacing: 12) {
+//                                ForEach(totalStationInfo.suffix(totalStationInfo.count / 2)) { station in
+//                                    ScrollText(content: station.statnNm)
+//                                        .foregroundColor(.black)
+//                                        .frame(maxWidth: geometry.size.width / 2 - 15)
+//                                        .padding(.vertical, 10)
+//                                        .overlay(
+//                                            RoundedRectangle(cornerRadius: 10)
+//                                                .stroke(Color(hex: mainDetailVM.selectedStationBorderColor), lineWidth: 0.5)
+//                                        )
+//                                        .onTapGesture {
+//                                            print(station)
+//                                            let temp = MyStation(nowSt: Int(station.statnId), nowStNm: station.statnNm, upSt: 0, upStNm: "", downSt: 0, downStNm: "")
+//                                            mainDetailVM.send(selectStationInfo: temp, lineInfo: mainDetailVM.hosunInfo)
+//                                            userChoice = true
+//                                        }
+//                                }
+//                            }
+//                            .padding(.horizontal, 3)
                         }
+                        .padding(.vertical, 1)
+                        .padding(.horizontal, 15)
                     }
                 }
                 .foregroundColor(.primary)
@@ -76,8 +101,8 @@ struct SelectStationInfoView: View {
                                 .fill(.white)
                         )
                 )
-                .padding(.horizontal, 20)
-                .frame(height: geometry.size.height * 0.5)
+                .padding(.horizontal, 45)
+                .frame(height: geometry.size.height * 0.6)
             }
         }
         .opacity(userChoice ? 0.0 : 1.0)
