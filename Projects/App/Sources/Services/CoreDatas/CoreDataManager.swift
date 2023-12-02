@@ -7,7 +7,7 @@ import CoreData
 final class CoreDataManger {
     static let shared = CoreDataManger()
     
-    let container: NSPersistentContainer
+    private let container: NSPersistentContainer
     let context: NSManagedObjectContext
     
     private init() {
@@ -25,31 +25,17 @@ final class CoreDataManger {
         // 기존에 저장되어있던 항목에 병합할건지 여부.
         context.automaticallyMergesChangesFromParent = true
     }
+    
+    // NSEntityDescription.entity() 이건 Entity를 새로 만들경우 사용.
 
-    func save() {}
-    
     // MARK: - CRUD Methods
-    
-    func create() {
-        
+    /// 여러 Entity의 내용을 한번에 등록할 경우.
+    func create(newEntityDataHandler: () -> Void) -> Bool {
+        print("📝 CoreDataManager create")
+        newEntityDataHandler()
+        return self.save()
     }
-    
-    // 데이터 패치 함수
-//    func getEntities<T: NSManagedObject>(entityName: String) -> [T] {
-//        let request = NSFetchRequest<T>(entityName: entityName)
-//        var entities: [T] = []
-//
-//        do {
-//            entities = try context.fetch(request)
-//        } catch let error {
-//            print("An error occurred while fetching \(entityName) data! \(error), \(error.localizedDescription)")
-//        }
-//
-//        print("👻 \(entityName) data patch completed ")
-//        print("👻 \(entities.count)")
-//        return entities
-//    }
-    
+            
     /// 데이터 조회 (조건가능 <한컬럼>)
     func retrieve<Entity, Value>(type: Entity.Type,
                                  sortkey: WritableKeyPath<Entity, String>? = nil,
@@ -57,7 +43,7 @@ final class CoreDataManger {
                                  column: WritableKeyPath<Entity, Value>? = nil,
                                  comparision: CoreDataManger.Comparisons = .equal,
                                  value: Value? = nil) -> [Entity] where Entity: NSManagedObject {
-        
+        print("📝 CoreDataManager Retrieve")
         let request = NSFetchRequest<Entity>(entityName: "\(type.self)")
         let sortDesription = NSSortDescriptor(key: sortkey?.toKeyName, ascending: sortAsc)
 
@@ -83,7 +69,7 @@ final class CoreDataManger {
     func retrieve<Entity>(type: Entity.Type,
                           sortkey: WritableKeyPath<Entity, String>? = nil,
                           sortAsc: Bool = true) -> [Entity] where Entity: NSManagedObject {
-        
+        print("CoreDataManager Retrieve")
         let request = NSFetchRequest<Entity>(entityName: "\(type.self)")
         let sortDesription = NSSortDescriptor(key: sortkey?.toKeyName, ascending: sortAsc)
         
@@ -100,35 +86,38 @@ final class CoreDataManger {
     }
     
     /// 수정
-    func update<Entity, Value>(type: Entity.Type, column: WritableKeyPath<Entity, Value>, value: Value) -> Bool where Entity: NSManagedObject {
-        let beforeData = self.retrieve(type: type, column: column, comparision: .equal, value: value).first
-        guard let beforeData else { return false }
+    /// clouser에 entity.setValue("변경할 데이터", forKey: "컬럼명") 의 형식으로 작성.!!
+    func update<Entity, Value>(type: Entity.Type,
+                               column: WritableKeyPath<Entity, Value>,
+                               value: Value,
+                               newValueHandler: ([Entity]) -> Void) -> Bool where Entity: NSManagedObject {
+        print("📝 CoreDataManager Update")
+        let beforeDatas = self.retrieve(type: type, column: column, comparision: .equal, value: value)
+        guard !beforeDatas.isEmpty else { return false }
         
-        
-        
-        return true
-    }
-    
-    /// 해당 데이터만 삭제
-    func delete<Entity, Value>(type: Entity.Type, column: WritableKeyPath<Entity, Value>, value: Value) -> Bool where Entity: NSManagedObject {
-        let deleteData = self.retrieve(type: type, column: column, comparision: .equal, value: value).first
-        guard let deleteData else { return false }
-        
-        context.delete(deleteData)
+        newValueHandler(beforeDatas)
         
         if !self.save() { return false }
         
         return true
     }
+
+    /// 해당 데이터만 삭제
+    func delete<Entity, Value>(type: Entity.Type, column: WritableKeyPath<Entity, Value>, value: Value) -> Bool where Entity: NSManagedObject {
+        print("📝 CoreDataManager Delete")
+        let deleteDatas = self.retrieve(type: type, column: column, comparision: .equal, value: value)
+        guard !deleteDatas.isEmpty else { return false }
+        
+        deleteDatas.forEach { context.delete($0) }
+
+        return self.save()
+    }
     
     /// 해당 타입 전체삭제.
     func deleteAll<Entity>(type: Entity.Type) -> Bool where Entity: NSManagedObject {
+        print("📝 CoreDataManager DeleteAll")
         let allDatas = self.retrieve(type: type)
-        
-        for data in allDatas {
-            context.delete(data)
-        }
-        
+        allDatas.forEach { context.delete($0) }
         if !self.save() { return false }
         
         return true
@@ -140,19 +129,18 @@ extension CoreDataManger {
     private func save() -> Bool {
         guard context.hasChanges
         else {
-            print("🫣 코어데이터 변경사항 없음.")
+            print("📝 코어데이터 변경사항 없음.")
             return false
         }
         
         do {
             try context.save()
-            print("🫣 코어데이터 저장 성공 !!")
+            print("📝 코어데이터 저장 성공 !!")
             return true
         } catch {
-            print("🫣 코어데이터 변경사항 저장 실패! \(error.localizedDescription)")
+            print("📝 코어데이터 변경사항 저장 실패! \(error.localizedDescription)")
             return false
         }
-        
     }
     
     enum Comparisons: String {

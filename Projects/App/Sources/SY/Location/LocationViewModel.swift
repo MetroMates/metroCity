@@ -44,25 +44,25 @@ final class LocationViewModel: ObservableObject {
     
     /// CoreData에 StationInfo 정보 추가하기
     func addStationInfoCoreData(subwayId: Int32, subwayNm: String, statnId: Int32, statnNm: String) {
-        let newStationInfo = StationInfoEntity(context: coreDataManger.container.viewContext)
+        let newStationInfo = StationInfoEntity(context: coreDataManger.context)
         newStationInfo.id = UUID().uuidString
         newStationInfo.statnId = statnId
         newStationInfo.subwayId = subwayId
         newStationInfo.subwayNm = subwayNm
         newStationInfo.statnNm = statnNm
-        coreDataManger.save() //
+//        coreDataManger.save() //
     }
     
     /// CoreData에 StationLocation 정보 추가하기
     func addStationLocationCoreData(crdntX: Double, crdntY: Double, route: String, statnId: Int32, statnNm: String ) {
-        let newStationLocation = StationLocationEntity(context: coreDataManger.container.viewContext)
+        let newStationLocation = StationLocationEntity(context: coreDataManger.context)
         newStationLocation.id = UUID().uuidString
         newStationLocation.crdntX = crdntX
         newStationLocation.crdntY = crdntY
         newStationLocation.route = route
         newStationLocation.statnId = statnId
         newStationLocation.statnNm = statnNm
-        coreDataManger.save()
+//        coreDataManger.save()
     }
     
     /// StationInfo가 코어데이터에 안 저장 되어있을 때 for문을 돌면서 코어데이터에 추가하기
@@ -73,7 +73,7 @@ final class LocationViewModel: ObservableObject {
                 addStationInfoCoreData(subwayId: stationInfo.subwayId, subwayNm: stationInfo.subwayNm, statnId: stationInfo.statnId, statnNm: stationInfo.statnNm)
             }
         }
-        coreDataManger.save()
+//        coreDataManger.save()
     }
     
     /// StationLocation이 코어데이터에 안 저장 되어있을 때 for문을 돌면서 코어데이터에 추가하기
@@ -84,7 +84,7 @@ final class LocationViewModel: ObservableObject {
                 addStationLocationCoreData(crdntX: location.crdntX, crdntY: location.crdntY, route: location.route, statnId: location.statnId, statnNm: location.statnNm)
             }
         }
-        coreDataManger.save()
+//        coreDataManger.save()
     }
     
 //    private let firestoreManager = FirebaseLocationManager.shared

@@ -71,7 +71,7 @@ final class RealDataManager: DataManager, FireStoreServiceDelegate {
         }
     }
     
-    private func getCoreData(completion: @escaping ([StationInfo], [SubwayLineColor], [StationLocation]) -> Void) {
+    private func getCoreData(completion: ([StationInfo], [SubwayLineColor], [StationLocation]) -> Void) {
         let stationEntity = coreManager.retrieve(type: StationInfoEntity.self)
         let stationInfo = stationEntity.flatMap { info -> [StationInfo] in
             var infos: [StationInfo] = []
@@ -79,7 +79,7 @@ final class RealDataManager: DataManager, FireStoreServiceDelegate {
             return infos
         }
 
-        let lineEntity = coreManager.retrieve(type: SubwayLineColorEntity.self)
+        let lineEntity = coreManager.retrieve(type: SubwayLineColorEntity.self, column: \.subwayNm, comparision: .notEqual, value: "4호선")
         let lineInfo = lineEntity.flatMap { info -> [SubwayLineColor] in
             var infos: [SubwayLineColor] = []
             infos.append(.init(subwayId: info.subwayId, subwayNm: info.subwayNm, lineColorHexCode: info.lineColorHexCode))
