@@ -6,6 +6,7 @@ struct SubwayShapeView: View {
     @ObservedObject var vm: MainDetailVM
     let geo: GeometryProxy
     let updn: MainDetailVM.UpDn
+    @State private var textWidth: CGFloat = .zero
     
     var body: some View {
         var realTimeData: [RealTimeSubway] {
@@ -13,7 +14,9 @@ struct SubwayShapeView: View {
         }
         HStack {
             ForEach(realTimeData, id: \.id) { info in
-                trainText(info: info)
+                if info.arvlCode != "99" {
+                    trainText(info: info)
+                }
             }
         }
         .onAppear {
@@ -21,7 +24,7 @@ struct SubwayShapeView: View {
             // moveXoffSet도 마찬가지 -> .zero로 초기화하기.
             vm.trainTimerStart {
                 withAnimation {
-                    vm.moveXoffSet += 1
+                    vm.moveXoffSet += gtrainSpeed
                 }
             }
         }
@@ -35,22 +38,32 @@ extension SubwayShapeView {
     @ViewBuilder private func trainText(info: RealTimeSubway) -> some View {
         var moveX: CGFloat {
             let geoWidth = geo.size.width
-            var baseX: CGFloat
-            
+            let startPositionRate = info.trainLocation
+            // 테스트용
+//            let startPositionRate = 0.5
             if updn == .up {
-                baseX = geoWidth * 0.5
+                let baseX = geoWidth * startPositionRate
                 print("up BaseX : \(baseX)")
                 return baseX - vm.moveXoffSet
             } else {
-                baseX = geoWidth * 0.5
+                let baseX = (geoWidth * (1 - startPositionRate)) - (textWidth + 5)
                 print("down BaseX : \(baseX)")
-                
                 return baseX + vm.moveXoffSet
             }
         }
         
-        Text("\(info.trainDestiStation)")
-//            Text(updn == .up ? "왕십리행sffdafas" : "동인천ddd행")
+        var trainText: String {
+            return info.trainDestiStation
+            // ↓ Test용 데이터
+//            return updn == .up ? "당고개행" : "오이도(급행)"
+
+        }
+        
+        ScrollText(content: trainText,
+                   moveOptn: false,
+                   disabled: true) { _, textWidth in
+            self.textWidth = textWidth
+        }
             .font(.caption)
             .foregroundStyle(Color.white)
             .padding(3)

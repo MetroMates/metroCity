@@ -7,8 +7,9 @@ struct MainDetailPreviewView: View {
     private let startVM = StartVM(type: .test)
 
     var body: some View {
-//        MainDetailView(vm: MainDetailVM(useCase: MainDetailUseCase(repo: MainDetailRepository(networkService: SubwayAPIService())), startVM: startVM))
-        Text("dd")
+        MainDetailView(vm: MainDetailVM(useCase: MainDetailUseCase(repo: MainDetailRepository(networkService: SubwayAPIService())), startVM: startVM), mainVM: MainListVM(useCase: MainListUseCase(repo: MainListRepository(networkStore: SubwayAPIService())),
+                                                                                                                                                                          startVM: startVM))
+//        Text("dd")
     }
 }
 

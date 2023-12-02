@@ -26,11 +26,13 @@ final class LocationViewModel: ObservableObject {
     
     /// CoreData에서 StationInfoEntity를 Fetch
     func getStationInfoEnities() {
-        self.stationInfoCoreData = coreDataManger.getEntities(entityName: "StationInfoEntity")
+//        self.stationInfoCoreData = coreDataManger.getEntities(entityName: "StationInfoEntity")
+        self.stationInfoCoreData = coreDataManger.retrieve(type: StationInfoEntity.self)
     }
     
     func getStationLocationEntities() {
-        self.stationLocationCoreData = coreDataManger.getEntities(entityName: "StationLocationEntity")
+//        self.stationLocationCoreData = coreDataManger.getEntities(entityName: "StationLocationEntity")
+        self.stationLocationCoreData = coreDataManger.retrieve(type: StationLocationEntity.self)
     }
     
     init() {

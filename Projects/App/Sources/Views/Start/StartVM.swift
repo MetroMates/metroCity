@@ -55,12 +55,12 @@ final class StartVM: ObservableObject {
             self.locInfoSubject.send(locInfos)
             
             // MARK: 테스트 다한후, .real로 변경
-            if self.type == .real {
-                if serverVer > self.localVer {
-                    print("🐷 setCoreData실행")
-                    self.setCoreData(ver: serverVer, datas: statInfos, lineInfos, locInfos)
-                }
-            }
+//            if self.type == .real {
+//                if serverVer > self.localVer {
+//                    print("🐷 setCoreData실행")
+//                    self.setCoreData(ver: serverVer, datas: statInfos, lineInfos, locInfos)
+//                }
+//            }
             
         }
     }
@@ -70,10 +70,6 @@ final class StartVM: ObservableObject {
         
         // 백그라운드 스레드에서 CoreData에 값 넣어주는 작업. -> CoreData에서 자체적으로 UI관련되지 않은 작업들은 백그라운드에서 처리함.
         DispatchQueue.global().async { [self] in
-//            coreDataManager.context.delete(StationInfoEntity.self)
-//            coreDataManager.context.delete(SubwayLineColorEntity.self)
-//            coreDataManager.context.delete(StationLocationEntity.self)
-            
             for dataGroup in datas {
                 for data in dataGroup {
                     switch data {
@@ -109,7 +105,7 @@ final class StartVM: ObservableObject {
                     }
                 }
             }
-            // CoreData에 변경 사항 저장 -> 내용을 덮기도 하고, 새로운 내용을 추가하기도 하고, 삭제하기도 합니다.
+            // CoreData에 변경 사항 저장
             coreDataManager.save()
             // UserDefaults에 데이터 버전 저장
             UserDefaults.standard.set(ver, forKey: self.userDefaultKEY)

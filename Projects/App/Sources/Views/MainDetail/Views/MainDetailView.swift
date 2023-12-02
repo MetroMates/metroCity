@@ -123,7 +123,7 @@ extension MainDetailView {
                         Image(systemName: "chevron.left")
                             .font(.caption)
                         ScrollText(content: vm.selectStationInfo.upStNm)
-                            .font(.headline)
+                            .font(.subheadline)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.leading, 5)
@@ -155,7 +155,7 @@ extension MainDetailView {
                 } label: {
                     HStack {
                         ScrollText(content: vm.selectStationInfo.downStNm)
-                            .font(.headline)
+                            .font(.subheadline)
                         Image(systemName: "chevron.right")
                             .font(.caption)
                     }

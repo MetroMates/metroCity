@@ -81,6 +81,8 @@ struct RealTimeSubway: SubwayModelIdentifier {
     let trainDestiStation: String
     /// 지하철 위치 노선에 올릴 CGFloat
     let trainLocation: CGFloat
+    /// 도착 코드
+    let arvlCode: String
 }
 
 extension RealTimeSubway {
@@ -105,7 +107,15 @@ extension RealTimeSubway {
     }
     
     static var emptyData: Self {
-        return .init(updnLine: "", trainNo: "", trainType: "", stCnt: 0, sortOrder: 0, message: "", trainDestiStation: "", trainLocation: 0)
+        return .init(updnLine: "",
+                     trainNo: "",
+                     trainType: "",
+                     stCnt: 0,
+                     sortOrder: 0,
+                     message: "",
+                     trainDestiStation: "",
+                     trainLocation: 0,
+                     arvlCode: "-1")
     }
     
     // 여러개 들어올 예정.

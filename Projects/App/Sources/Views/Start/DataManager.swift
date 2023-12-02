@@ -23,7 +23,7 @@ protocol DataManager {
 }
 
 final class RealDataManager: DataManager, FireStoreServiceDelegate {
-    let coreManager = CoreDataManger.shared
+    private let coreManager = CoreDataManger.shared
 
     func fetchDatas<Station, SubwayLine, LocInfo>(statType: Station.Type,
                                                   subwayLineType: SubwayLine.Type,
@@ -36,7 +36,7 @@ final class RealDataManager: DataManager, FireStoreServiceDelegate {
             let serverVer: Int = versionData?.ver ?? 1
             let localVer: Int = UserDefaults.standard.integer(forKey: "dataVersion")
             
-            print("🆚 server: \(serverVer) local: \(localVer)")
+            print("📝🆚 server: \(serverVer) local: \(localVer)")
             
             // 2. localVer이 serverVer보다 낮을 시 Fetch.
             if serverVer > localVer {
@@ -50,16 +50,15 @@ final class RealDataManager: DataManager, FireStoreServiceDelegate {
                     completion(serverVer, stationInfos, subwayLineInfos, locInfos)
                     
                 } catch let error as NSError {
-                    let dd = NSError(domain: "FireFetchAll", code: error.code)
-                    print("🐷", dd)
+                    let fetchError = NSError(domain: "FireFetchAll", code: error.code)
+                    print("🐷", fetchError)
                     print(error.localizedDescription)
                     // 배열 3개중 하나라도 데이터가 안들어오면 앱실행이 불가능. 앱을 종료시키고 다시 실행하게 해야한다.
-                    // TODO: 데이터 다운로드 중 오류가 발생하였습니다. 네트워크 상태를 확인 후, 앱을 재실행 바랍니다.
                     completion(serverVer, [], [], [])
                 }
                 
             } else {
-                print("🫣getCoreData로딩")
+                print("📝getCoreData로딩")
                 // 무조건 coreData에서 Fetch.
                 getCoreData { stationInfo, lineInfo, locInfo in
                     let statInfos = stationInfo as? [Station] ?? []
@@ -73,21 +72,21 @@ final class RealDataManager: DataManager, FireStoreServiceDelegate {
     }
     
     private func getCoreData(completion: @escaping ([StationInfo], [SubwayLineColor], [StationLocation]) -> Void) {
-        let stationEntity: [StationInfoEntity] = coreManager.getEntities(entityName: "StationInfoEntity")
+        let stationEntity = coreManager.retrieve(type: StationInfoEntity.self)
         let stationInfo = stationEntity.flatMap { info -> [StationInfo] in
             var infos: [StationInfo] = []
             infos.append(.init(subwayId: info.subwayId, subwayNm: info.subwayNm, statnId: info.statnId, statnNm: info.statnNm))
             return infos
         }
-        
-        let lineEntity: [SubwayLineColorEntity] = coreManager.getEntities(entityName: "SubwayLineColorEntity")
+
+        let lineEntity = coreManager.retrieve(type: SubwayLineColorEntity.self)
         let lineInfo = lineEntity.flatMap { info -> [SubwayLineColor] in
             var infos: [SubwayLineColor] = []
             infos.append(.init(subwayId: info.subwayId, subwayNm: info.subwayNm, lineColorHexCode: info.lineColorHexCode))
             return infos
         }.sorted { $0.subwayId < $1.subwayId }
-        
-        let locationEntity: [StationLocationEntity] = coreManager.getEntities(entityName: "StationLocationEntity")
+
+        let locationEntity = coreManager.retrieve(type: StationLocationEntity.self)
         let locInfo = locationEntity.flatMap { info -> [StationLocation] in
             var infos: [StationLocation] = []
             infos.append(.init(crdntX: info.crdntX, crdntY: info.crdntY, route: info.route, statnId: info.statnId, statnNm: info.statnNm))
@@ -95,7 +94,6 @@ final class RealDataManager: DataManager, FireStoreServiceDelegate {
         }
         
         completion(stationInfo, lineInfo, locInfo)
-        
     }
     
 }
