@@ -20,6 +20,9 @@ struct ScrollText: View {
     /// 스크롤 스피드
     var transSpeed: Double = 2
     var moveOptn: Bool = true
+    /// 길이와 상관없이 스크롤 막기.
+    var disabled: Bool = false
+    var handler: (_ parentWidth: CGFloat, _ textWidth: CGFloat) -> Void = { _, _ in }
     
     var body: some View {
         GeometryReader { g in
@@ -32,9 +35,10 @@ struct ScrollText: View {
                                 .onAppear {
                                     setting(geo: geo) // 🔴 textWidth먼저 세팅하고 그다음 parentWidth세팅해줘야 한다. parentWidth는 onAppear때 한번만 세팅!!
                                     parentWidth = g.size.width
+                                    handler(parentWidth, textWidth)
                                 }
-                                .onChange(of: content) { newValue in
-                                    print("🟢🔵\(content) -> \(newValue)")
+                                .onChange(of: content) { _ in
+//                                    print("🟢🔵\(content) -> \(newValue)")
                                     stopAnimation()
                                     setting(geo: geo)
                                     startAnimation()
@@ -46,7 +50,7 @@ struct ScrollText: View {
         }
         .frame(maxWidth: parentWidth == .zero ? nil : textWidth)
         .frame(height: textHeight)
-        .disabled(isdisabled)
+        .disabled(disabled ? true : isdisabled)
         // 부모View가 onAppear 될때 withAnimation은 한번만 써줘야 중첩되지 않음.
         .onAppear {
             startAnimation()
@@ -67,7 +71,7 @@ struct ScrollText: View {
                 if parentWidth < textWidth {
 //                    print("🔴🟢 애니메이션 시작!")
                     isdisabled = false
-                    offset = -((textWidth + 1) / 3)  // text길이의 1/3까지만 움직이면 됨 +1해준이유는 너무 바로 끝나서 조금더 진행 된후에 offset 초기화 시키기 위함.
+                    offset = -((textWidth) / 2)
                 } else {
                     stopAnimation()
                 }

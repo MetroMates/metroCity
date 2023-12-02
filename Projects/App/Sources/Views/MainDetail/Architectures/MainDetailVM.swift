@@ -109,7 +109,7 @@ final class MainDetailVM: ObservableObject {
     
     /// 타이머 시작
     func timerStart() {
-        self.timerCancel = Timer.publish(every: apiFetchTimeSecond, on: .main, in: .default)
+        self.timerCancel = Timer.publish(every: gapiFetchTimeSecond, on: .main, in: .default)
                     .autoconnect()
                     .sink { _ in
                         self.send(selectStationInfo: self.selectStationInfo,

@@ -86,7 +86,8 @@ final class MainDetailUseCase {
                                               sortOrder: secondSort,
                                               message: message,
                                               trainDestiStation: "\(data.bstatnNm)행",
-                                              trainLocation: trainLocation))
+                                              trainLocation: trainLocation,
+                                              arvlCode: data.arvlCD))
                     }
                 }
                 
@@ -218,17 +219,17 @@ extension MainDetailUseCase {
         var subwayShowing: CGFloat {
             switch self {
             case .zero:
-                return 0.35
-            case .one:
-                return 0.4
-            case .two:
                 return 0.55
+            case .one:
+                return 0.5
+            case .two:
+                return 0.45
             case .three:
-                return 0.1
+                return 0.85
             case .four:
-                return -0.1
+                return 0.9
             case .five:
-                return -0.05
+                return 0.95
             case .ninetynine:
                 // 화면에서 안보이게 조정.
                 return -3.0

@@ -51,18 +51,25 @@ extension StartView {
         }
         
         var shadowColor: Color {
-            let model = startVM.selectLineInfo
-            
-            if model.subwayId == 0 {
-                if colorScheme == .light {
-                    return Color.gray.opacity(0.6)
-                } else {
-                    return Color.white.opacity(0.6)
-                }
+            if colorScheme == .light {
+                return Color.black
             }
+            return Color.gray
+        }
+        
+        var tabIconColor: Color {
+//            let model = startVM.selectLineInfo
             
-            return model.lineColor.opacity(0.6)
-           
+//            if model.subwayId == 0 {
+                return Color.primary
+//                if colorScheme == .light {
+//                    return Color.gray.opacity(0.6)
+//                } else {
+//                    return Color.white.opacity(0.6)
+//                }
+//            }
+            
+//            return model.lineColor
         }
         
         HStack {
@@ -77,15 +84,15 @@ extension StartView {
                         .padding(.top, 20)
                         .padding(.bottom, 15)
                         .contentShape(Rectangle())
-                        .foregroundStyle(Color.primary)
+                        .foregroundStyle(tabIconColor)
                 }
             }
         }
         .frame(maxWidth: .infinity)
         .background {
             RoundedCorners(radius: 17, corners: [.topLeft, .topRight])
-                .fill(tabBarColor.gradient)
-                .shadow(color: shadowColor, radius: 3, x: 0, y: -2)
+                .fill(tabBarColor)
+                .shadow(color: shadowColor.opacity(0.5), radius: 3, x: 0, y: 0)
                 .edgesIgnoringSafeArea(.bottom)
         }
     }
