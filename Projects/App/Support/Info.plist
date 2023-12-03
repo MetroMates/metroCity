@@ -26,7 +26,7 @@
 		<true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>사용자의 위치에 따른 추천 역을 위하여 위치 검색을 허용하시겠습니까?</string>
+	<string>사용자의 위치에 따른 근처역을 제공하기 위하여 권한이 필요합니다.</string>
 	<key>SUBWAY_API_KEY</key>
 	<string>$(SUBWAY_API_KEY)</string>
 	<key>UIApplicationSceneManifest</key>
