@@ -146,8 +146,11 @@ extension MainListView {
     /// 유저 맞춤 역정보데이터 mainDetailVm에도 똑같이 추가하는 함수
     private func setLineAndstationInfo(line: SubwayLineColor) {
         mainDetailVM.selectStationLineInfos = mainVM.subwayLineInfosAtStation
-        mainDetailVM.send(selectStationInfo: mainVM.nearStationInfo,
-                          lineInfo: line)
+        
+        mainDetailVM.settingSubwayInfo(hosun: line, selectStation: mainVM.nearStationInfo)
+        
+//        mainDetailVM.send(selectStationInfo: mainVM.nearStationInfo,
+//                          lineInfo: line)
     }
 }
 

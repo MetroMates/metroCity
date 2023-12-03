@@ -25,7 +25,7 @@ struct MainDetailView: View {
                 Spacer()
             }
             .refreshable {
-                vm.send(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
+                vm.settingSubwayInfoWithDebounce(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
             }
 
         }
@@ -83,7 +83,7 @@ extension MainDetailView {
                 HStack(spacing: 15) {
                     Button {
                         // 화살표 돌아가게 애니메이션 적용 rotation 사용하면 될듯.
-                        vm.send(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
+                        vm.settingSubwayInfoWithDebounce(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
                     } label: {
                         Image(systemName: "arrow.clockwise")
                             .tint(.primary)
@@ -115,7 +115,8 @@ extension MainDetailView {
                 Button {
                     if vm.selectStationInfo.upStNm != "종착" {
                         vm.selectStationInfo.nowStNm = vm.selectStationInfo.upStNm
-                        vm.send(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
+//                        vm.send(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
+                        vm.settingSubwayInfo(hosun: vm.hosunInfo, selectStation: vm.selectStationInfo)
                         print("이전역")
                     }
                 } label: {
@@ -150,7 +151,8 @@ extension MainDetailView {
                 Button {
                     if vm.selectStationInfo.downStNm != "종착" {
                         vm.selectStationInfo.nowStNm = vm.selectStationInfo.downStNm
-                        vm.send(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
+//                        vm.send(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
+                        vm.settingSubwayInfo(hosun: vm.hosunInfo, selectStation: vm.selectStationInfo)
                         print("다음역")
                     }
                 } label: {
