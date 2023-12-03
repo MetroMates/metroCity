@@ -91,7 +91,7 @@ final class StartVM: ObservableObject {
                         case let stationInfo as StationInfo:
                             // StationInfo에 대한 CoreData 로직
                             let newStationInfo = StationInfoEntity(context: coreDataManager.context)
-                            newStationInfo.id = "\(stationInfo.subwayId)-\(stationInfo.statnId)"
+//                            newStationInfo.id = "\(stationInfo.subwayId)-\(stationInfo.statnId)"
                             newStationInfo.statnId = stationInfo.statnId
                             newStationInfo.subwayId = stationInfo.subwayId
                             newStationInfo.subwayNm = stationInfo.subwayNm
@@ -100,14 +100,14 @@ final class StartVM: ObservableObject {
                         case let subwayLineColor as SubwayLineColor:
                             // SubwayLineColor에 대한 CoreData 로직
                             let newSubwayLineColor = SubwayLineColorEntity(context: coreDataManager.context)
-                            newSubwayLineColor.id = "\(subwayLineColor.subwayId)"
+//                            newSubwayLineColor.id = "\(subwayLineColor.subwayId)"
                             newSubwayLineColor.subwayId = subwayLineColor.subwayId
                             newSubwayLineColor.subwayNm = subwayLineColor.subwayNm
                             newSubwayLineColor.lineColorHexCode = subwayLineColor.lineColorHexCode
                             
                         case let stationLocation as StationLocation:
                             let newStationLocation = StationLocationEntity(context: coreDataManager.context)
-                            newStationLocation.id = "\(stationLocation.statnId)"
+//                            newStationLocation.id = "\(stationLocation.statnId)"
                             newStationLocation.crdntX = stationLocation.crdntX
                             newStationLocation.crdntY = stationLocation.crdntY
                             newStationLocation.route = stationLocation.route

@@ -45,7 +45,7 @@ final class LocationViewModel: ObservableObject {
     /// CoreData에 StationInfo 정보 추가하기
     func addStationInfoCoreData(subwayId: Int32, subwayNm: String, statnId: Int32, statnNm: String) {
         let newStationInfo = StationInfoEntity(context: coreDataManger.context)
-        newStationInfo.id = UUID().uuidString
+//        newStationInfo.id = UUID().uuidString
         newStationInfo.statnId = statnId
         newStationInfo.subwayId = subwayId
         newStationInfo.subwayNm = subwayNm
@@ -56,7 +56,7 @@ final class LocationViewModel: ObservableObject {
     /// CoreData에 StationLocation 정보 추가하기
     func addStationLocationCoreData(crdntX: Double, crdntY: Double, route: String, statnId: Int32, statnNm: String ) {
         let newStationLocation = StationLocationEntity(context: coreDataManger.context)
-        newStationLocation.id = UUID().uuidString
+//        newStationLocation.id = UUID().uuidString
         newStationLocation.crdntX = crdntX
         newStationLocation.crdntY = crdntY
         newStationLocation.route = route

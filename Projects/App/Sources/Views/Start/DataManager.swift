@@ -75,21 +75,21 @@ final class RealDataManager: DataManager, FireStoreServiceDelegate {
         let stationEntity = coreManager.retrieve(type: StationInfoEntity.self)
         let stationInfo = stationEntity.flatMap { info -> [StationInfo] in
             var infos: [StationInfo] = []
-            infos.append(.init(subwayId: info.subwayId, subwayNm: info.subwayNm, statnId: info.statnId, statnNm: info.statnNm))
+            infos.append(.init(subwayId: info.subwayId, subwayNm: info.subwayNm ?? "", statnId: info.statnId, statnNm: info.statnNm ?? ""))
             return infos
         }
 
         let lineEntity = coreManager.retrieve(type: SubwayLineColorEntity.self, column: \.subwayNm, comparision: .notEqual, value: "4호선")
         let lineInfo = lineEntity.flatMap { info -> [SubwayLineColor] in
             var infos: [SubwayLineColor] = []
-            infos.append(.init(subwayId: info.subwayId, subwayNm: info.subwayNm, lineColorHexCode: info.lineColorHexCode))
+            infos.append(.init(subwayId: info.subwayId, subwayNm: info.subwayNm ?? "", lineColorHexCode: info.lineColorHexCode ?? ""))
             return infos
         }.sorted { $0.subwayId < $1.subwayId }
 
         let locationEntity = coreManager.retrieve(type: StationLocationEntity.self)
         let locInfo = locationEntity.flatMap { info -> [StationLocation] in
             var infos: [StationLocation] = []
-            infos.append(.init(crdntX: info.crdntX, crdntY: info.crdntY, route: info.route, statnId: info.statnId, statnNm: info.statnNm))
+            infos.append(.init(crdntX: info.crdntX, crdntY: info.crdntY, route: info.route ?? "", statnId: info.statnId, statnNm: info.statnNm ?? ""))
             return infos
         }
         
