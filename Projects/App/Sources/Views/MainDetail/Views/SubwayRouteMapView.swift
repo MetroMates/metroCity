@@ -16,8 +16,8 @@ struct SubwayRouteMapView: View {
                 StationLine
                 
                 GeometryReader { geo in
-                    SubwayShapeView(vm: vm, geo: geo, updn: .up)
-                    SubwayShapeView(vm: vm, geo: geo, updn: .down)
+                    SubwayAppearView(vm: vm, geo: geo, updn: .up)
+                    SubwayAppearView(vm: vm, geo: geo, updn: .down)
                 }
                 .frame(height: 100)
             }

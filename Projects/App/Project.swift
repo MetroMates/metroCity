@@ -20,7 +20,7 @@ let appTarget = Target.makeTarget(name: "MetroCity",
                                   infoPlistPath: "Support/Info.plist",
                                   scripts: [.swiftLintPath],
                                   isResource: true,
-                                  coreDataModels: [CoreDataModel("App/Resources/**")],
+//                                  coreDataModels: [CoreDataModel("App/Resources/**")],
                                   // CoreDataModel(from: "Sources/SY/CoreDataModel/MetroCity.xcdatamodeld")
                                   isTestAt: true)
 
