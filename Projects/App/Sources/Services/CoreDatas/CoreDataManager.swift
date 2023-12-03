@@ -8,7 +8,7 @@ final class CoreDataManger {
     static let shared = CoreDataManger()
     
     private let container: NSPersistentContainer
-    let context: NSManagedObjectContext
+    private let context: NSManagedObjectContext
     
     private init() {
         container = NSPersistentContainer(name: "MetroCity")
@@ -26,14 +26,28 @@ final class CoreDataManger {
         context.automaticallyMergesChangesFromParent = true
     }
     
-    // NSEntityDescription.entity() 이건 Entity를 새로 만들경우 사용.
+    /// 새로운 쓰기, 수정, 삭제등을 동작시킬때 사용할 context
+    func newContextForBackgroundThread() -> NSManagedObjectContext {
+        return container.newBackgroundContext()
+    }
 
     // MARK: - CRUD Methods
     /// 여러 Entity의 내용을 한번에 등록할 경우.
-    func create(newEntityDataHandler: () -> Void) -> Bool {
+    func create(contextValue: NSManagedObjectContext? = nil,
+                newEntityDataHandler: () -> Void) -> Bool {
         print("📝 CoreDataManager create")
+        var context: NSManagedObjectContext
+        if let contextValue {
+            context = contextValue
+        } else {
+            context = self.context
+        }
+        
+        // NSEntityDescription.entity() 이건 Entity를 새로 만들경우 사용.\
+        // newEntityDataHandler에 ↑로 설정해줘야할듯?
+        
         newEntityDataHandler()
-        return self.save()
+        return self.save(context: context)
     }
             
     /// 데이터 조회 (조건가능 <한컬럼>)
@@ -55,7 +69,7 @@ final class CoreDataManger {
         request.sortDescriptors?.append(sortDesription)
         
         do {
-            let results = try context.fetch(request)
+            let results = try self.context.fetch(request)
             
             return results
         } catch {
@@ -76,7 +90,7 @@ final class CoreDataManger {
         request.sortDescriptors?.append(sortDesription)
         
         do {
-            let results = try context.fetch(request)
+            let results = try self.context.fetch(request)
             return results
         } catch {
             print(error.localizedDescription)
@@ -90,35 +104,61 @@ final class CoreDataManger {
     func update<Entity, Value>(type: Entity.Type,
                                column: WritableKeyPath<Entity, Value>,
                                value: Value,
+                               contextValue: NSManagedObjectContext? = nil,
                                newValueHandler: ([Entity]) -> Void) -> Bool where Entity: NSManagedObject {
         print("📝 CoreDataManager Update")
+        var context: NSManagedObjectContext
+        if let contextValue {
+            context = contextValue
+        } else {
+            context = self.context
+        }
+        
         let beforeDatas = self.retrieve(type: type, column: column, comparision: .equal, value: value)
         guard !beforeDatas.isEmpty else { return false }
         
         newValueHandler(beforeDatas)
         
-        if !self.save() { return false }
+        if !self.save(context: context) { return false }
         
         return true
     }
 
     /// 해당 데이터만 삭제
-    func delete<Entity, Value>(type: Entity.Type, column: WritableKeyPath<Entity, Value>, value: Value) -> Bool where Entity: NSManagedObject {
+    func delete<Entity, Value>(type: Entity.Type,
+                               column: WritableKeyPath<Entity, Value>,
+                               value: Value,
+                               contextValue: NSManagedObjectContext? = nil) -> Bool where Entity: NSManagedObject {
         print("📝 CoreDataManager Delete")
+        var context: NSManagedObjectContext
+        if let contextValue {
+            context = contextValue
+        } else {
+            context = self.context
+        }
+        
         let deleteDatas = self.retrieve(type: type, column: column, comparision: .equal, value: value)
         guard !deleteDatas.isEmpty else { return false }
         
         deleteDatas.forEach { context.delete($0) }
 
-        return self.save()
+        return self.save(context: context)
     }
     
     /// 해당 타입 전체삭제.
-    func deleteAll<Entity>(type: Entity.Type) -> Bool where Entity: NSManagedObject {
+    func deleteAll<Entity>(type: Entity.Type,
+                           contextValue: NSManagedObjectContext? = nil) -> Bool where Entity: NSManagedObject {
         print("📝 CoreDataManager DeleteAll")
+        var context: NSManagedObjectContext
+        if let contextValue {
+            context = contextValue
+        } else {
+            context = self.context
+        }
+        
         let allDatas = self.retrieve(type: type)
         allDatas.forEach { context.delete($0) }
-        if !self.save() { return false }
+        if !self.save(context: context) { return false }
         
         return true
     }
@@ -126,7 +166,7 @@ final class CoreDataManger {
 }
 
 extension CoreDataManger {
-    private func save() -> Bool {
+    private func save(context: NSManagedObjectContext) -> Bool {
         guard context.hasChanges
         else {
             print("📝 코어데이터 변경사항 없음.")
@@ -141,6 +181,7 @@ extension CoreDataManger {
             print("📝 코어데이터 변경사항 저장 실패! \(error.localizedDescription)")
             return false
         }
+        
     }
     
     enum Comparisons: String {

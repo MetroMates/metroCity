@@ -42,10 +42,11 @@ final class RealDataManager: DataManager, FireStoreServiceDelegate {
             if serverVer > localVer {
                 // 무조건 FireStore에서 Fetch. -> Fetch해온 정보를 CoreData에 저장.
                 do {
-                    let stationInfos = try await firestoreFetchAll(colName: "StationInfo", type: Station.self)
-                    let subwayLineInfos = try await firestoreFetchAll(colName: "SubwayLineColor", type: SubwayLine.self)
-                    let locInfos = try await firestoreFetchAll(colName: "StationLocation", type: LocInfo.self)
-                    
+                    print("🍜🐷 firebase 패치시작")
+                    let stationInfos: [Station] = try await firestoreFetchAll(colName: "StationInfo", type: Station.self)
+                    let subwayLineInfos: [SubwayLine] = try await firestoreFetchAll(colName: "SubwayLineColor", type: SubwayLine.self)
+                    let locInfos: [LocInfo] = try await firestoreFetchAll(colName: "StationLocation", type: LocInfo.self)
+                    print("🍜🐷 firebase 패치끝")
                     // 해당 값을 받아서 화면에서는 처리하는 중이어야 한다. -> setCoreData는 그 후 실행.
                     completion(serverVer, stationInfos, subwayLineInfos, locInfos)
                     
@@ -71,29 +72,33 @@ final class RealDataManager: DataManager, FireStoreServiceDelegate {
         }
     }
     
-    private func getCoreData(completion: ([StationInfo], [SubwayLineColor], [StationLocation]) -> Void) {
-        let stationEntity = coreManager.retrieve(type: StationInfoEntity.self)
-        let stationInfo = stationEntity.flatMap { info -> [StationInfo] in
-            var infos: [StationInfo] = []
-            infos.append(.init(subwayId: info.subwayId, subwayNm: info.subwayNm ?? "", statnId: info.statnId, statnNm: info.statnNm ?? ""))
-            return infos
+    private func getCoreData(completion: @escaping ([StationInfo], [SubwayLineColor], [StationLocation]) -> Void) {
+        DispatchQueue.global(qos: .default).async { [self] in
+            let stationEntity = coreManager.retrieve(type: StationInfoEntity.self)
+            let stationInfo = stationEntity.flatMap { info -> [StationInfo] in
+                var infos: [StationInfo] = []
+                infos.append(.init(subwayId: info.subwayId, subwayNm: info.subwayNm ?? "", statnId: info.statnId, statnNm: info.statnNm ?? ""))
+                return infos
+            }
+            
+            let lineEntity = coreManager.retrieve(type: SubwayLineColorEntity.self)
+            let lineInfo = lineEntity.flatMap { info -> [SubwayLineColor] in
+                var infos: [SubwayLineColor] = []
+                infos.append(.init(subwayId: info.subwayId, subwayNm: info.subwayNm ?? "", lineColorHexCode: info.lineColorHexCode ?? ""))
+                return infos
+            }.sorted { $0.subwayId < $1.subwayId }
+            
+            let locationEntity = coreManager.retrieve(type: StationLocationEntity.self)
+            let locInfo = locationEntity.flatMap { info -> [StationLocation] in
+                var infos: [StationLocation] = []
+                infos.append(.init(crdntX: info.crdntX, crdntY: info.crdntY, route: info.route ?? "", statnId: info.statnId, statnNm: info.statnNm ?? ""))
+                return infos
+            }
+            
+            DispatchQueue.main.async {
+                completion(stationInfo, lineInfo, locInfo)
+            }
         }
-
-        let lineEntity = coreManager.retrieve(type: SubwayLineColorEntity.self, column: \.subwayNm, comparision: .notEqual, value: "4호선")
-        let lineInfo = lineEntity.flatMap { info -> [SubwayLineColor] in
-            var infos: [SubwayLineColor] = []
-            infos.append(.init(subwayId: info.subwayId, subwayNm: info.subwayNm ?? "", lineColorHexCode: info.lineColorHexCode ?? ""))
-            return infos
-        }.sorted { $0.subwayId < $1.subwayId }
-
-        let locationEntity = coreManager.retrieve(type: StationLocationEntity.self)
-        let locInfo = locationEntity.flatMap { info -> [StationLocation] in
-            var infos: [StationLocation] = []
-            infos.append(.init(crdntX: info.crdntX, crdntY: info.crdntY, route: info.route ?? "", statnId: info.statnId, statnNm: info.statnNm ?? ""))
-            return infos
-        }
-        
-        completion(stationInfo, lineInfo, locInfo)
     }
     
 }

@@ -3,7 +3,7 @@
 import SwiftUI
 
 struct StartView: View {
-    @StateObject private var startVM: StartVM = .init(type: .test)
+    @StateObject private var startVM: StartVM = .init(type: .real)
     @Environment(\.colorScheme) private var colorScheme
     
     var body: some View {
