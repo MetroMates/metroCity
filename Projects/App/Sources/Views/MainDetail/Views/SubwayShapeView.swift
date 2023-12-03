@@ -16,11 +16,11 @@ struct SubwayShapeView: View {
 //            let startPositionRate = 0.5
         if updn == .up {
             let baseX = geoWidth * startPositionRate
-            print("up BaseX : \(baseX)")
+//            print("up BaseX : \(baseX)")
             return baseX - vm.moveXoffSet
         } else {
             let baseX = (geoWidth * (1 - startPositionRate)) - (textWidth + 5)
-            print("down BaseX : \(baseX)")
+//            print("down BaseX : \(baseX)")
             return baseX + vm.moveXoffSet
         }
     }

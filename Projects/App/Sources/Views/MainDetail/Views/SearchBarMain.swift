@@ -18,7 +18,7 @@ struct SearchBarMain: View {
                     .foregroundColor(.primary)
                     .onTapGesture {
                         outFocused()
-                        mainDetailVM.changFilteredStationAndLineInfo(item: item)
+                        mainDetailVM.changeFilteredStationAndLineInfo(item: item)
                     }
                 }
                 .listStyle(.plain)

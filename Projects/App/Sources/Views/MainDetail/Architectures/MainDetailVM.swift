@@ -62,16 +62,22 @@ final class MainDetailVM: ObservableObject {
         trainTimerStop()
     }
     
+    /// 선택한 역의 이전,다음역정보와 관련호선정보, 실시간 운행정보까지 세팅한다.
+    func settingSubwayInfo(hosun: SubwayLineColor, selectStation: MyStation) {
+        self.hosunInfo = hosun
+        self.fetchInfo(selectStation)
+        // 열차 x offset값 초기화
+        self.moveXoffSet = .zero
+    }
+    
     /// 구독 메서드
     func subscribe() {
         // 2개의 Publisher가 모두 값이 들어왔을때 실행된다. -> combineLatest, zip의 기능.
         // 아래 구문에서는 combineLatest를 사용하게 되면 처음 방출했던 이벤트를 기억하고 또 방출한다. 그래서 zip으로 묶어준다.
         selectedLineInfoFetchSubject.zip(selectStationInfoFetchSubject)
+            .debounce(for: .seconds(1), scheduler: DispatchQueue.main) // 1초의 디바운스 적용.
             .sink { (hosun, selectStation) in
-                self.hosunInfo = hosun
-                self.fetchInfo(selectStation)
-                // 열차 x offset값 초기화
-                self.moveXoffSet = .zero
+                self.settingSubwayInfo(hosun: hosun, selectStation: selectStation)
             }
             .store(in: &anyCancellable)
         
@@ -93,18 +99,20 @@ final class MainDetailVM: ObservableObject {
             .store(in: &anyCancellable)
     }
     
-    func send(selectStationInfo: MyStation, lineInfo: SubwayLineColor) {
+    /// (디바운스적용) 선택한 역의 이전,다음역정보와 관련호선정보, 실시간 운행정보까지 세팅한다.
+    func settingSubwayInfoWithDebounce(selectStationInfo: MyStation, lineInfo: SubwayLineColor) {
         selectStationInfoFetchSubject.send(selectStationInfo)
         selectedLineInfoFetchSubject.send(lineInfo)
     }
     
-    func changFilteredStationAndLineInfo(item: StationInfo) {
+    func changeFilteredStationAndLineInfo(item: StationInfo) {
         let mystation: MyStation = .nowStNmInit(id: Int(item.statnId),
                                                 name: item.statnNm)
         let line = lineInfos.filter { $0.subwayId == item.subwayId }.first ?? .emptyData
         
-        self.send(selectStationInfo: mystation,
-                          lineInfo: line)
+        self.settingSubwayInfo(hosun: line, selectStation: mystation)
+//        self.send(selectStationInfo: mystation,
+//                          lineInfo: line)
     }
     
     /// 타이머 시작
@@ -112,7 +120,7 @@ final class MainDetailVM: ObservableObject {
         self.timerCancel = Timer.publish(every: gapiFetchTimeSecond, on: .main, in: .default)
                     .autoconnect()
                     .sink { _ in
-                        self.send(selectStationInfo: self.selectStationInfo,
+                        self.settingSubwayInfoWithDebounce(selectStationInfo: self.selectStationInfo,
                                   lineInfo: self.hosunInfo)
                     }
         

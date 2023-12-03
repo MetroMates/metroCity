@@ -25,7 +25,8 @@ struct SelectStationLineInfosView: View {
                         }
                         .listRowBackground(Color.white)
                         .onTapGesture { // 선택한 호선 뽑아내기
-                            mainDetailVM.send(selectStationInfo: mainDetailVM.selectStationInfo, lineInfo: list)
+//                            mainDetailVM.send(selectStationInfo: mainDetailVM.selectStationInfo, lineInfo: list)
+                            mainDetailVM.settingSubwayInfo(hosun: list, selectStation: mainDetailVM.selectStationInfo)
                         }
                         .listRowSeparator(.hidden)
                     }
@@ -56,8 +57,8 @@ struct SelectStationLineInfosView: View {
     }
 }
 
-//struct SelectStationLineInfosView_Previews: PreviewProvider {
+// struct SelectStationLineInfosView_Previews: PreviewProvider {
 //    static var previews: some View {
 //        SelectStationLineInfosView(isPresented: .constant(true), mainDetailVM: MainDetailVM, lineLists: .constant(SubwayLineColor.mockList))
 //    }
-//}
+// }
