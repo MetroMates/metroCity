@@ -28,8 +28,14 @@ final class MainDetailVM: ObservableObject {
     /// 서연추가) 유저가 역팝업뷰에서 역 선택하였을 때 배경 분기처리를 위한 프로퍼티
     @Published var userSelectedStation: String?
   
-    // 네트워크 끊겼을 경우 메세지
+    /// 네트워크 끊겼을 경우 메세지
     @Published var networkDiedToastMessage: Toast?
+    
+    /// 북마크 추가/해제시 메세지
+    @Published var bookMarkInfoToastMessage: Toast?
+
+    /// 해당역 북마크 추가/해제 표시
+    @Published var isBookMarked: Bool = false
     
     /// 호선정보 및 색상 MainListModel.swift
     @Published var hosunInfo: SubwayLineColor = .emptyData
@@ -68,6 +74,7 @@ final class MainDetailVM: ObservableObject {
         self.fetchInfo(selectStation)
         // 열차 x offset값 초기화
         self.moveXoffSet = .zero
+        fetchBookMark()
     }
     
     /// 구독 메서드
@@ -113,6 +120,7 @@ final class MainDetailVM: ObservableObject {
         self.settingSubwayInfo(hosun: line, selectStation: mystation)
 //        self.send(selectStationInfo: mystation,
 //                          lineInfo: line)
+//        fetchBookMark()
     }
     
     /// 타이머 시작
@@ -143,6 +151,41 @@ final class MainDetailVM: ObservableObject {
         trainTimerCancel.cancel()
     }
     
+    func addBookMark() {
+        let coreDataManager = CoreDataManger.shared
+        let isResult = coreDataManager.create {
+            let bookMarkInfo = BookMarkEntity(context: coreDataManager.context)
+            bookMarkInfo.statnId = hosunInfo.subwayId
+            bookMarkInfo.statnNm = hosunInfo.subwayNm
+            bookMarkInfo.subwayId = Int32(selectStationInfo.nowSt)
+            bookMarkInfo.subwayNm = selectStationInfo.nowStNm
+            bookMarkInfo.lineColor = hosunInfo.lineColorHexCode
+        }
+        
+        if isResult {
+            self.bookMarkInfoToastMessage = .init(style: .success, message: "즐겨찾기에 추가되었습니다.")
+            
+        }
+        fetchBookMark()
+    }
+    
+    func deleteBookMark() {
+        let coreDataManger = CoreDataManger.shared
+        let isResult = coreDataManger.delete(type: BookMarkEntity.self, column: \.subwayId, value: Int32(selectStationInfo.nowSt))
+        
+        if isResult {
+            self.bookMarkInfoToastMessage = .init(style: .success, message: "즐겨찾기가 해제되었습니다.")
+            
+        }
+        fetchBookMark()
+    }
+    
+    func fetchBookMark() {
+        let coreDataManger = CoreDataManger.shared
+        let isResult = coreDataManger.retrieve(type: BookMarkEntity.self, column: \.subwayId, comparision: .equal, value: Int32(selectStationInfo.nowSt))
+        
+        isBookMarked = isResult.isEmpty ? false : true
+    }
 }
 
 // MARK: Private Methods

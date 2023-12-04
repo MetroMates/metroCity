@@ -19,7 +19,7 @@ struct StartView: View {
                 .tag(0)
                 
                 // 즐겨찾기
-                FavoritesView()
+                BookMarkView(bookMarkVM: BookMarkVM(useCase: MainListUseCase(repo: MainListRepository(networkStore: SubwayAPIService())), startVM: startVM), mainDetailVM: MainDetailVM(useCase: MainDetailUseCase(repo: MainDetailRepository(networkService: SubwayAPIService())), startVM: startVM))
                     .tabItem {
                         EmptyView()
                     }
