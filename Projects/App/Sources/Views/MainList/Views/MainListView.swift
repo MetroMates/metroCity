@@ -65,8 +65,8 @@ struct MainListView: View {
             mainDetailVM.subscribe()
         }
         .alert("위치 권한이 필요합니다.\n설정 → 개인정보 보호 및 보안 → 위치 서비스에서 위치접근을 허용해주세요.", isPresented: $mainVM.isNoAuthToLocation) {
-            Button("취소", systemImage: "", action: {})
-            Button("이동", systemImage: "", action: { mainVM.openSetting() })
+            Button("취소", action: {})
+            Button("이동", action: { mainVM.openSetting() })
         }
         
     }

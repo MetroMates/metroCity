@@ -126,7 +126,10 @@ extension LocationManager {
     /// 사용자의 업데이트된 위치를 나타내는 CLLocation 개체 배열을 중 마지막을 가져옴
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         print("🦕 locationManager 실행!")
-        guard let userLocation = locations.last else { return } // 사용자 위치가 nil인지 아닌지 판단
+        guard let userLocation = locations.last else {
+            self.clLocManager.stopUpdatingLocation()
+            return
+        } // 사용자 위치가 nil인지 아닌지 판단
         print("🦕 locationManager 진입!")
         // 위도(latitude-37)와 경도(longitude-126) 추출하기
         let latitude = userLocation.coordinate.latitude

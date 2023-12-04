@@ -153,8 +153,10 @@ final class MainDetailVM: ObservableObject {
     
     func addBookMark() {
         let coreDataManager = CoreDataManger.shared
-        let isResult = coreDataManager.create {
-            let bookMarkInfo = BookMarkEntity(context: coreDataManager.context)
+        let context = coreDataManager.newContextForBackgroundThread()
+        
+        let isResult = coreDataManager.create(contextValue: context) {
+            let bookMarkInfo = BookMarkEntity(context: context)
             bookMarkInfo.statnId = hosunInfo.subwayId
             bookMarkInfo.statnNm = hosunInfo.subwayNm
             bookMarkInfo.subwayId = Int32(selectStationInfo.nowSt)
@@ -164,8 +166,8 @@ final class MainDetailVM: ObservableObject {
         
         if isResult {
             self.bookMarkInfoToastMessage = .init(style: .success, message: "즐겨찾기에 추가되었습니다.")
-            
         }
+        
         fetchBookMark()
     }
     

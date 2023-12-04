@@ -12,6 +12,10 @@ final class BookMarkVM: MainListVM {
         Array(Dictionary(grouping: stationInfos, by: { $0.subwayNm }).sorted(by: { $0.key < $1.key }))
     }
     
+    override init(useCase: MainListUseCase, startVM: StartVM) {
+        super.init(useCase: useCase, startVM: startVM)
+    }
+    
     func fetchBookMark() {
         let coreDataManger = CoreDataManger.shared
         let bookMarkEntity = coreDataManger.retrieve(type: BookMarkEntity.self)
