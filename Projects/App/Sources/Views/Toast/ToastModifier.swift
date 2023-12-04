@@ -30,6 +30,8 @@ struct ToastModifier: ViewModifier {
                     message: toast.message,
                     width: toast.width
                 )
+                .frame(width: UIScreen.main.bounds.width * 0.6)
+                .padding(.top, 20)
                 Spacer()
             }
         }

@@ -6,7 +6,7 @@ import SwiftUI
 struct Toast: Equatable {
     var style: ToastStyle
     var message: String
-    var duration: Double = 3
+    var duration: Double = 1.5
     var width: Double = .infinity
     
     static let sample = Toast(style: .success, message: "성공!", duration: 3, width: .infinity)
