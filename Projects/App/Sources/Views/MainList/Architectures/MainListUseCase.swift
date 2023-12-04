@@ -27,12 +27,23 @@ final class MainListUseCase {
     }
     
     /// GPS 기반하여 가장 가까운 역이름, 역코드 반환
-    func startFetchNearStationFromUserLocation() {
-        locationManager.fetchUserLocation()
+    func startFetchNearStationFromUserLocation(vm: MainListVM) {
+        if let locationAuthStatus = locationManager.locationAuthStatus {
+            print("😘 \(locationAuthStatus)")
+            if locationAuthStatus == .denied /* rawValue: 2 */ {
+                vm.isNoAuthToLocation = true
+            } else {
+                locationManager.fetchUserLocation()
+            }
+        }
+    }
+    
+    func openSetting() {
+        locationManager.isOpenSettingAlert = true
     }
     
     func userLocationSubscribe(statnLocInfos: [StationLocation]) {
-        print("🍜 userLocationSubscribe  진입 (내부)")
+        print("🍜 userLocationSubscribe 진입 (내부)")
         locationManager.userLocPublisher()
             .sink { loc in
                 print("🍜 userLocationSubscribe 내부의 userLocationPublisher")

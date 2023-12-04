@@ -62,7 +62,7 @@ extension MainDetailView {
             Button {
                 // Sheet Open
                 vm.isLineListSheetOpen = true
-                print(vm.selectStationLineInfos)
+//                print(vm.selectStationLineInfos)
                 print("🦁역 호선 정보")
             } label: {
                 HStack {

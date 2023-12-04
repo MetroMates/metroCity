@@ -315,7 +315,6 @@ extension MainDetailVM {
                 totalStationInfo.append(station)
             }
         }
-        
         self.totalStationInfo.sort { $0.statnId < $1.statnId }
     }
 }

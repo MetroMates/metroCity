@@ -5,8 +5,14 @@ import SwiftUI
 struct CustomBackButtonModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .navigationBarBackButtonHidden(true)
+//            .toolbar {
+//                ToolbarItem(placement: .navigation) {
+//                    CustomBackButton()
+//                }
+//            }
+//            .navigationViewStyle(StackNavigationViewStyle())
 //            .navigationBarItems(leading: CustomBackButton())
+//            .navigationBarBackButtonHidden(true)
     }
 }
 

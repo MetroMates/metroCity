@@ -62,9 +62,11 @@ struct MainListView: View {
             }
         }
         .onAppear {
-            //            mainVM.subscribe() -> ViewModel 내부로 옮김.
-            //            mainVM.GPScheckNowLocactionTonearStation() -> 데이터가 fetch된 후로 옮김. mainVM.subscribe 내부로 옮김.
             mainDetailVM.subscribe()
+        }
+        .alert("위치 권한이 필요합니다.\n설정 → 개인정보 보호 및 보안 → 위치 서비스에서 위치접근을 허용해주세요.", isPresented: $mainVM.isNoAuthToLocation) {
+            Button("취소", systemImage: "", action: {})
+            Button("이동", systemImage: "", action: { mainVM.openSetting() })
         }
         
     }
@@ -78,8 +80,8 @@ extension MainListView {
             VStack(spacing: 15) {
                 ForEach(mainVM.subwayLineInfosAtStation) { line in
                     Button {
-                        self.setLineAndstationInfo(line: line)
                         mainVM.isDetailPresented.toggle()
+                        self.setLineAndstationInfo(line: line)                        
                         
                         // 역 선택 PopView 확인을 위함
                         mainVM.userChoicedSubwayNm = line.subwayNm
@@ -158,7 +160,7 @@ extension MainListView {
 
 struct MainListView_Preview: PreviewProvider {
     static var previews: some View {
-        StartView()
+        StartView(startVM: .init(type: .test))
         //        MainListPreviewView()
     }
 }
