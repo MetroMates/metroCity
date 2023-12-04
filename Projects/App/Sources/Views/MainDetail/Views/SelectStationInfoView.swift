@@ -7,6 +7,7 @@ struct SelectStationInfoView: View {
     @Binding var userChoice: Bool
     @Binding var totalStationInfo: [StationInfo]
     private let colums: [GridItem] = [GridItem(.flexible()), GridItem(.flexible())]
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         GeometryReader { geometry in
@@ -18,7 +19,7 @@ struct SelectStationInfoView: View {
                 VStack {
                     Text("찾으시는 역을 선택해주세요")
                         .font(.system(size: 18, weight: .semibold))
-                        .foregroundColor(.black)
+                        .foregroundColor(.primary)
                     Divider()
                         .padding(.bottom, 10)
                     
@@ -26,7 +27,7 @@ struct SelectStationInfoView: View {
                         VStack(alignment: .leading, spacing: 12) {
                             ForEach(totalStationInfo) { station in
                                 ScrollText(content: station.statnNm)
-                                    .foregroundColor(.black)
+                                    .foregroundColor(.primary)
                                     .frame(maxWidth: geometry.size.width)
                                     .padding(.vertical, 12)
                                     .overlay(
@@ -43,6 +44,7 @@ struct SelectStationInfoView: View {
                                     }
                                     .padding(.horizontal, 10)
                             }
+                            .background(colorScheme == .dark ? Color(hex: "a0a0a0") :  Color.white)
                         }
                         .padding(.vertical, 1)
                         .padding(.horizontal, 15)
@@ -57,7 +59,7 @@ struct SelectStationInfoView: View {
                         .stroke(.blue.opacity(0.1))
                         .background(
                             RoundedRectangle(cornerRadius: 30)
-                                .fill(.white)
+                                .fill((colorScheme == .dark ? Color(hex: "a0a0a0") :  Color.white))
                         )
                 )
                 .padding(.horizontal, 45)

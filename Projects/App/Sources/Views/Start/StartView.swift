@@ -4,7 +4,20 @@ import SwiftUI
 
 struct StartView: View {
     @StateObject private var startVM: StartVM = .init(type: .real)
+    @AppStorage("systemTheme") private var systemTheme: Int = SchemeType.allCases.first!.rawValue
     @Environment(\.colorScheme) private var colorScheme
+    
+    var selectedScheme: ColorScheme? {
+        guard let theme = SchemeType(rawValue: systemTheme) else { return nil }
+        switch theme {
+        case .light:
+            return .light
+        case .dark:
+            return .dark
+        default:
+            return nil
+        }
+    }
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -32,11 +45,11 @@ struct StartView: View {
                     }
                     .tag(2)
             }
-            
+            .preferredColorScheme(selectedScheme)
             TabBarItem
             
         }
-
+        
     }
 }
 
