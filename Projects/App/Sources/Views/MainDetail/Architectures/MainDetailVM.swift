@@ -272,7 +272,7 @@ extension MainDetailVM {
                 totalStationInfo.append(station)
             }
         }
-        print("⚽️ \(subwayNm)")
-        print("⚽️⚽️ \(self.totalStationInfo)")
+        
+        self.totalStationInfo.sort { $0.statnId < $1.statnId }
     }
 }

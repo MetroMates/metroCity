@@ -57,7 +57,7 @@ extension MainListUseCase {
     // 유저의 위치에 가까운 역을 찾아서 역이름을 반환한다.
     private func findNearStationFromUserLocation(myLoc: Location, statnLoc: [StationLocation]) {
         print("🍜 userLoc ", myLoc)
-        let closeStName = locationManager.calculateDistance(userLoc: myLoc, statnLoc: statnLoc, distance: 3000)
+        let closeStName = locationManager.calculateDistance(userLoc: myLoc, statnLoc: statnLoc, distance: 1000)
         print("🍜 closeStName ", closeStName, " 그리고 \(statnLoc.count)")
 
         let tempStationInfo = statnLoc.filter { $0.statnNm.contains(closeStName) }
