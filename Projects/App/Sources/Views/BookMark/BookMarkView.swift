@@ -89,7 +89,7 @@ extension BookMarkView {
                         .background {
                             RoundedRectangle(cornerRadius: 10)
                                 .fill(contentBackColor)
-                                .shadow(color: .blue.opacity(0.4), radius: 3, x: 2, y: 1)
+                                .shadow(color: bookMarkVM.subwayColor(stationInfo.subwayId).opacity(0.4), radius: 3, x: 2, y: 1)
                         }
                     }
                 }
