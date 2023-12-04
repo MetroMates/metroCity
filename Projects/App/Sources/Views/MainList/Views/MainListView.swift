@@ -88,6 +88,7 @@ extension MainListView {
                         mainVM.checkUserChoice()
                         mainDetailVM.getStationTotal(subwayNm: line.subwayNm)
                         mainDetailVM.selectedStationBorderColor = line.lineColorHexCode
+                        print("🚇 \(mainDetailVM.totalStationInfo)")
                     } label: {
                         LineCellView(stationName: line.subwayNm,
                                      stationColor: line.lineColor)
@@ -122,6 +123,7 @@ extension MainListView {
                             mainVM.checkUserChoice()
                             mainDetailVM.getStationTotal(subwayNm: line.subwayNm)
                             mainDetailVM.selectedStationBorderColor = line.lineColorHexCode
+                            print("🚇 \(mainDetailVM.totalStationInfo)")
                         } label: {
                             LineCellView(stationName: line.subwayNm,
                                          stationColor: line.lineColor)

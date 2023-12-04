@@ -11,7 +11,7 @@ import Combine
 
 // ViewModel에서는 View와 관련된 메서드(로직)만 작성한다.
 /// 메인 리스트 ViewModel
-final class MainListVM: ObservableObject {
+class MainListVM: ObservableObject {
     /// 유저위치에서 가장 가까운 역이름
     @Published var nearStNamefromUserLocation: String = ""
     @Published var isDetailPresented: Bool = false

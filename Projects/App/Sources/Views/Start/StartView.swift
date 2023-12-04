@@ -4,6 +4,7 @@ import SwiftUI
 
 struct StartView: View {
     @ObservedObject var startVM: StartVM
+    @AppStorage("systemTheme") private var systemTheme: Int = SchemeType.allCases.first!.rawValue
     @Environment(\.colorScheme) private var colorScheme
     
     @StateObject private var mainVM: MainListVM
@@ -14,6 +15,18 @@ struct StartView: View {
         self._mainVM = StateObject(wrappedValue: MainListVM(useCase: MainListUseCase(repo: MainListRepository(networkStore: SubwayAPIService())), startVM: startVM))
         self._mainDetailVM = StateObject(wrappedValue: MainDetailVM(useCase: MainDetailUseCase(repo: MainDetailRepository(networkService: SubwayAPIService())),
                                                                     startVM: startVM))
+    }
+  
+    var selectedScheme: ColorScheme? {
+        guard let theme = SchemeType(rawValue: systemTheme) else { return nil }
+        switch theme {
+        case .light:
+            return .light
+        case .dark:
+            return .dark
+        default:
+            return nil
+        }
     }
     
     var body: some View {
@@ -28,7 +41,7 @@ struct StartView: View {
                 .tag(0)
                 
                 // 즐겨찾기
-                FavoritesView()
+                BookMarkView(bookMarkVM: BookMarkVM(useCase: MainListUseCase(repo: MainListRepository(networkStore: SubwayAPIService())), startVM: startVM), mainDetailVM: MainDetailVM(useCase: MainDetailUseCase(repo: MainDetailRepository(networkService: SubwayAPIService())), startVM: startVM))
                     .tabItem {
                         EmptyView()
                     }
@@ -41,11 +54,11 @@ struct StartView: View {
                     }
                     .tag(2)
             }
-            
+            .preferredColorScheme(selectedScheme)
             TabBarItem
             
         }
-
+        
     }
 }
 

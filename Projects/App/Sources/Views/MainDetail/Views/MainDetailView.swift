@@ -5,6 +5,7 @@ import SwiftUI
 struct MainDetailView: View {     
     @ObservedObject var vm: MainDetailVM
     @ObservedObject var mainVM: MainListVM
+    var disappearHandler: () -> Void = {}
     
     var body: some View {
         VStack(spacing: 20) {
@@ -30,6 +31,7 @@ struct MainDetailView: View {
 
         }
         .toastView(toast: $vm.networkDiedToastMessage)
+        .toastView(toast: $vm.bookMarkInfoToastMessage)
         .customBackButton()
         .overlay {
             SelectStationLineInfosView(mainDetailVM: vm, isPresented: $vm.isLineListSheetOpen, lineLists: $vm.selectStationLineInfos)
@@ -39,8 +41,12 @@ struct MainDetailView: View {
         }
         .onAppear {
             vm.timerStart()
+            vm.fetchBookMark()
         }
-        .onDisappear { vm.timerStop() }
+        .onDisappear { 
+            vm.timerStop()
+            disappearHandler()
+        }
         .onTapGesture {
             self.endTextEditing()
         }
@@ -91,12 +97,13 @@ extension MainDetailView {
                     
                     // MARK: - BookBark Button!!
                     Button {
-                        print("Bookmark Button tapped!")
+                        vm.isBookMarked ? vm.deleteBookMark() : vm.addBookMark()
                     } label: {
                         // TODO: 코어데이터 가져와서 선택되었던 역인지 아닌지 체크
-                        Image(systemName: "bookmark")
-                            .tint(.primary)
+                        Image(systemName: vm.isBookMarked ? "bookmark.fill" : "bookmark")
+                            .tint(vm.isBookMarked ? .yellow : .primary)
                     }
+
                 }
             }
         }
