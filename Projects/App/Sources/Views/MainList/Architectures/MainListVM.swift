@@ -21,6 +21,9 @@ final class MainListVM: ObservableObject {
     @Published var subwayLineInfosAtStation: [SubwayLineColor] = []
     
     @Published var isProgressed: Bool = false
+    /// 위치권한이 없을경우 alert 창 띄우기.
+    @Published var isNoAuthToLocation: Bool = false
+    /// 현위치 가까운역정보 객체
     @Published var nearStationInfo: MyStation = .emptyData
     
     /// 유저 선택에 따라 역정보 popView 값을 설정하기 위한 변수
@@ -48,6 +51,19 @@ final class MainListVM: ObservableObject {
         anyCancellable.forEach { $0.cancel() }
     }
     
+    func openSetting() {
+        useCase.openSetting()
+    }
+
+    /// GPS 기반 현재위치에서 제일 가까운 역이름 가져오기
+    func GPScheckNowLocactionTonearStation() {
+        useCase.startFetchNearStationFromUserLocation(vm: self)
+    }
+    
+}
+
+// MARK: - Private Methods
+extension MainListVM {
     /// 구독메서드
     private func subscribe(stationInfo: [StationInfo],
                            lineInfo: [SubwayLineColor],
@@ -74,15 +90,6 @@ final class MainListVM: ObservableObject {
 
     }
     
-    /// GPS 기반 현재위치에서 제일 가까운 역이름 가져오기
-    func GPScheckNowLocactionTonearStation() {
-        useCase.startFetchNearStationFromUserLocation()
-    }
-    
-}
-
-// MARK: - Private Methods
-extension MainListVM {
     private func filteredLinesfromSelectStation(value: String) {
         subwayLineInfosAtStation.removeAll() // 초기화
         

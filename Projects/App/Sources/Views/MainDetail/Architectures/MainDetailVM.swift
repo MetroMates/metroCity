@@ -272,7 +272,7 @@ extension MainDetailVM {
                 totalStationInfo.append(station)
             }
         }
-        print("⚽️ \(subwayNm)")
-        print("⚽️⚽️ \(self.totalStationInfo)")
+//        print("⚽️ \(subwayNm)")
+//        print("⚽️⚽️ \(self.totalStationInfo)")
     }
 }

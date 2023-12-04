@@ -85,7 +85,7 @@ final class StartVM: ObservableObject {
             let newContext = coreDataManager.newContextForBackgroundThread()
             
             // 컨텍스트 큐에서 지정된 클로저의 Task를 비동기적으로 수행.
-            newContext.perform {
+            newContext.performAndWait {
                 let isResult = coreDataManager.create(contextValue: newContext) {
                     // 백그라운드 스레드에서 CoreData에 값 넣어주는 작업. -> CoreData에서 자체적으로 UI관련되지 않은 작업들은 백그라운드에서 처리함.
                     for dataGroup in datas {

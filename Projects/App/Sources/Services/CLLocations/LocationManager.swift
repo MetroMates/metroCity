@@ -11,17 +11,25 @@ struct Location {
 
 /// 현재 위치의 위도 경도를 관리.
 final class LocationManager: NSObject, CLLocationManagerDelegate {
+    static let shared: LocationManager = .init()
+    
+    var locationAuthStatus: CLAuthorizationStatus?
+    @Published var isOpenSettingAlert: Bool = false
+    
     // 외부에서 사용. -> 외부에서 사용시에 구독을 걸어둔 로직을 먼저 호출할 것이기 때문에 Passthrough로 사용. 처음부터 값을 방출할 필요가 없기 때문. 함수로 return
     private let userLocationPublisher = PassthroughSubject<Location, Never>()
-    
     private let clLocManager = CLLocationManager()
-    
-    static let shared: LocationManager = .init()
+    private var anyCancellable = Set<AnyCancellable>()
     
     override private init() {
         super.init()
         print("👻 LocationManager")
         locationManagerSetting()
+        subscribe()
+    }
+    
+    deinit {
+        anyCancellable.forEach { $0.cancel() }
     }
     
     func userLocPublisher() -> AnyPublisher<Location, Never> {
@@ -32,8 +40,8 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     
     /// 버튼을 누를 때마다 위치 업데이트를 하기 위해 함수로 따로 뺌!
     func fetchUserLocation() {
-        self.clLocManager.requestLocation() // 한번만 가져오는 것.
-//        self.clLocManager.startUpdatingLocation()
+//        self.clLocManager.requestLocation()  // 한번만 가져오는 것. -> 엄청 느림.
+        self.clLocManager.startUpdatingLocation()
     }
     
     /// 3키로 반경 이내 역중에 위경도 값 기준으로 가장 근사한 역 하나를 리턴해줌
@@ -60,7 +68,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         var returnStationName: String = ""
         var minDifference: Double = Double.infinity
         
-        print("🍜 caluStation \(calculatedStation)")
+//        print("🍜 caluStation \(calculatedStation)")
         for station in calculatedStation {
             let diffX = abs(station.crdntX - userLocation.crdntX)
             let diffY = abs(station.crdntY - userLocation.crdntY)
@@ -77,25 +85,34 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         return returnStationName
 
     }
+    
+    /// 위치 설정 창 열기
+    func openLocationSetting() {
+        if let bundleID = Bundle.main.bundleIdentifier,
+           let settings = URL(string: UIApplication.openSettingsURLString + bundleID) {
+            if UIApplication.shared.canOpenURL(settings) {
+                UIApplication.shared.open(settings)
+            }
+        }
+    }
+    
 }
 
 // MARK: - CLLLocationManagerDelegate 메서드
 extension LocationManager {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        self.locationAuthStatus = manager.authorizationStatus
+        
         switch manager.authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse: // 결정됨.
-            // 위치를 가져오면 됨
             print("🦷 권한부여됨")
-            // self.clLocManager.requestLocation()
         case .notDetermined, .restricted: // 아직 미정
             self.clLocManager.requestWhenInUseAuthorization()
             
         case .denied: // 거부
             // 다시 권한 체크창 띄워야함.
             print("🦷 권한 삭제됨")
-            if let appSetting = URL(string: UIApplication.openSettingsURLString) {
-                UIApplication.shared.open(appSetting)
-            }
+            self.openLocationSetting()
             
         @unknown default:
             print("🦷 unknown")
@@ -126,11 +143,19 @@ extension LocationManager {
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         debugPrint("🍜 위치반환 실패 : \(error.localizedDescription)")
     }
-
 }
 
 // MARK: - Private Methods
 extension LocationManager {
+    private func subscribe() {
+        $isOpenSettingAlert.sink { value in
+            if value {
+                self.openLocationSetting()
+            }
+        }
+        .store(in: &anyCancellable)
+    }
+    
     /// 위도, 경도 받아와서 Location 객체를 만들어서
     private func locationSet(crdntY: Double, crdntX: Double) {
         let location: Location = .init(crdntX: crdntX, crdntY: crdntY)

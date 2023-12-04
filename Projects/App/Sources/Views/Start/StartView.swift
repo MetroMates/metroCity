@@ -3,16 +3,25 @@
 import SwiftUI
 
 struct StartView: View {
-    @StateObject private var startVM: StartVM = .init(type: .real)
+    @ObservedObject var startVM: StartVM
     @Environment(\.colorScheme) private var colorScheme
+    
+    @StateObject private var mainVM: MainListVM
+    @StateObject private var mainDetailVM: MainDetailVM
+    
+    init(startVM: StartVM) {
+        self.startVM = startVM
+        self._mainVM = StateObject(wrappedValue: MainListVM(useCase: MainListUseCase(repo: MainListRepository(networkStore: SubwayAPIService())), startVM: startVM))
+        self._mainDetailVM = StateObject(wrappedValue: MainDetailVM(useCase: MainDetailUseCase(repo: MainDetailRepository(networkService: SubwayAPIService())),
+                                                                    startVM: startVM))
+    }
     
     var body: some View {
         ZStack(alignment: .bottom) {
             TabView(selection: $startVM.selectTabIndex) {
                 // 메인 호선 현황
-                MainListView(mainVM: MainListVM(useCase: MainListUseCase(repo: MainListRepository(networkStore: SubwayAPIService())), startVM: startVM),
-                             mainDetailVM: MainDetailVM(useCase: MainDetailUseCase(repo: MainDetailRepository(networkService: SubwayAPIService())),
-                                                        startVM: startVM))
+                MainListView(mainVM: mainVM,
+                             mainDetailVM: mainDetailVM)
                 .tabItem {
                     EmptyView()
                 }
@@ -101,6 +110,6 @@ extension StartView {
 
 struct StartView_Preview: PreviewProvider {
     static var previews: some View {
-        StartView()
+        StartView(startVM: .init(type: .test))
     }
 }

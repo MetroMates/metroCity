@@ -30,7 +30,10 @@ final class CoreDataManger {
     func newContextForBackgroundThread() -> NSManagedObjectContext {
         return container.newBackgroundContext()
     }
-
+    
+    // NSEntityDescription.entity() 이건 Entity를 새로 만들경우 사용.\
+    // newEntityDataHandler에 ↑로 설정해줘야할듯?
+    
     // MARK: - CRUD Methods
     /// 여러 Entity의 내용을 한번에 등록할 경우.
     func create(contextValue: NSManagedObjectContext? = nil,
@@ -42,11 +45,8 @@ final class CoreDataManger {
         } else {
             context = self.context
         }
-        
-        // NSEntityDescription.entity() 이건 Entity를 새로 만들경우 사용.\
-        // newEntityDataHandler에 ↑로 설정해줘야할듯?
-        
         newEntityDataHandler()
+        
         return self.save(context: context)
     }
             
@@ -118,10 +118,8 @@ final class CoreDataManger {
         guard !beforeDatas.isEmpty else { return false }
         
         newValueHandler(beforeDatas)
-        
-        if !self.save(context: context) { return false }
-        
-        return true
+
+        return self.save(context: context)
     }
 
     /// 해당 데이터만 삭제
@@ -158,9 +156,8 @@ final class CoreDataManger {
         
         let allDatas = self.retrieve(type: type)
         allDatas.forEach { context.delete($0) }
-        if !self.save(context: context) { return false }
-        
-        return true
+
+        return self.save(context: context)
     }
     
 }

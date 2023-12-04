@@ -14,10 +14,11 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct MetroCityTDSApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-
+    @StateObject private var startVM: StartVM = .init(type: .real)
+    
     var body: some Scene {
         WindowGroup {
-            StartView()
+            StartView(startVM: startVM)
         }
     }
 }
