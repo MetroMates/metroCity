@@ -6,7 +6,8 @@ struct SelectStationLineInfosView: View {
     @ObservedObject var mainDetailVM: MainDetailVM
     @Binding var isPresented: Bool
     @Binding var lineLists: [SubwayLineColor]
-    
+    @Environment(\.colorScheme) var colorScheme
+        
     var body: some View {
         GeometryReader { geometry in
             ZStack {
@@ -21,16 +22,16 @@ struct SelectStationLineInfosView: View {
                                 .fill(list.lineColor)
                                 .frame(width: 20, height: 20)
                             Text(list.subwayNm)
-                                .foregroundColor(.black)
+                                .foregroundColor(colorScheme == .dark ? Color(uiColor: .white) : Color.black)
                         }
-                        .listRowBackground(Color.white)
+                        .listRowBackground(colorScheme == .dark ? Color(uiColor: .systemGray5) : Color.white)
                         .onTapGesture { // 선택한 호선 뽑아내기
 //                            mainDetailVM.send(selectStationInfo: mainDetailVM.selectStationInfo, lineInfo: list)
                             mainDetailVM.settingSubwayInfo(hosun: list, selectStation: mainDetailVM.selectStationInfo)
                         }
                         .listRowSeparator(.hidden)
                     }
-                    .background(.white)
+                    .background(colorScheme == .dark ? Color(uiColor: .systemGray5) :  Color.white)
                     .listStyle(.plain)
                     .frame(height: CGFloat(lineLists.count) * 45)
                 }
@@ -43,7 +44,7 @@ struct SelectStationLineInfosView: View {
                         .stroke(.blue.opacity(0.1))
                         .background(
                             RoundedRectangle(cornerRadius: 30)
-                                .fill(.white)
+                                .fill((colorScheme == .dark ? Color(uiColor: .systemGray5) :  Color.white))
                         )
                 )
                 .padding(.horizontal, 100)
