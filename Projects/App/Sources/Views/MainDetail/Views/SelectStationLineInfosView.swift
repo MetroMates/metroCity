@@ -27,6 +27,12 @@ struct SelectStationLineInfosView: View {
                         .listRowBackground(colorScheme == .dark ? Color(uiColor: .systemGray5) : Color.white)
                         .onTapGesture { // 선택한 호선 뽑아내기
 //                            mainDetailVM.send(selectStationInfo: mainDetailVM.selectStationInfo, lineInfo: list)
+                            
+                            // 유저가 다시 선택한 호선 정보로 팝업의 total호선 정보 호출
+                            mainDetailVM.getStationTotal(subwayNm: list.subwayNm)
+                            mainDetailVM.selectedStationBorderColor = list.lineColorHexCode
+                            
+                            print("😈 \(mainDetailVM.totalStationInfo)")
                             mainDetailVM.settingSubwayInfo(hosun: list, selectStation: mainDetailVM.selectStationInfo)
                         }
                         .listRowSeparator(.hidden)
@@ -50,9 +56,6 @@ struct SelectStationLineInfosView: View {
                 .padding(.horizontal, 100)
                 .padding(.bottom, geometry.size.height * 0.4)
             }
-        }
-        .onAppear {
-            print("📕📕📕 \(isPresented)")
         }
         .opacity(isPresented ? 1.0 : 0.0)
         .onTapGesture {
