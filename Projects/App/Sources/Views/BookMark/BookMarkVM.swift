@@ -8,12 +8,14 @@ final class BookMarkVM: MainListVM {
     
     @Published var stationInfos: [StationInfo] = []
     
+    
     var groupedStationInfos: [(key: String, value: [StationInfo])] {
         Array(Dictionary(grouping: stationInfos, by: { $0.subwayNm }).sorted(by: { $0.key < $1.key }))
     }
     
     override init(useCase: MainListUseCase, startVM: StartVM) {
         super.init(useCase: useCase, startVM: startVM)
+        self.isSearchShow = false
     }
     
     func fetchBookMark() {

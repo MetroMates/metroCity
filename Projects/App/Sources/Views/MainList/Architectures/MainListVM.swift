@@ -35,6 +35,7 @@ class MainListVM: ObservableObject {
     
     private var anyCancellable: Set<AnyCancellable> = []
     
+    var isSearchShow: Bool = true
     // 도메인 Layer
     private let useCase: MainListUseCase
     private let startVM: StartVM
