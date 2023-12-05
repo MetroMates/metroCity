@@ -51,9 +51,15 @@ struct SelectStationLineInfosView: View {
                 .padding(.bottom, geometry.size.height * 0.4)
             }
         }
+        .onAppear {
+            print("📕📕📕 \(isPresented)")
+        }
         .opacity(isPresented ? 1.0 : 0.0)
         .onTapGesture {
             isPresented = false
+        }
+        .onDisappear {
+            mainDetailVM.isLineListSheetOpen = false
         }
     }
 }

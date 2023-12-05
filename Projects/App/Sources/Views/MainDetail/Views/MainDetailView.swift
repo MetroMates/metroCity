@@ -10,7 +10,7 @@ struct MainDetailView: View {
     var body: some View {
         VStack(spacing: 20) {
             VStack(spacing: 20) {
-                SearchBarMain(mainDetailVM: vm)
+                SearchBarMainView(mainDetailVM: vm)
                 TitleContent
                 SubTitleContent
             }

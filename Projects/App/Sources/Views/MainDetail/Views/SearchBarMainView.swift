@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-struct SearchBarMain: View {
+struct SearchBarMainView: View {
     @ObservedObject var mainDetailVM: MainDetailVM
 
     var body: some View {
@@ -24,24 +24,23 @@ struct SearchBarMain: View {
                 .listStyle(.plain)
             }
         }
-        .onDisappear {
-            outFocused()
-        }
+//        .onDisappear {
+//            outFocused()
+//        }
     }
     
     private func outFocused() {
         mainDetailVM.searchText = ""
-        mainDetailVM.isSearching = false
     }
     
 }
 
-extension SearchBarMain {
+extension SearchBarMainView {
     @ViewBuilder private var SearchBar: some View {
         
         HStack {
 //            CustomBackButton()
-            TextField("Search",
+            TextField("역명 검색",
                       text: $mainDetailVM.searchText,
                       onEditingChanged: { edited in
                 mainDetailVM.isSearching = edited
@@ -51,22 +50,19 @@ extension SearchBarMain {
             .background(Color(.systemGray6))
             .cornerRadius(10)
 
-            // textfield에 값이 있을때
-            if mainDetailVM.isSearching {
+            Spacer()
+            if !mainDetailVM.searchText.isEmpty {
                 Button {
                     outFocused()
                 } label: {
                     Image(systemName: "x.circle")
-                        .foregroundColor(.primary)
+                        .foregroundColor(.gray)
+                        
                 }
-                .padding(.trailing)
-                .transition(.move(edge: .trailing))
-            } else {
-                Image(systemName: "magnifyingglass")
-                    .foregroundColor(.primary)
             }
         }
         .padding(.horizontal, 5)
+
     }
 }
 
