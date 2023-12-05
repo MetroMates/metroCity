@@ -4,7 +4,7 @@ import SwiftUI
 
 struct StartView: View {
     @ObservedObject var startVM: StartVM
-//    @AppStorage("systemTheme") private var systemTheme: Int = SchemeType.allCases.first!.rawValue
+    @AppStorage("systemTheme") private var systemTheme: Int = SchemeType.system.rawValue
     @Environment(\.colorScheme) private var colorScheme
     
     @StateObject private var mainVM: MainListVM
@@ -21,17 +21,17 @@ struct StartView: View {
         self._bookMarkVM = StateObject(wrappedValue: BookMarkVM(useCase: mainListUseCase, startVM: startVM))
     }
   
-//    var selectedScheme: ColorScheme? {
-//        guard let theme = SchemeType(rawValue: systemTheme) else { return nil }
-//        switch theme {
-//        case .light:
-//            return .light
-//        case .dark:
-//            return .dark
-//        default:
-//            return nil
-//        }
-//    }
+    var selectedScheme: ColorScheme? {
+        guard let theme = SchemeType(rawValue: systemTheme) else { return nil }
+        switch theme {
+        case .light:
+            return .light
+        case .dark:
+            return .dark
+        default:
+            return nil
+        }
+    }
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -58,7 +58,7 @@ struct StartView: View {
                     }
                     .tag(2)
             }
-//            .preferredColorScheme(selectedScheme)
+            .preferredColorScheme(selectedScheme)
             TabBarItem
             
         }

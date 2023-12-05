@@ -5,43 +5,43 @@ import SwiftUI
 struct SettingView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
-//    @AppStorage("systemTheme") private var systemTheme: Int = SchemeType.allCases.first!.rawValue
+    @AppStorage("systemTheme") private var systemTheme: Int = SchemeType.system.rawValue
     @StateObject var settingVC = SettingViewModel()
     
-//    var selectedScheme: ColorScheme? {
-//        guard let theme = SchemeType(rawValue: systemTheme) else { return nil }
-//        switch theme {
-//        case .light:
-//            return .light
-//        case .dark:
-//            return .dark
-//        default:
-//            return nil
-//        }
-//    }
+    var selectedScheme: ColorScheme? {
+        guard let theme = SchemeType(rawValue: systemTheme) else { return nil }
+        switch theme {
+        case .light:
+            return .light
+        case .dark:
+            return .dark
+        default:
+            return nil
+        }
+    }
     
     var body: some View {
         NavigationStack {
             VStack {
                 List {
-//                    Section("테마 설정") {
-//                        HStack {
-//                            Image(systemName: "paintpalette")
-//                                .resizable()
-//                                .aspectRatio(contentMode: .fit)
-//                                .frame(width: 24, height: 24)
-//                                .foregroundColor(.secondary)
-//                                .padding(.trailing)
-//
-//                            Picker(selection: $systemTheme, label: Text("테마")) {
-//                                ForEach(SchemeType.allCases, id: \.self) { item in
-//                                    Text(item.schemeType)
-//                                        .tag(item.rawValue)
-//                                }
-//                            }
-//                        }
-//                        .preferredColorScheme(selectedScheme)
-//                    }
+                    Section("테마 설정") {
+                        HStack {
+                            Image(systemName: "paintpalette")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 24, height: 24)
+                                .foregroundColor(.secondary)
+                                .padding(.trailing)
+
+                            Picker(selection: $systemTheme, label: Text("테마")) {
+                                ForEach(SchemeType.allCases, id: \.self) { item in
+                                    Text(item.schemeType)
+                                        .tag(item.rawValue)
+                                }
+                            }
+                        }
+                        .preferredColorScheme(selectedScheme)
+                    }
                     
                     Section("앱 정보") {
                         /// 버전정보 뷰

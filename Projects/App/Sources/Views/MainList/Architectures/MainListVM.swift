@@ -118,12 +118,14 @@ extension MainListVM {
                 self.subwayLineInfos = line
                 self.locationInfos = location
                 
-                // 초기 발행시 딱 한번 실행됨. -> 각 데이터 fetch가 완료되었을때 실행!
-                self.subscribe(stationInfo: station,
-                               lineInfo: line,
-                               locInfo: location)
-                
-                self.GPScheckNowLocactionTonearStation() // 내 위치 가져오기.
+                if !self.stationInfos.isEmpty, !self.subwayLineInfos.isEmpty, !self.locationInfos.isEmpty {
+                    // 초기 발행시 딱 한번 실행됨. -> 각 데이터 fetch가 완료되었을때 실행!
+                    self.subscribe(stationInfo: station,
+                                   lineInfo: line,
+                                   locInfo: location)
+                    
+                    self.GPScheckNowLocactionTonearStation() // 내 위치 가져오기.
+                }
                 
             }
             .store(in: &anyCancellable)
@@ -133,20 +135,16 @@ extension MainListVM {
 
 extension MainListVM {
     func checkUserChoice() {
-        for lineInfo in subwayLineInfosAtStation {
-            if self.userChoicedSubwayNm != lineInfo.subwayNm {
-                self.userChoice = false
-            }
+        for lineInfo in subwayLineInfosAtStation where self.userChoicedSubwayNm != lineInfo.subwayNm {
+            self.userChoice = false
         }
         
         if subwayLineInfosAtStation.isEmpty {
             self.userChoice = false
         }
         
-        for lineInfo in subwayLineInfosAtStation {
-            if self.userChoicedSubwayNm == lineInfo.subwayNm {
-                self.userChoice = true
-            }
+        for lineInfo in subwayLineInfosAtStation where self.userChoicedSubwayNm == lineInfo.subwayNm {
+            self.userChoice = true
         }
     }
 }

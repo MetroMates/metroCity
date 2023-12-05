@@ -37,7 +37,6 @@ extension SearchBarMainView {
     @ViewBuilder private var SearchBar: some View {
         
         HStack {
-//            CustomBackButton()
             TextField("역명 검색",
                       text: $mainDetailVM.searchText,
                       onEditingChanged: { edited in

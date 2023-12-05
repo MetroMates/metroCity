@@ -187,10 +187,10 @@ extension LocationManager {
         switch self.clLocManager.accuracyAuthorization {
         case .fullAccuracy: // 정확한 위치 켬
             print("🦷 정확한 위치 켬")
-            break
         case .reducedAccuracy:  // 정확한 위치 끔.
             print("🦷 정확한 위치 끔.")
-            break
+        @unknown default:
+            fatalError()
         }
     }
 }

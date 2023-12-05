@@ -312,10 +312,8 @@ struct MainDetailVM_Previews: PreviewProvider {
 extension MainDetailVM {
     func getStationTotal(subwayNm: String) {
         self.totalStationInfo = []
-        for station in self.stationInfos {
-            if station.subwayNm == subwayNm {
-                totalStationInfo.append(station)
-            }
+        for station in self.stationInfos where station.subwayNm == subwayNm {
+            totalStationInfo.append(station)
         }
         self.totalStationInfo.sort { $0.statnId < $1.statnId }
     }
