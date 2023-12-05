@@ -38,18 +38,16 @@ struct BookMarkView: View {
                         }
                     }
                 }
+                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .principal) {
-                        HStack {
-                            
+                        HStack(spacing: 3) {
                             Text("즐겨찾기")
                                 .font(.title2)
-                            
                             Image(systemName: "bookmark.fill")
                                 .foregroundColor(Color.yellow)
-                                .font(.title2)
+                                .font(.body)
                         }
-                        .padding(.top, 18)
                     }
                 }
             }
