@@ -26,7 +26,7 @@ struct SelectStationInfoView: View {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 12) {
                             ForEach(totalStationInfo) { station in
-                                ScrollText(content: station.statnNm)
+                                Text(station.statnNm)
                                     .foregroundColor(.primary)
                                     .frame(maxWidth: geometry.size.width)
                                     .padding(.vertical, 12)
@@ -34,7 +34,7 @@ struct SelectStationInfoView: View {
                                         RoundedRectangle(cornerRadius: 10)
                                             .stroke(Color(hex: mainDetailVM.selectedStationBorderColor), lineWidth: 0.5)
                                     )
-                                    .background(mainDetailVM.selectedStationBorderColor == station.statnNm ? Color.blue : Color.clear)
+                                    .contentShape(Rectangle())
                                     .onTapGesture {
                                         mainDetailVM.userSelectedStation = station.statnNm
                                         let temp = MyStation(nowSt: Int(station.statnId), nowStNm: station.statnNm, upSt: 0, upStNm: "", downSt: 0, downStNm: "")
