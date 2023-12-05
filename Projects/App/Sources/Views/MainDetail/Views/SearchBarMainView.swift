@@ -22,11 +22,9 @@ struct SearchBarMainView: View {
                     }
                 }
                 .listStyle(.plain)
+                .frame(height: 130)
             }
         }
-//        .onDisappear {
-//            outFocused()
-//        }
     }
     
     private func outFocused() {
