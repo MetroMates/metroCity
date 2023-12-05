@@ -31,11 +31,7 @@ struct MainListView: View {
                 ProgressView()
                     .opacity(mainVM.isProgressed ? 1.0 : 0.0)
                 
-                VStack(spacing: 30) {
-                    Text("호선 선택")
-                        .font(.title2)
-                        .padding(.top, 18)
-                    
+                VStack {
                     ScrollView(showsIndicators: false) {
                         VStack(alignment: .leading, spacing: 15) {
                             if !mainVM.subwayLineInfosAtStation.isEmpty {
@@ -57,6 +53,13 @@ struct MainListView: View {
                             .font(.title)
                             .foregroundStyle(Color.primary.opacity(0.6))
                             .padding()
+                    }
+                }
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .principal) {
+                        Text("호선 선택")
+                            .font(.title2)
                     }
                 }
             }
