@@ -73,8 +73,8 @@ struct SelectStationInfoView: View {
     }
 }
 //
-//struct SelectStationInfo_Previews: PreviewProvider {
+// struct SelectStationInfo_Previews: PreviewProvider {
 //    static var previews: some View {
 //        SelectStationInfo(mainDetailVM: , userChoice: .constant(false), totalStationInfo: .constant(["테스트역"]))
 //    }
-//}
+// }

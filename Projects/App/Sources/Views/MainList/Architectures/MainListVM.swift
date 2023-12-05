@@ -134,20 +134,16 @@ extension MainListVM {
 
 extension MainListVM {
     func checkUserChoice() {
-        for lineInfo in subwayLineInfosAtStation {
-            if self.userChoicedSubwayNm != lineInfo.subwayNm {
-                self.userChoice = false
-            }
+        for lineInfo in subwayLineInfosAtStation where self.userChoicedSubwayNm != lineInfo.subwayNm {
+            self.userChoice = false
         }
         
         if subwayLineInfosAtStation.isEmpty {
             self.userChoice = false
         }
         
-        for lineInfo in subwayLineInfosAtStation {
-            if self.userChoicedSubwayNm == lineInfo.subwayNm {
-                self.userChoice = true
-            }
+        for lineInfo in subwayLineInfosAtStation where self.userChoicedSubwayNm == lineInfo.subwayNm {
+            self.userChoice = true
         }
     }
 }

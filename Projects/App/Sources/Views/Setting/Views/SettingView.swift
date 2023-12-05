@@ -5,7 +5,7 @@ import SwiftUI
 struct SettingView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
-    @AppStorage("systemTheme") private var systemTheme: Int = SchemeType.allCases.first!.rawValue
+    @AppStorage("systemTheme") private var systemTheme: Int = SchemeType.system.rawValue
     @StateObject var settingVC = SettingViewModel()
     
     var selectedScheme: ColorScheme? {

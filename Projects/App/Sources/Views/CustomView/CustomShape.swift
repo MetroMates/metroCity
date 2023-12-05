@@ -13,4 +13,3 @@ struct RoundedCorners: Shape {
         return Path(path.cgPath)
     }
 }
-

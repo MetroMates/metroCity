@@ -4,7 +4,7 @@ import SwiftUI
 
 struct StartView: View {
     @ObservedObject var startVM: StartVM
-    @AppStorage("systemTheme") private var systemTheme: Int = SchemeType.allCases.first!.rawValue
+    @AppStorage("systemTheme") private var systemTheme: Int = SchemeType.system.rawValue
     @Environment(\.colorScheme) private var colorScheme
     
     @StateObject private var mainVM: MainListVM

@@ -129,7 +129,7 @@ final class LocationViewModel: ObservableObject {
 //        }
 //    }
     
-    /// firebase의 StationInfo 컬렉션 패치해오기
+//     //  firebase의 StationInfo 컬렉션 패치해오기
 //    func fetchingStationInfo() {
 //        Task {
 //            do {
