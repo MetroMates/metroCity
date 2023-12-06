@@ -80,6 +80,8 @@ extension MainListVM {
         
         // 해당역의 호선들의 분류작업.
         $nearStNamefromUserLocation
+            // CLLocation의 startUpdating은 지속적으로 GPS 위경도값을 찾아서 방출하기때문에 debounce 1초정도로 걸어서 마지막 방출값만 받아오게 설정한다.
+            .debounce(for: .seconds(1), scheduler: DispatchQueue.main)
             .receive(on: DispatchQueue.main)
             .sink { nearStName in
                 self.nearStationInfo.nowStNm = nearStName
