@@ -5,11 +5,28 @@ import SwiftUI
 struct MainDetailView: View {     
     @ObservedObject var vm: MainDetailVM
     @ObservedObject var mainVM: MainListVM
+    @State private var offset: CGFloat = .zero
     var disappearHandler: () -> Void = {}
+    private var swipeToNext: some Gesture {
+        DragGesture()
+            .onChanged { value in
+                self.offset = value.translation.width
+                
+            }
+            .onEnded { _ in
+                if self.offset > 50 {
+                    self.goDownStation()
+                } else if self.offset < -50 {
+                    self.goUpStation()
+                }
+                self.offset = 0
+            }
+    }
     
     var body: some View {
         VStack(spacing: 20) {
             VStack(spacing: 20) {
+                // BookMarkView에서 사용하는 MainDetailView와의 분기처리
                 if mainVM.isSearchShow {
                     SearchBarMainView(mainDetailVM: vm)
                 }
@@ -24,6 +41,7 @@ struct MainDetailView: View {
                 
                 SubwayRouteMapView(vm: vm)
                     .padding(.top, 30)
+                    .gesture(swipeToNext)
                 
                 Spacer()
             }
@@ -64,7 +82,6 @@ extension MainDetailView {
             Button {
                 // Sheet Open
                 vm.isLineListSheetOpen = true
-//                print(vm.selectStationLineInfos)
                 print("🦁역 호선 정보")
             } label: {
                 HStack {
@@ -101,7 +118,6 @@ extension MainDetailView {
                     Button {
                         vm.isBookMarked ? vm.deleteBookMark() : vm.addBookMark()
                     } label: {
-                        // TODO: 코어데이터 가져와서 선택되었던 역인지 아닌지 체크
                         Image(systemName: vm.isBookMarked ? "bookmark.fill" : "bookmark")
                             .tint(vm.isBookMarked ? .yellow : .primary)
                     }
@@ -123,12 +139,7 @@ extension MainDetailView {
             
             HStack {
                 Button {
-                    if vm.selectStationInfo.upStNm != "종착" {
-                        vm.selectStationInfo.nowStNm = vm.selectStationInfo.upStNm
-//                        vm.send(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
-                        vm.settingSubwayInfo(hosun: vm.hosunInfo, selectStation: vm.selectStationInfo)
-                        print("이전역")
-                    }
+                    self.goUpStation()
                 } label: {
                     HStack {
                         Image(systemName: "chevron.left")
@@ -159,12 +170,7 @@ extension MainDetailView {
                 }
                 
                 Button {
-                    if vm.selectStationInfo.downStNm != "종착" {
-                        vm.selectStationInfo.nowStNm = vm.selectStationInfo.downStNm
-//                        vm.send(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
-                        vm.settingSubwayInfo(hosun: vm.hosunInfo, selectStation: vm.selectStationInfo)
-                        print("다음역")
-                    }
+                    self.goDownStation()
                 } label: {
                     HStack {
                         ScrollText(content: vm.selectStationInfo.downStNm)
@@ -183,9 +189,25 @@ extension MainDetailView {
     
 }
 
-// MARK: - UI 모듈 메서드
+// MARK: - 메서드
 extension MainDetailView {
+    private func goUpStation() {
+        if vm.selectStationInfo.upStNm != "종착" {
+            vm.selectStationInfo.nowStNm = vm.selectStationInfo.upStNm
+//                        vm.send(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
+            vm.settingSubwayInfo(hosun: vm.hosunInfo, selectStation: vm.selectStationInfo)
+            print("이전역")
+        }
+    }
     
+    private func goDownStation() {
+        if vm.selectStationInfo.downStNm != "종착" {
+            vm.selectStationInfo.nowStNm = vm.selectStationInfo.downStNm
+//                        vm.send(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
+            vm.settingSubwayInfo(hosun: vm.hosunInfo, selectStation: vm.selectStationInfo)
+            print("다음역")
+        }
+    }
 }
 
 struct MainDetailView_Previews: PreviewProvider {
