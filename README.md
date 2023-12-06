@@ -28,9 +28,8 @@
 
 
 
-
-<br>
 ### 💻 개발 환경, 도구 및 활용한 기술
+
 ```
 - 개발 언어 : Swift
 - 개발 환경 : SwiftUI
@@ -102,11 +101,9 @@ gitGraph
 <br>
 
 ### 팀원 소개
-<div align="center">
+<div align="center">  
 
-|[ 박서연 ]<br/> [@syss220211](https://github.com/syss220211)<br/> "싱싱한 강원도<br/> 감자 개발자임니다 🥔" | [ 조민근 ]<br/> [@LutherCho](https://github.com/LutherCho)<br/> "진심어린 사과 개발자 🍎" | [ 신우진 ]<br/>[@swjtwin](https://github.com/swjtwin)<br/> "깡과 총이있어<br/> 강한 개발자입니다."  |
-| :----------------------------------: | :----------------------------------: | :----------------------------------: |
-| <img src = https://avatars.githubusercontent.com/u/110394722?v=4 > | <img src = https://avatars.githubusercontent.com/u/127810279?v=4 > |  <img src = https://avatars.githubusercontent.com/u/37550637?v=4 > |
+| [Park Seo-yeon](https://github.com/syss220211) | [Mingeun Cho](https://github.com/LutherCho) | [Woojin Shin](https://github.com/swjtwin) | | :--------------------------------------------: | :----------------------------------------: | :--------------------------------------: | | "똑똑한 강원도 감자 개발자입니다. 🥔" | "진심어린 사과 개발자 🍎" | "깡과 총이있어 강한 개발자입니다." | | <img src="https://avatars.githubusercontent.com/u/110394722?v=4" width="100" height="100"> | <img src="https://avatars.githubusercontent.com/u/127810279?v=4" width="100" height="100"> | <img src="https://avatars.githubusercontent.com/u/37550637?v=4" width="100" height="100"> |  
 
 </div>
  
