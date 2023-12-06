@@ -5,8 +5,8 @@ import SwiftUI
 struct MainDetailView: View {     
     @ObservedObject var vm: MainDetailVM
     @ObservedObject var mainVM: MainListVM
-    @State private var offset: CGFloat = .zero
     var disappearHandler: () -> Void = {}
+    @State private var offset: CGFloat = .zero
     @State private var rotationAngle: Angle = .zero
     private var swipeToNext: some Gesture {
         DragGesture()

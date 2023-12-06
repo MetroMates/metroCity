@@ -5,9 +5,7 @@ import Combine
 
 /// 즐겨찾기 ViewModel
 final class BookMarkVM: MainListVM {
-    
     @Published var stationInfos: [StationInfo] = []
-    
     
     var groupedStationInfos: [(key: String, value: [StationInfo])] {
         Array(Dictionary(grouping: stationInfos, by: { $0.subwayNm }).sorted(by: { $0.key < $1.key }))

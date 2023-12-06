@@ -7,7 +7,6 @@ import FirebaseFirestore
 protocol SubwayRepository: SubwayRepositoryFetch, SubwayRepositoryUD { }
 
 protocol SubwayRepositoryFetch: FireStoreServiceDelegate {
-//    var db: Firestore { get }
     func receivePublisher<Content>(type: Content.Type,
                                    urlType: URLAddress,
                                    whereData: String) -> AnyPublisher<Content, Error> where Content: SubwayModel2Server

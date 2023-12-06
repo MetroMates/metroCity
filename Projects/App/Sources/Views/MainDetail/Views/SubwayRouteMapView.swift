@@ -10,7 +10,6 @@ struct SubwayRouteMapView: View {
         VStack(spacing: 0 ) {
             Label("상행", systemImage: "arrow.left")
                 .font(.callout)
-//            Image(systemName: "arrow.left")
             
             ZStack {
                 StationLine
@@ -24,7 +23,6 @@ struct SubwayRouteMapView: View {
             
             Label("하행", systemImage: "arrow.right")
                 .font(.callout)
-//            Image(systemName: "arrow.right")
             
         }
     }
@@ -73,41 +71,6 @@ extension SubwayRouteMapView {
             }
     }
     
-    // TODO: 급행이면 테두리색상을 빨간색으로 주기.
-    /// 열차 View
-    @ViewBuilder private func subway(geo: GeometryProxy,
-                                     _ updn: MainDetailVM.UpDn,
-                                     no: String, x: CGFloat, express: String) -> some View {
-
-        EmptyView()
-//        Text("\(no)")
-//            .font(.caption)
-//            .foregroundStyle(Color.white)
-//            .padding(3)
-//            .background {
-//                RoundedRectangle(cornerRadius: 6)
-//                    .fill(vm.hosunInfo.lineColor)
-//                    .overlay(
-//                        RoundedRectangle(cornerRadius: 6)
-//                            .stroke(express == "0" ? vm.hosunInfo.lineColor : .blue, lineWidth: 2)
-//                    )
-//            }
-//            .offset(y: geo.size.height * (updn == .up ? 0.12 : 0.68))
-//        // 0.0 곱하면 맨 왼쪽, 0.9는 맨 오른쪽
-//            .offset(x: geo.size.width * (updn == .down ? (1.0 - x) : x))
-//            .onAppear {
-////                timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-////                    DispatchQueue.main.async {
-////                        withAnimation {
-////                            moveOffset -= 0.1
-////                        }
-////                    }
-////                }
-//            }
-//            .onDisappear {
-//                timer?.invalidate()
-//            }
-    }
 }
 
 struct SubwayRouteMapView_Previews: PreviewProvider {

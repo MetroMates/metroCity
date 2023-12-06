@@ -16,7 +16,7 @@ class Log {
         let logMessage = "\(message)"
         let head = level.rawValue
         let filename = fileName.components(separatedBy: "/").last
-        print("⌜ [\(head)] [\(filename ?? ""), \(line)행, func: \(funcName)]\n\t|Msg → \(logMessage) ⌟")
+        print("⌜ [\(head)] [\(filename ?? ""), \(line)행, func: \(funcName)]\n\tMsg 〉〉 \(logMessage) ⌟")
     #endif
     }
 }

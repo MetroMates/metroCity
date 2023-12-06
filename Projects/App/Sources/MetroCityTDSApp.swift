@@ -16,10 +16,6 @@ struct MetroCityTDSApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject private var startVM: StartVM = .init(type: .real)
     
-//    init() {
-//        Thread.sleep(forTimeInterval: 3)
-//    }
-//
     var body: some Scene {
         WindowGroup {
             StartView(startVM: startVM)

@@ -10,9 +10,6 @@ final class StartVM: ObservableObject {
     
     private let type: DataType
     private let dataManager: DataManager!
-    //    private let stationInfoSubject = PassthroughSubject<[StationInfo], Never>()
-    //    private let lineInfoSubject = PassthroughSubject<[SubwayLineColor], Never>()
-    //    private let locInfoSubject = PassthroughSubject<[StationLocation], Never>()
     private let stationInfoSubject = CurrentValueSubject<[StationInfo], Never>([])
     private let lineInfoSubject = CurrentValueSubject<[SubwayLineColor], Never>([])
     private let locInfoSubject = CurrentValueSubject<[StationLocation], Never>([])

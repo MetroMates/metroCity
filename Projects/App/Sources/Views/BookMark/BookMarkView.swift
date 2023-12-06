@@ -53,8 +53,6 @@ struct BookMarkView: View {
             }
         }
         .onAppear {
-            //            mainVM.subscribe() -> ViewModel 내부로 옮김.
-            //            mainVM.GPScheckNowLocactionTonearStation() -> 데이터가 fetch된 후로 옮김. mainVM.subscribe 내부로 옮김.
             mainDetailVM.subscribe()
             bookMarkVM.fetchBookMark()
         }

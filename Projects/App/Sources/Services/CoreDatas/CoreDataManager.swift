@@ -30,9 +30,6 @@ final class CoreDataManger {
         return container.newBackgroundContext()
     }
     
-    // NSEntityDescription.entity() 이건 Entity를 새로 만들경우 사용.\
-    // newEntityDataHandler에 ↑로 설정해줘야할듯?
-    
     // MARK: - CRUD Methods
     /// 여러 Entity의 내용을 한번에 등록할 경우.
     func create(contextValue: NSManagedObjectContext? = nil,

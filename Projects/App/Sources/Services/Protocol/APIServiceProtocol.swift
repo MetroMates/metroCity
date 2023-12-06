@@ -11,9 +11,7 @@ protocol APIServiceDelegate: AnyObject {
     var apikey: String? { get set }
     /// 통신용 URL
     var urlString: String? { get set }
-    
-//    func workInUrlSession<Content>(type: Content.Type) -> Content? where Content: SubwayModel2Server
-    
+
     func request<Content>(type: Content.Type) -> AnyPublisher<Content, Error> where Content: SubwayModel2Server
     
 }

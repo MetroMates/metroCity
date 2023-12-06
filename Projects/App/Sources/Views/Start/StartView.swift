@@ -84,18 +84,7 @@ extension StartView {
         }
         
         var tabIconColor: Color {
-//            let model = startVM.selectLineInfo
-            
-//            if model.subwayId == 0 {
-                return Color.primary
-//                if colorScheme == .light {
-//                    return Color.gray.opacity(0.6)
-//                } else {
-//                    return Color.white.opacity(0.6)
-//                }
-//            }
-            
-//            return model.lineColor
+            return Color.primary
         }
         
         HStack {
