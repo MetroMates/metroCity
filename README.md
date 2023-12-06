@@ -51,18 +51,18 @@
 
 ```
 📦MetroCity
-    ├──🗂️Tuist
-    ├──🗂️Project
-    │   ├──🗂️SPM
-    │   ├──🗂️FirebaseSPM
-    │   ├──🗂️App
-    │   │   ├── 🗂️Resources
-    │   │   ├── 🗂️Sources
-    │   │   │   ├── 🗂️Service
-    │   │   │   │   ├── 🗂️CLLocations
-    │   │   │   │   ├── 🗂️CoreDatas
-    │   │   │   │   ├── 🗂️Firebases
-    │   │   │   │   ├── 🗂️Protocol
+    ├──🗂️Tuist
+    ├──🗂️Project
+    │   ├──🗂️SPM
+    │   ├──🗂️FirebaseSPM
+    │   ├──🗂️App
+    │   │   ├──🗂️Resources
+    │   │   ├──🗂️Sources
+    │   │   │   ├──🗂️Service
+    │   │   │   │   ├──🗂️CLLocations
+    │   │   │   │   ├──🗂️CoreDatas
+    │   │   │   │   ├──🗂️Firebases
+    │   │   │   │   ├──🗂️Protocol
     │   │   │   ├── 🗂️Views
     │   │   │   │   ├── Alert
     │   │   │   │   ├── BookMark
@@ -103,7 +103,9 @@ gitGraph
 ### 팀원 소개
 <div align="center">  
 
-| [Park Seo-yeon](https://github.com/syss220211) | [Mingeun Cho](https://github.com/LutherCho) | [Woojin Shin](https://github.com/swjtwin) | | :--------------------------------------------: | :----------------------------------------: | :--------------------------------------: | | "똑똑한 강원도 감자 개발자입니다. 🥔" | "진심어린 사과 개발자 🍎" | "깡과 총이있어 강한 개발자입니다." | | <img src="https://avatars.githubusercontent.com/u/110394722?v=4" width="100" height="100"> | <img src="https://avatars.githubusercontent.com/u/127810279?v=4" width="100" height="100"> | <img src="https://avatars.githubusercontent.com/u/37550637?v=4" width="100" height="100"> |  
+|[박서연]<br/> [@syss220211](https://github.com/syss220211)<br/> "똑똑한 강원도 감자 개발자입니다🥔" | [조민근]<br/> [@LutherCho](https://github.com/LutherCho)<br/> "진심어린 사과 개발자 🍎" | [신우진]<br/> [@swjtwin](https://github.com/swjtwin) <br/> "깡과 총이있어 강한 개발자입니다." |
+| :--------------------------------------------: | :----------------------------------------: | :--------------------------------------: | 
+| <img src="https://avatars.githubusercontent.com/u/110394722?v=4" width="100" height="100"> | <img src="https://avatars.githubusercontent.com/u/127810279?v=4" width="100" height="100"> | <img src="https://avatars.githubusercontent.com/u/37550637?v=4" width="100" height="100"> |  
 
 </div>
  
