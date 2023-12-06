@@ -16,23 +16,23 @@ extension FireStoreServiceDelegate {
     }
     
     func firestoreFetch<T: FireStoreCodable>(colName: String, docID: String, type: T.Type) async throws -> T? {
-        guard !colName.isEmpty, !docID.isEmpty else { print("컬렉션이름, 문서번호 비어있음.!!"); return nil }
+        guard !colName.isEmpty, !docID.isEmpty else { Log.warning("컬렉션이름, 문서번호 비어있음.!!"); return nil }
         
         let docRef: DocumentReference = db.document("\(colName)/\(docID)")
 
         do {
-            print("🐷 col : \(colName), doc : \(docID) Fetch 성공")
+            Log.trace("🐷 col : \(colName), doc : \(docID) Fetch 성공")
             return try await docRef.getDocument(as: T.self)
         } catch {
-            print(error.localizedDescription)
+            Log.error(error.localizedDescription)
         }
         
         return nil
     }
     
     func firestoreFetchAll<T: FireStoreCodable>(colName: String, type: T.Type) async throws -> [T] {
-        guard !colName.isEmpty else { print("컬렉션이름 비어있음.!!"); return [] }
-        print("🍜🐷 firestorFetchAll colName ", colName)
+        guard !colName.isEmpty else { Log.warning("컬렉션이름, 문서번호 비어있음.!!"); return [] }
+        Log.trace("🍜🐷 firestorFetchAll colName \(colName)")
         let collectionRef = db.collection(colName)
         
         do {
@@ -49,7 +49,7 @@ extension FireStoreServiceDelegate {
             return allLocations
             
         } catch {
-            print(error.localizedDescription)
+            Log.error(error.localizedDescription)
             throw error
         }
     }
@@ -62,7 +62,7 @@ extension QueryDocumentSnapshot {
             let decoder = JSONDecoder()
             return try decoder.decode(T.self, from: jsonData)
         } catch {
-            print("Error decoding document data: \(error)")
+            Log.error("Error decoding document data: \(error)")
             throw error
         }
     }

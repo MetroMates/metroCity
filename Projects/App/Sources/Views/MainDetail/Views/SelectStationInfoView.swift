@@ -70,15 +70,8 @@ struct SelectStationInfoView: View {
             userChoice = true
         }
         .onDisappear {
-            print(userChoice)
             userChoice = true
             
         }
     }
 }
-//
-// struct SelectStationInfo_Previews: PreviewProvider {
-//    static var previews: some View {
-//        SelectStationInfo(mainDetailVM: , userChoice: .constant(false), totalStationInfo: .constant(["테스트역"]))
-//    }
-// }

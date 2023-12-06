@@ -83,7 +83,6 @@ extension MainDetailView {
             Button {
                 // Sheet Open
                 vm.isLineListSheetOpen = true
-                print("🦁역 호선 정보")
             } label: {
                 HStack {
                     Text("\(vm.hosunInfo.subwayNm)")
@@ -199,18 +198,14 @@ extension MainDetailView {
     private func goUpStation() {
         if vm.selectStationInfo.upStNm != "종착" {
             vm.selectStationInfo.nowStNm = vm.selectStationInfo.upStNm
-//                        vm.send(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
             vm.settingSubwayInfo(hosun: vm.hosunInfo, selectStation: vm.selectStationInfo)
-            print("이전역")
         }
     }
     
     private func goDownStation() {
         if vm.selectStationInfo.downStNm != "종착" {
             vm.selectStationInfo.nowStNm = vm.selectStationInfo.downStNm
-//                        vm.send(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
             vm.settingSubwayInfo(hosun: vm.hosunInfo, selectStation: vm.selectStationInfo)
-            print("다음역")
         }
     }
 }

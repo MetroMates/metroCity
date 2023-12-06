@@ -18,7 +18,6 @@ final class MainListUseCase {
     let nearStationNameSubject = PassthroughSubject<String, Never>()
     
     init(repo: SubwayRepositoryFetch) {
-        print("👻 MainListUseCase")
         self.repository = repo
     }
     
@@ -29,7 +28,6 @@ final class MainListUseCase {
     /// GPS 기반하여 가장 가까운 역이름, 역코드 반환
     func startFetchNearStationFromUserLocation(vm: MainListVM) {
         if let locationAuthStatus = locationManager.locationAuthStatus {
-            print("😘 \(locationAuthStatus)")
             if locationAuthStatus == .denied /* rawValue: 2 */ {
                 vm.isNoAuthToLocation = true
             } else {
@@ -43,10 +41,8 @@ final class MainListUseCase {
     }
     
     func userLocationSubscribe(statnLocInfos: [StationLocation]) {
-        print("🍜 userLocationSubscribe 진입 (내부)")
         locationManager.userLocPublisher()
             .sink { loc in
-                print("🍜 userLocationSubscribe 내부의 userLocationPublisher")
                 self.findNearStationFromUserLocation(myLoc: loc,
                                                      statnLoc: statnLocInfos)
             }
@@ -67,17 +63,15 @@ final class MainListUseCase {
 extension MainListUseCase {
     // 유저의 위치에 가까운 역을 찾아서 역이름을 반환한다.
     private func findNearStationFromUserLocation(myLoc: Location, statnLoc: [StationLocation]) {
-        print("🍜 userLoc ", myLoc)
+        Log.trace("🍜 유저 위경도: \(myLoc)")
+        
         let closeStName = locationManager.calculateDistance(userLoc: myLoc, statnLoc: statnLoc, distance: 1000)
-        print("🍜 closeStName ", closeStName, " 그리고 \(statnLoc.count)")
+        Log.trace("🍜 근처역명: \(closeStName)")
 
-        let tempStationInfo = statnLoc.filter { $0.statnNm == closeStName }
-        print("🍜", tempStationInfo)
+        let filterStationInfo = statnLoc.filter { $0.statnNm == closeStName }
+        Log.trace("🍜 \(filterStationInfo)")
         
-        let nearStationName = tempStationInfo.first?.statnNm ?? ""
-        
-        print("🍜 near ", nearStationName)
-        
+        let nearStationName = filterStationInfo.first?.statnNm ?? ""
         nearStationNameSubject.send(nearStationName)
     }
     

@@ -44,8 +44,7 @@ class MainListVM: ObservableObject {
     private let startVM: StartVM
     
     init(useCase: MainListUseCase, startVM: StartVM) {
-        print("👻 MainListVM")
-        // 의존성 주입: MainListVM에 MainListUseCase가 외부에서 생성되어 의존성 주입되었다.
+        // 의존성 주입: MainListVM에 MainListUseCase가 외부에서 생성되어 의존성 주입.
         self.useCase = useCase
         self.startVM = startVM
         startVMSubscribe()
@@ -93,7 +92,6 @@ extension MainListVM {
         useCase.nearStationNameSubject
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { userLoc in
-                //                debugPrint("🍜 nearStationNameSubject 내부@!! \(userLoc)")
                 self.nearStNamefromUserLocation = userLoc
                 if userLoc.isEmpty {
                     self.isNotNearStation = .init(style: .info, message: "1km내 지하철역이 없습니다.")
@@ -120,18 +118,16 @@ extension MainListVM {
     }
     
     private func startVMSubscribe() {
-        print("🍜 startVMSubscribe")
         startVM.dataPublisher()
             .receive(on: DispatchQueue.main)
             .sink { (station, line, location) in
-                print("🍜 여기 진입 함. MainListVM startVMSubscribe")
-                
                 self.stationInfos = station
                 self.subwayLineInfos = line
                 self.locationInfos = location
                 
                 if !self.stationInfos.isEmpty, !self.subwayLineInfos.isEmpty, !self.locationInfos.isEmpty {
                     // 초기 발행시 딱 한번 실행됨. -> 각 데이터 fetch가 완료되었을때 실행!
+                    Log.trace("StartVM Fetch 데이터 구독 완료.")
                     self.subscribe(stationInfo: station,
                                    lineInfo: line,
                                    locInfo: location)

@@ -27,7 +27,7 @@ final class MainDetailRepository: SubwayRepositoryFetch {
                                            endIdx: "50")
         networkService.urlString = urlString
         
-        print("url \(networkService.urlString ?? "[url None]")")
+        Log.trace("URL: \(networkService.urlString ?? "[URL None]")")
         
         return networkService.request(type: Content.self)
         

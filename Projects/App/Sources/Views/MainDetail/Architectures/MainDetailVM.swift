@@ -118,9 +118,7 @@ final class MainDetailVM: ObservableObject {
         let line = lineInfos.filter { $0.subwayId == item.subwayId }.first ?? .emptyData
         
         self.settingSubwayInfo(hosun: line, selectStation: mystation)
-//        self.send(selectStationInfo: mystation,
-//                          lineInfo: line)
-//        fetchBookMark()
+
     }
     
     /// 타이머 시작
@@ -263,11 +261,11 @@ extension MainDetailVM {
             .sink { result in
                 switch result {
                 case .finished:
-                    print("⓶ 패치완료")
+                    break
                 case .failure(let error as NSError):
                     if URLError.Code(rawValue: error.code) == .notConnectedToInternet {
                         // 인터넷 끊겼을 시 알려줘야 함.
-                        print("⓶ 연결끊김")
+                        Log.error("네트워크 연결끊김")
                         self.networkDiedToastMessage = .init(style: .error, message: "네트워크 상태가 불안정합니다. 네트워크 상태를 확인 후 재시도 바랍니다.")
                         
                     }
@@ -275,8 +273,7 @@ extension MainDetailVM {
             } receiveValue: { data in
  
                 let newData = data.sorted { $0.stCnt < $1.stCnt }
-                
-                print("⓶ 데이터 갯수", newData.count)
+                Log.trace("데이터 갯수: \(newData.count)")
                 
                 // 상행
                 self.upRealTimeInfos = Array(newData.filter { $0.updnIndex == "0" }.prefix(6))

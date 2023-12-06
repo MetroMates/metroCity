@@ -14,10 +14,9 @@ final class CoreDataManger {
         container = NSPersistentContainer(name: "MetroCity")
         container.loadPersistentStores { description, error in
             if let error = error {
-                print("코어데이터 로딩 중 에러 발생 \(error.localizedDescription)")
+                Log.error("코어데이터 로딩 중 에러 발생 \(error.localizedDescription)")
             } else {
-                print("코어데이터 로딩 성공!")
-                print(description) // 저장소 list 호출
+                Log.trace("코어데이터 로딩 성공! \(description)")
             }
         }
         context = container.viewContext
@@ -38,7 +37,7 @@ final class CoreDataManger {
     /// 여러 Entity의 내용을 한번에 등록할 경우.
     func create(contextValue: NSManagedObjectContext? = nil,
                 newEntityDataHandler: () -> Void) -> Bool {
-        print("📝 CoreDataManager create")
+        Log.trace("📝 CoreDataManager create")
         var context: NSManagedObjectContext
         if let contextValue {
             context = contextValue
@@ -57,7 +56,7 @@ final class CoreDataManger {
                                  column: WritableKeyPath<Entity, Value>? = nil,
                                  comparision: CoreDataManger.Comparisons = .equal,
                                  value: Value? = nil) -> [Entity] where Entity: NSManagedObject {
-        print("📝 CoreDataManager Retrieve")
+        Log.trace("📝 CoreDataManager Retrieve")
         let request = NSFetchRequest<Entity>(entityName: "\(type.self)")
         let sortDesription = NSSortDescriptor(key: sortkey?.toKeyName, ascending: sortAsc)
 
@@ -73,7 +72,7 @@ final class CoreDataManger {
             
             return results
         } catch {
-            print(error.localizedDescription)
+            Log.error(error.localizedDescription)
         }
 
         return []
@@ -83,7 +82,7 @@ final class CoreDataManger {
     func retrieve<Entity>(type: Entity.Type,
                           sortkey: WritableKeyPath<Entity, String>? = nil,
                           sortAsc: Bool = true) -> [Entity] where Entity: NSManagedObject {
-        print("CoreDataManager Retrieve")
+        Log.trace("📝CoreDataManager Retrieve")
         let request = NSFetchRequest<Entity>(entityName: "\(type.self)")
         let sortDesription = NSSortDescriptor(key: sortkey?.toKeyName, ascending: sortAsc)
         
@@ -93,7 +92,7 @@ final class CoreDataManger {
             let results = try self.context.fetch(request)
             return results
         } catch {
-            print(error.localizedDescription)
+            Log.error(error.localizedDescription)
         }
         
         return []
@@ -106,7 +105,7 @@ final class CoreDataManger {
                                value: Value,
                                contextValue: NSManagedObjectContext? = nil,
                                newValueHandler: ([Entity]) -> Void) -> Bool where Entity: NSManagedObject {
-        print("📝 CoreDataManager Update")
+        Log.trace("📝 CoreDataManager Update")
         var context: NSManagedObjectContext
         if let contextValue {
             context = contextValue
@@ -127,7 +126,7 @@ final class CoreDataManger {
                                column: WritableKeyPath<Entity, Value>,
                                value: Value,
                                contextValue: NSManagedObjectContext? = nil) -> Bool where Entity: NSManagedObject {
-        print("📝 CoreDataManager Delete")
+        Log.trace("📝 CoreDataManager Delete")
         var context: NSManagedObjectContext
         if let contextValue {
             context = contextValue
@@ -146,7 +145,7 @@ final class CoreDataManger {
     /// 해당 타입 전체삭제.
     func deleteAll<Entity>(type: Entity.Type,
                            contextValue: NSManagedObjectContext? = nil) -> Bool where Entity: NSManagedObject {
-        print("📝 CoreDataManager DeleteAll")
+        Log.trace("📝 CoreDataManager DeleteAll")
         var context: NSManagedObjectContext
         if let contextValue {
             context = contextValue
@@ -166,16 +165,16 @@ extension CoreDataManger {
     private func save(context: NSManagedObjectContext) -> Bool {
         guard context.hasChanges
         else {
-            print("📝 코어데이터 변경사항 없음.")
+            Log.info("📝 코어데이터 변경사항 없음.")
             return false
         }
         
         do {
             try context.save()
-            print("📝 코어데이터 저장 성공 !!")
+            Log.trace("📝 코어데이터 저장 성공 !!")
             return true
         } catch {
-            print("📝 코어데이터 변경사항 저장 실패! \(error.localizedDescription)")
+            Log.error("📝 코어데이터 변경사항 저장 실패! \(error.localizedDescription)")
             return false
         }
         
