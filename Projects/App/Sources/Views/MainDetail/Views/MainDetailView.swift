@@ -16,9 +16,9 @@ struct MainDetailView: View {
             }
             .onEnded { _ in
                 if self.offset > 50 {
-                    self.goDownStation()
-                } else if self.offset < -50 {
                     self.goUpStation()
+                } else if self.offset < -50 {
+                    self.goDownStation()
                 }
                 self.offset = 0
             }
