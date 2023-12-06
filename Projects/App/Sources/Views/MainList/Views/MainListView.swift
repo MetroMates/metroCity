@@ -43,21 +43,23 @@ struct MainListView: View {
                         }
                     }
                 }
-                .overlay(alignment: .topTrailing) {
-                    Button {
-                        mainVM.GPScheckNowLocactionTonearStation()
-                    } label: {
-                        Image(systemName: "location.circle")
-                            .font(.title)
-                            .foregroundStyle(Color.primary.opacity(0.6))
-                            .padding()
-                    }
-                }
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .principal) {
                         Text("호선 선택")
                             .font(.title2)
+                    }
+                }
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            mainVM.GPScheckNowLocactionTonearStation()
+                        } label: {
+                            Image(systemName: "location.circle")
+                                .font(.title)
+                                .foregroundStyle(Color.primary.opacity(0.6))
+                                .padding()
+                        }
                     }
                 }
             }
