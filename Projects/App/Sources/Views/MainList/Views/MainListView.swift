@@ -14,7 +14,6 @@ struct MainListView: View {
     @Environment(\.colorScheme) private var colorScheme
     @StateObject private var mainVM: MainListVM
     @StateObject private var mainDetailVM: MainDetailVM
-    @State private var scrollProxy: ScrollViewProxy?
     
     init(mainVM: MainListVM, mainDetailVM: MainDetailVM) {
         self._mainVM = StateObject(wrappedValue: mainVM)
