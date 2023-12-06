@@ -30,6 +30,9 @@ class MainListVM: ObservableObject {
     @Published var userChoice: Bool = true
     @Published var userChoicedSubwayNm: String = ""
     
+    /// 주변역이 없으면 토스트 메시지
+    @Published var isNotNearStation: Toast?
+    
     private var stationInfos: [StationInfo] = []
     private var locationInfos: [StationLocation] = []
     
@@ -55,10 +58,16 @@ class MainListVM: ObservableObject {
     func openSetting() {
         useCase.openSetting()
     }
-
+    
     /// GPS 기반 현재위치에서 제일 가까운 역이름 가져오기
     func GPScheckNowLocactionTonearStation() {
-        useCase.startFetchNearStationFromUserLocation(vm: self)
+        isProgressed = true
+        DispatchQueue.global().async {
+            self.useCase.startFetchNearStationFromUserLocation(vm: self)
+            DispatchQueue.main.async {
+                self.isProgressed = false
+            }
+        }
     }
     
 }
@@ -84,11 +93,14 @@ extension MainListVM {
         useCase.nearStationNameSubject
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { userLoc in
-//                debugPrint("🍜 nearStationNameSubject 내부@!! \(userLoc)")
+                //                debugPrint("🍜 nearStationNameSubject 내부@!! \(userLoc)")
                 self.nearStNamefromUserLocation = userLoc
+                if userLoc.isEmpty {
+                    self.isNotNearStation = .init(style: .info, message: "1km내 지하철역이 없습니다.")
+                }
             })
             .store(in: &anyCancellable)
-
+        
     }
     
     private func filteredLinesfromSelectStation(value: String) {
@@ -123,13 +135,12 @@ extension MainListVM {
                     self.subscribe(stationInfo: station,
                                    lineInfo: line,
                                    locInfo: location)
-                    
                     self.GPScheckNowLocactionTonearStation() // 내 위치 가져오기.
                 }
                 
             }
             .store(in: &anyCancellable)
-
+        
     }
 }
 
