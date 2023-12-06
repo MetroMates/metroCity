@@ -12,6 +12,7 @@
 > 그래서 **그냥 앱을 실행하면 바로 내가 타려는 지하철의 실시간 정보를 확인 할 수 있는 방법이 없을까?**
 > 에서 시작된 프로젝트 **뛰어말어!**
 
+<br>
 
 ### 💫 주요기능
 - **`메인`** CLLocation을 활용하여 내 주변역을 바로 알려주고, 해당 역의 실시간 지하철 도착정보를 제공합니다.
@@ -20,13 +21,14 @@
 - **`즐겨찾기`** 자신이 자주 사용하는 역 정보를 저장하여 빠르게 지하철의 위치를 확인할 수 있습니다.
 - **`설정`** 손 쉽게 테마를 설정하고, 개발자에게 문의 및 사용한 API를 확인할 수 있습니다.
 
+<br>
 
 ### 📱구동화면
 |**`주변역 찾기`**|**`호선과 역 변경`**|**`즐겨찾기`**|**`검색`**|**`다크모드`**|
 |-------|-------|-------|-------|-------|
 |<img src="https://github.com/MetroMates/metroCity/assets/110394722/a7c280d7-559f-4b31-87ff-4409a803b9cb" width="143" height="300">|<img src="https://github.com/MetroMates/metroCity/assets/110394722/f6926dd5-5727-4efc-861d-747de051e823" width="143" height="300">|<img src="https://github.com/MetroMates/metroCity/assets/110394722/e3da76e2-79e6-4c3a-942a-2119b4827a88" width="143" height="300">| <img src="https://github.com/MetroMates/metroCity/assets/110394722/4eab836b-4d00-4676-9746-cbfe1196ede8" width="143" height="300">|<img src = "https://github.com/MetroMates/metroCity/assets/110394722/027628eb-8888-4d91-84c7-4674f2bb8037"  width="143" height="300" >|
 
-
+<br>
 
 ### 💻 개발 환경, 도구 및 활용한 기술
 
@@ -76,7 +78,7 @@
     │   │   │   ├── 🗂️Util
     └───────────────│
 ```
-
+<br>
 
 #### 깃플로우 전략
 ```mermaid
