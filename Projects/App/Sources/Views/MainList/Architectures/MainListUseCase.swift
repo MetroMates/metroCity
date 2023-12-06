@@ -71,7 +71,7 @@ extension MainListUseCase {
         let closeStName = locationManager.calculateDistance(userLoc: myLoc, statnLoc: statnLoc, distance: 1000)
         print("🍜 closeStName ", closeStName, " 그리고 \(statnLoc.count)")
 
-        let tempStationInfo = statnLoc.filter { $0.statnNm.contains(closeStName) }
+        let tempStationInfo = statnLoc.filter { $0.statnNm == closeStName }
         print("🍜", tempStationInfo)
         
         let nearStationName = tempStationInfo.first?.statnNm ?? ""
