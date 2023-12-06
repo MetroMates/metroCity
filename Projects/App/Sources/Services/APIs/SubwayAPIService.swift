@@ -44,7 +44,7 @@ final class SubwayAPIService: APIServiceDelegate {
         
         // 네트워크 에러같은 경우에는 URLError로 알아서 반환이 된다. Code = -1009
         return urlsession.dataTaskPublisher(for: urlRequest)
-            .print("⓶")
+//            .print("⓶")
             .tryMap { data, response -> Data in
                 guard let httpResponse = response as? HTTPURLResponse else {
                     throw StatusError.ERR100
@@ -69,7 +69,6 @@ final class SubwayAPIService: APIServiceDelegate {
                 // 상태값 200이 정상.
                 if errStatus == 200 {
                     if errStatusCode != .INF000 {
-//                        debugPrint(content.errorMessage.message)
                         return Fail(error: errStatusCode ?? .INF200).eraseToAnyPublisher()
                     } else {
                         return Just(content)
@@ -89,13 +88,13 @@ final class SubwayAPIService: APIServiceDelegate {
     private func requestURL(urlString: String) -> URLRequest? {
         guard let encodedURLString = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
         else {
-            debugPrint("url 인코딩 실패")
+            Log.error("url 인코딩 실패")
             return nil
         }
         
         guard let url = URL(string: encodedURLString)
         else {
-            debugPrint("url [none]")
+            Log.error("URL [none]")
             return nil
         }
         

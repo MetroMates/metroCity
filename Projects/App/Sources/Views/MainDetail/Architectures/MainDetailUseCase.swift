@@ -55,15 +55,12 @@ final class MainDetailUseCase {
         let upLineEnd = stationInfo.upSt // 0 일경우 종착지 -> realTime을 받아오지 않는다.
         let downLineEnd = stationInfo.downSt // 0 일경우 종착지 -> realTime을 받아오지 않는다.
         
-//        print("👊 upLine \(upLineEnd) downLine \(downLineEnd)")
-        
         return repository.receivePublisher(type: Arrived.self, urlType: .subwayArrive, whereData: nowStation)
             .flatMap { rdata -> AnyPublisher<[RealTimeSubway], Error> in
                 var realDatas = rdata.realtimeArrivalList
                 
                 // 해당 호선에 맞는 데이터로 필터
                 realDatas = realDatas.filter { $0.subwayID == subwayLine }
-//                print("🐹필터된 RealDatas \(realDatas)")
                 var stations: [RealTimeSubway] = []
                 
                 for data in realDatas {
@@ -162,14 +159,7 @@ extension MainDetailUseCase {
         
         return -3.0
     }
-    
-//    private func trainTimer(arvlCd: String, recptnDt: String) -> String {
-//        if ArvlCD(rawValue: arvlCd)?.name == "전역 도착" {
-//            return recptnDt
-//        }
-//        return ""
-//    }
-    
+
     /// 현재역 도착까지 몇정거장 남았는지를 반환.
     private func trainFirstSortKey(ordkey: String) -> Int {
         let startIndex = ordkey.index(ordkey.startIndex, offsetBy: 2)

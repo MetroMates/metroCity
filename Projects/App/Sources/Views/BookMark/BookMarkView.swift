@@ -38,25 +38,21 @@ struct BookMarkView: View {
                         }
                     }
                 }
+                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .principal) {
-                        HStack {
-                            
+                        HStack(spacing: 3) {
                             Text("즐겨찾기")
                                 .font(.title2)
-                            
                             Image(systemName: "bookmark.fill")
                                 .foregroundColor(Color.yellow)
-                                .font(.title2)
+                                .font(.body)
                         }
-                        .padding(.top, 18)
                     }
                 }
             }
         }
         .onAppear {
-            //            mainVM.subscribe() -> ViewModel 내부로 옮김.
-            //            mainVM.GPScheckNowLocactionTonearStation() -> 데이터가 fetch된 후로 옮김. mainVM.subscribe 내부로 옮김.
             mainDetailVM.subscribe()
             bookMarkVM.fetchBookMark()
         }

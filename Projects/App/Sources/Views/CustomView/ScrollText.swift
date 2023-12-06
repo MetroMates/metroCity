@@ -38,7 +38,6 @@ struct ScrollText: View {
                                     handler(parentWidth, textWidth)
                                 }
                                 .onChange(of: content) { _ in
-//                                    print("🟢🔵\(content) -> \(newValue)")
                                     stopAnimation()
                                     setting(geo: geo)
                                     startAnimation()
@@ -58,18 +57,14 @@ struct ScrollText: View {
     }
     
     private func setting(geo: GeometryProxy) {
-//        print("🟢🆚Before: ", "|\(content)|", "W: \(textWidth)", "ParentW: \(parentWidth)")
         textHeight = geo.size.height
         textWidth = geo.size.width
-//        print("🟢", "|\(content)|", "W: \(textWidth)", "ParentW: \(parentWidth)")
     }
     
     private func startAnimation() {
         if moveOptn {
             withAnimation(.linear(duration: transSpeed).delay(0.5).repeatForever(autoreverses: false)) {
-//                print("🔴🟢", "|\(content)|", "W: \(textWidth)", "ParentW: \(parentWidth)")
                 if parentWidth < textWidth {
-//                    print("🔴🟢 애니메이션 시작!")
                     isdisabled = false
                     offset = -((textWidth) / 2)
                 } else {
@@ -81,7 +76,6 @@ struct ScrollText: View {
     
     // 애니메이션 중지
     private func stopAnimation() {
-//        print("🟢🟢 애니메이션 중지")
         withAnimation {
             offset = .zero
             isdisabled = true

@@ -34,7 +34,7 @@ final class MainListRepository: SubwayRepositoryFetch {
         } else {
             guard let userNetworkStore
             else {
-                debugPrint("userNetworkStore 없음")
+                Log.warning("userNetworkStore 없음")
                 return Empty().setFailureType(to: Error.self).eraseToAnyPublisher()
             }
             
@@ -54,15 +54,10 @@ final class MainListRepository: SubwayRepositoryFetch {
     func fetchingData<Content>(type: Content.Type, colName: String) async -> [Content] where Content: FireStoreCodable {
         guard !colName.isEmpty else { return [] }
         
-        // TODO: firestoreFetch 만들기 colName, docID, Content.Type -> Content?
-//        let ver = try? await fires
-        
-        // TODO: if ver이 UserDefault가 가진 ver보다 크면 아래 로직 실행. 그렇지 않으면 coreData에서 가져오기.
-        
         do {
             return try await firestoreFetchAll(colName: colName, type: Content.self)
         } catch {
-            print("🍜Error: \(error.localizedDescription)")
+            Log.error("🍜 \(error.localizedDescription)")
         }
         return []
     }

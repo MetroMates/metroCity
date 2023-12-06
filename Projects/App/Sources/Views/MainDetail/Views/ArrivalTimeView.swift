@@ -72,7 +72,6 @@ extension ArrivalTimeView {
                                                     Color.primary)
                             ScrollText(content: info.message)
                                 .frame(width: geo.size.width * 0.5)
-//                                .border(.blue)
                         }
                     }
                 }

@@ -10,9 +10,6 @@ final class StartVM: ObservableObject {
     
     private let type: DataType
     private let dataManager: DataManager!
-    //    private let stationInfoSubject = PassthroughSubject<[StationInfo], Never>()
-    //    private let lineInfoSubject = PassthroughSubject<[SubwayLineColor], Never>()
-    //    private let locInfoSubject = PassthroughSubject<[StationLocation], Never>()
     private let stationInfoSubject = CurrentValueSubject<[StationInfo], Never>([])
     private let lineInfoSubject = CurrentValueSubject<[SubwayLineColor], Never>([])
     private let locInfoSubject = CurrentValueSubject<[StationLocation], Never>([])
@@ -20,9 +17,9 @@ final class StartVM: ObservableObject {
     private let userDefaultKEY: String
     
     init(type: DataType) {
-        self.type = type
-        debugPrint("1️⃣ \(type)")
+        Log.trace(type)
         
+        self.type = type
         switch type {
         case .real:
             dataManager = RealDataManager()
@@ -57,7 +54,7 @@ final class StartVM: ObservableObject {
             // MARK: 테스트 다한후, .real로 변경
             if self.type == .real {
                 if serverVer > self.localVer {
-                    print("🍜🐷📝 setCoreData실행")
+                    Log.trace("🍜🐷📝 CoreData SET")
                     self.setCoreData(ver: serverVer, datas: statInfos, lineInfos, locInfos)
                 }
             }
@@ -67,7 +64,7 @@ final class StartVM: ObservableObject {
     
     private func deleteCoreData() {
         let coreDataManger = CoreDataManger.shared
-        print("📝 deleteCoreData")
+        Log.trace("📝 CoreData Delete")
         _ = coreDataManger.deleteAll(type: StationInfoEntity.self)
         _ = coreDataManger.deleteAll(type: SubwayLineColorEntity.self)
         _ = coreDataManger.deleteAll(type: StationLocationEntity.self)

@@ -32,7 +32,7 @@ struct SelectStationInfoView: View {
                                     .padding(.vertical, 12)
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 10)
-                                            .stroke(Color(hex: mainDetailVM.selectedStationBorderColor), lineWidth: 0.5)
+                                            .stroke(Color(hex: mainDetailVM.selectedStationBorderColor), lineWidth: 1)
                                     )
                                     .contentShape(Rectangle())
                                     .onTapGesture {
@@ -43,7 +43,7 @@ struct SelectStationInfoView: View {
                                     }
                                     .padding(.horizontal, 10)
                             }
-                            .background(colorScheme == .dark ? Color(hex: "a0a0a0") :  Color.white)
+                            .background(colorScheme == .dark ? Color(hex: "#2b2a2a") :  Color.white)
                         }
                         .padding(.vertical, 1)
                         .padding(.horizontal, 15)
@@ -58,7 +58,7 @@ struct SelectStationInfoView: View {
                         .stroke(.blue.opacity(0.1))
                         .background(
                             RoundedRectangle(cornerRadius: 30)
-                                .fill((colorScheme == .dark ? Color(hex: "a0a0a0") :  Color.white))
+                                .fill((colorScheme == .dark ? Color(hex: "#2b2a2a") :  Color.white))
                         )
                 )
                 .padding(.horizontal, 45)
@@ -70,15 +70,8 @@ struct SelectStationInfoView: View {
             userChoice = true
         }
         .onDisappear {
-            print(userChoice)
             userChoice = true
             
         }
     }
 }
-//
-// struct SelectStationInfo_Previews: PreviewProvider {
-//    static var previews: some View {
-//        SelectStationInfo(mainDetailVM: , userChoice: .constant(false), totalStationInfo: .constant(["테스트역"]))
-//    }
-// }

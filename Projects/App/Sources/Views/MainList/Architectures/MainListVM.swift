@@ -30,6 +30,9 @@ class MainListVM: ObservableObject {
     @Published var userChoice: Bool = true
     @Published var userChoicedSubwayNm: String = ""
     
+    /// 주변역이 없으면 토스트 메시지
+    @Published var isNotNearStation: Toast?
+    
     private var stationInfos: [StationInfo] = []
     private var locationInfos: [StationLocation] = []
     
@@ -41,8 +44,7 @@ class MainListVM: ObservableObject {
     private let startVM: StartVM
     
     init(useCase: MainListUseCase, startVM: StartVM) {
-        print("👻 MainListVM")
-        // 의존성 주입: MainListVM에 MainListUseCase가 외부에서 생성되어 의존성 주입되었다.
+        // 의존성 주입: MainListVM에 MainListUseCase가 외부에서 생성되어 의존성 주입.
         self.useCase = useCase
         self.startVM = startVM
         startVMSubscribe()
@@ -55,10 +57,16 @@ class MainListVM: ObservableObject {
     func openSetting() {
         useCase.openSetting()
     }
-
+    
     /// GPS 기반 현재위치에서 제일 가까운 역이름 가져오기
     func GPScheckNowLocactionTonearStation() {
-        useCase.startFetchNearStationFromUserLocation(vm: self)
+        isProgressed = true
+        DispatchQueue.global().async {
+            self.useCase.startFetchNearStationFromUserLocation(vm: self)
+            DispatchQueue.main.async {
+                self.isProgressed = false
+            }
+        }
     }
     
 }
@@ -72,6 +80,8 @@ extension MainListVM {
         
         // 해당역의 호선들의 분류작업.
         $nearStNamefromUserLocation
+            // CLLocation의 startUpdating은 지속적으로 GPS 위경도값을 찾아서 방출하기때문에 debounce 1초정도로 걸어서 마지막 방출값만 받아오게 설정한다.
+            .debounce(for: .seconds(1), scheduler: DispatchQueue.main)
             .receive(on: DispatchQueue.main)
             .sink { nearStName in
                 self.nearStationInfo.nowStNm = nearStName
@@ -84,11 +94,9 @@ extension MainListVM {
         useCase.nearStationNameSubject
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { userLoc in
-//                debugPrint("🍜 nearStationNameSubject 내부@!! \(userLoc)")
                 self.nearStNamefromUserLocation = userLoc
             })
             .store(in: &anyCancellable)
-
     }
     
     private func filteredLinesfromSelectStation(value: String) {
@@ -105,31 +113,32 @@ extension MainListVM {
             return false
         })
         
+        if self.subwayLineInfosAtStation.isEmpty {
+            self.isNotNearStation = .init(style: .info, message: "1km내 지하철역이 없습니다.")
+        }
+        
     }
     
     private func startVMSubscribe() {
-        print("🍜 startVMSubscribe")
         startVM.dataPublisher()
             .receive(on: DispatchQueue.main)
             .sink { (station, line, location) in
-                print("🍜 여기 진입 함. MainListVM startVMSubscribe")
-                
                 self.stationInfos = station
                 self.subwayLineInfos = line
                 self.locationInfos = location
                 
                 if !self.stationInfos.isEmpty, !self.subwayLineInfos.isEmpty, !self.locationInfos.isEmpty {
                     // 초기 발행시 딱 한번 실행됨. -> 각 데이터 fetch가 완료되었을때 실행!
+                    Log.trace("StartVM Fetch 데이터 구독 완료.")
                     self.subscribe(stationInfo: station,
                                    lineInfo: line,
                                    locInfo: location)
-                    
                     self.GPScheckNowLocactionTonearStation() // 내 위치 가져오기.
                 }
                 
             }
             .store(in: &anyCancellable)
-
+        
     }
 }
 

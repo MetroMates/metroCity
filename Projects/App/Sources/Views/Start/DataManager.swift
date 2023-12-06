@@ -36,30 +36,29 @@ final class RealDataManager: DataManager, FireStoreServiceDelegate {
             let serverVer: Int = versionData?.ver ?? 1
             let localVer: Int = UserDefaults.standard.integer(forKey: "dataVersion")
             
-            print("📝🆚 server: \(serverVer) local: \(localVer)")
+            Log.trace("📝🆚 server: \(serverVer) local: \(localVer)")
             
             // 2. localVer이 serverVer보다 낮을 시 Fetch.
             if serverVer > localVer {
                 // 무조건 FireStore에서 Fetch. -> Fetch해온 정보를 CoreData에 저장.
                 do {
-                    print("🍜🐷 firebase 패치시작")
                     let stationInfos: [Station] = try await firestoreFetchAll(colName: "StationInfo", type: Station.self)
                     let subwayLineInfos: [SubwayLine] = try await firestoreFetchAll(colName: "SubwayLineColor", type: SubwayLine.self)
                     let locInfos: [LocInfo] = try await firestoreFetchAll(colName: "StationLocation", type: LocInfo.self)
-                    print("🍜🐷 firebase 패치끝")
+                    
                     // 해당 값을 받아서 화면에서는 처리하는 중이어야 한다. -> setCoreData는 그 후 실행.
                     completion(serverVer, stationInfos, subwayLineInfos, locInfos)
                     
                 } catch let error as NSError {
                     let fetchError = NSError(domain: "FireFetchAll", code: error.code)
-                    print("🐷", fetchError)
-                    print(error.localizedDescription)
+                    Log.error(fetchError.localizedDescription)
+                    
                     // 배열 3개중 하나라도 데이터가 안들어오면 앱실행이 불가능. 앱을 종료시키고 다시 실행하게 해야한다.
                     completion(serverVer, [], [], [])
                 }
                 
             } else {
-                print("📝getCoreData로딩")
+                Log.trace("📝GetCoreData 로딩..")
                 // 무조건 coreData에서 Fetch.
                 getCoreData { stationInfo, lineInfo, locInfo in
                     let statInfos = stationInfo as? [Station] ?? []

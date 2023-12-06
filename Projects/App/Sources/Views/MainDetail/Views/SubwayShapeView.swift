@@ -16,11 +16,11 @@ struct SubwayShapeView: View {
 //            let startPositionRate = 0.5
         if updn == .up {
             let baseX = geoWidth * startPositionRate
-//            print("up BaseX : \(baseX)")
+//            Log.trace("Up BaseX : \(baseX)")
             return baseX - vm.moveXoffSet
         } else {
             let baseX = (geoWidth * (1 - startPositionRate)) - (textWidth + 5)
-//            print("down BaseX : \(baseX)")
+//            Log.trace("Down BaseX : \(baseX)")
             return baseX + vm.moveXoffSet
         }
     }
@@ -29,7 +29,6 @@ struct SubwayShapeView: View {
         return info.trainDestiStation
         // ↓ Test용 데이터
 //            return updn == .up ? "당고개행" : "오이도(급행)"
-
     }
     
     var body: some View {
@@ -55,9 +54,3 @@ struct SubwayShapeView: View {
     }
     
 }
-
-// struct SubwayView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        SubwayShapeView()
-//    }
-// }
