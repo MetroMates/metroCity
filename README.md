@@ -26,7 +26,7 @@
 ### 📱구동화면
 |**`주변역 찾기`**|**`호선과 역 변경`**|**`즐겨찾기`**|**`검색`**|**`다크모드`**|
 |-------|-------|-------|-------|-------|
-|<img src="https://github.com/MetroMates/metroCity/assets/110394722/a7c280d7-559f-4b31-87ff-4409a803b9cb" width="143" height="300">|<img src="https://github.com/MetroMates/metroCity/assets/110394722/f6926dd5-5727-4efc-861d-747de051e823" width="143" height="300">|<img src="https://github.com/MetroMates/metroCity/assets/110394722/e3da76e2-79e6-4c3a-942a-2119b4827a88" width="143" height="300">| <img src="https://github.com/MetroMates/metroCity/assets/110394722/4eab836b-4d00-4676-9746-cbfe1196ede8" width="143" height="300">|<img src = "https://github.com/MetroMates/metroCity/assets/110394722/027628eb-8888-4d91-84c7-4674f2bb8037"  width="143" height="300" >|
+|<img src="https://github.com/MetroMates/metroCity/assets/110394722/a7c280d7-559f-4b31-87ff-4409a803b9cb" width="143" height="300">|<img src="https://github.com/MetroMates/metroCity/assets/110394722/f6926dd5-5727-4efc-861d-747de051e823" width="143" height="300">|<img src="https://github.com/MetroMates/metroCity/assets/110394722/e3da76e2-79e6-4c3a-942a-2119b4827a88" width="143" height="300">| <img src="https://github.com/MetroMates/metroCity/assets/110394722/4eab836b-4d00-4676-9746-cbfe1196ede8" width="143" height="300">|<img src = "https://github.com/MetroMates/metroCity/assets/110394722/027628eb-8888-4d91-84c7-4674f2bb8037" width="143" height="300" >|
 
 <br>
 
