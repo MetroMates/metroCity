@@ -93,12 +93,8 @@ extension MainListVM {
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { userLoc in
                 self.nearStNamefromUserLocation = userLoc
-                if userLoc.isEmpty {
-                    self.isNotNearStation = .init(style: .info, message: "1km내 지하철역이 없습니다.")
-                }
             })
             .store(in: &anyCancellable)
-        
     }
     
     private func filteredLinesfromSelectStation(value: String) {
@@ -114,6 +110,10 @@ extension MainListVM {
             }
             return false
         })
+        
+        if self.subwayLineInfosAtStation.isEmpty {
+            self.isNotNearStation = .init(style: .info, message: "1km내 지하철역이 없습니다.")
+        }
         
     }
     
