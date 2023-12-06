@@ -7,6 +7,7 @@ struct MainDetailView: View {
     @ObservedObject var mainVM: MainListVM
     @State private var offset: CGFloat = .zero
     var disappearHandler: () -> Void = {}
+    @State private var rotationAngle: Angle = .zero
     private var swipeToNext: some Gesture {
         DragGesture()
             .onChanged { value in
@@ -108,10 +109,14 @@ extension MainDetailView {
                 HStack(spacing: 20) {
                     Button {
                         // 화살표 돌아가게 애니메이션 적용 rotation 사용하면 될듯.
-                        vm.settingSubwayInfoWithDebounce(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
+                        withAnimation {
+                            vm.settingSubwayInfoWithDebounce(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
+                            rotationAngle += .degrees(360)
+                        }
                     } label: {
                         Image(systemName: "arrow.clockwise")
                             .tint(.primary)
+                            .rotationEffect(rotationAngle)
                     }
                     
                     // MARK: - BookBark Button!!

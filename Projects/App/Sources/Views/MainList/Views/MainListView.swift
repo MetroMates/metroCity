@@ -28,8 +28,6 @@ struct MainListView: View {
         NavigationStack {
             ZStack {
                 // 커스텀으로 바꾸기 프로그래뷰
-                ProgressView()
-                    .opacity(mainVM.isProgressed ? 1.0 : 0.0)
                 
                 VStack {
                     ScrollView(showsIndicators: false) {
@@ -71,7 +69,7 @@ struct MainListView: View {
             Button("취소", action: {})
             Button("이동", action: { mainVM.openSetting() })
         }
-        
+        .toastView(toast: $mainVM.isNotNearStation)
     }
     
 }
@@ -84,7 +82,7 @@ extension MainListView {
                 ForEach(mainVM.subwayLineInfosAtStation) { line in
                     Button {
                         mainVM.isDetailPresented.toggle()
-                        self.setLineAndstationInfo(line: line)                        
+                        self.setLineAndstationInfo(line: line)
                         
                         // 역 선택 PopView 확인을 위함
                         mainVM.userChoicedSubwayNm = line.subwayNm
@@ -108,42 +106,47 @@ extension MainListView {
         } header: {
             HStack(spacing: 5) {
                 Image(systemName: "location.fill")
-                Text("'\(mainVM.nearStNamefromUserLocation)역' 기준")
+                if mainVM.isProgressed {
+                    Text("주변역 검색중..")
+                    ProgressView()
+                } else {
+                    Text("'\(mainVM.nearStNamefromUserLocation)역' 기준")
+                }
             }
         }
     }
     
     @ViewBuilder private var AllStationLines: some View {
-            Section {
-                VStack(spacing: 15) {
-                    ForEach(mainVM.subwayLineInfos) { line in
-                        Button {
-                            self.setLineAndstationInfo(line: line)
-                            mainVM.isDetailPresented.toggle()
-                            
-                            // 역 선택 PopView 확인을 위함
-                            mainVM.userChoicedSubwayNm = line.subwayNm
-                            mainVM.checkUserChoice()
-                            mainDetailVM.getStationTotal(subwayNm: line.subwayNm)
-                            mainDetailVM.selectedStationBorderColor = line.lineColorHexCode
-                            print("🚇 \(mainDetailVM.totalStationInfo)")
-                        } label: {
-                            LineCellView(stationName: line.subwayNm,
-                                         stationColor: line.lineColor)
-                            .background {
-                                RoundedRectangle(cornerRadius: 10)
-                                    .fill(contentBackColor)
-                                    .shadow(color: line.lineColor.opacity(0.4), radius: 3, x: 2, y: 1)
-                            }
+        Section {
+            VStack(spacing: 15) {
+                ForEach(mainVM.subwayLineInfos) { line in
+                    Button {
+                        self.setLineAndstationInfo(line: line)
+                        mainVM.isDetailPresented.toggle()
+                        
+                        // 역 선택 PopView 확인을 위함
+                        mainVM.userChoicedSubwayNm = line.subwayNm
+                        mainVM.checkUserChoice()
+                        mainDetailVM.getStationTotal(subwayNm: line.subwayNm)
+                        mainDetailVM.selectedStationBorderColor = line.lineColorHexCode
+                        print("🚇 \(mainDetailVM.totalStationInfo)")
+                    } label: {
+                        LineCellView(stationName: line.subwayNm,
+                                     stationColor: line.lineColor)
+                        .background {
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(contentBackColor)
+                                .shadow(color: line.lineColor.opacity(0.4), radius: 3, x: 2, y: 1)
                         }
-
                     }
+                    
                 }
-                
-            } header: {
-                Text("전체")
-                    .padding(.top, 30)
-            }        
+            }
+            
+        } header: {
+            Text("전체")
+                .padding(.top, 30)
+        }
     }
     
 }
@@ -156,8 +159,8 @@ extension MainListView {
         
         mainDetailVM.settingSubwayInfo(hosun: line, selectStation: mainVM.nearStationInfo)
         
-//        mainDetailVM.send(selectStationInfo: mainVM.nearStationInfo,
-//                          lineInfo: line)
+        //        mainDetailVM.send(selectStationInfo: mainVM.nearStationInfo,
+        //                          lineInfo: line)
     }
 }
 
