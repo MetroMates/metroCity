@@ -65,9 +65,9 @@ final class StartVM: ObservableObject {
     private func deleteCoreData() {
         let coreDataManger = CoreDataManger.shared
         Log.trace("📝 CoreData Delete")
-        _ = coreDataManger.deleteAll(type: StationInfoEntity.self)
-        _ = coreDataManger.deleteAll(type: SubwayLineColorEntity.self)
-        _ = coreDataManger.deleteAll(type: StationLocationEntity.self)
+        coreDataManger.deleteAll(type: StationInfoEntity.self)
+        coreDataManger.deleteAll(type: SubwayLineColorEntity.self)
+        coreDataManger.deleteAll(type: StationLocationEntity.self)
     }
     
     private func setCoreData(ver: Int, datas: [FireStoreCodable]...) {
