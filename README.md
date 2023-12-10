@@ -117,7 +117,7 @@ gitGraph
 <br>
 
 ## 📄 License
-### “MetroCity" is available under the MIT license. See the [LICENSE](https://github.com/APPSCHOOL3-iOS/final-zeno/blob/main/LICENSE) file for more info.
+### “MetroCity" is available under the MIT license. See the [LICENSE](https://github.com/MetroMates/metroCity/blob/dev/LICENSE) file for more info.
 - Tuist
 - Firebase - iOS
 
