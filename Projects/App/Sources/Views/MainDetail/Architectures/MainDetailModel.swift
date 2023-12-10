@@ -2,6 +2,7 @@
 
 import SwiftUI
 
+// upSt, downSt 모두 배열로 만들어주기로 한다.
 /// 역정보 (호선 내부용) -> 호선에 대한 현재역, 이전역, 다음역
 ///
 /// Arrived에서 데이터 가져올수 있다.
@@ -36,6 +37,28 @@ extension MyStation {
                      downStNm: "")
     }
     
+    var downStationName: String {
+        let downArray: [String] = ["가산디지털단지","구일"] // self.downStNm 자리. -> [String]타입으로 변환 예정. 23.12.11
+        var resultString: String
+        if downArray.count > 1 {
+            resultString = downArray.joined(separator: "/")
+        } else {
+            resultString = downArray.first ?? ""
+        }
+        return resultString
+    }
+    
+    var upStationName: String {
+        let downArray: [String] = ["가산디지털단지","구일"]
+        var resultString: String
+        if downArray.count > 1 {
+            resultString = downArray.joined(separator: "/")
+        } else {
+            resultString = downArray.first ?? ""
+        }
+        return resultString
+    }
+    
 }
 
 /// 실시간 지하철 위치 정보
@@ -56,8 +79,8 @@ struct RealTimeSubway: SubwayModelIdentifier {
     let trainType: String
     /// 정렬 순서 1 (몇번째 전역에 위치한지 정보)
     let stCnt: Int
-    /// 정렬순서 2 (해당역에 몇번째로 들어오는 열차인지) -> 데이터가 신뢰성은 없음.
-    let sortOrder: Int
+//    /// 정렬순서 2 (해당역에 몇번째로 들어오는 열차인지) -> 데이터가 신뢰성은 없음.
+//    let sortOrder: Int
     /// 표출메세지 : 전역 도착, 130초전 등등
     let message: String
     /// 무슨행 ( 광운대행, 청량ㅇ리행 )
@@ -66,6 +89,8 @@ struct RealTimeSubway: SubwayModelIdentifier {
     let trainLocation: CGFloat
     /// 도착 코드
     let arvlCode: String
+    /// 열차위치 변경여부
+    let isChange: Bool
 }
 
 extension RealTimeSubway {
@@ -94,16 +119,11 @@ extension RealTimeSubway {
                      trainNo: "",
                      trainType: "",
                      stCnt: 0,
-                     sortOrder: 0,
                      message: "",
                      trainDestiStation: "",
                      trainLocation: 0,
-                     arvlCode: "-1")
-    }
-    
-    // 여러개 들어올 예정.
-    static var list: [Self] {
-        return []
+                     arvlCode: "-1",
+                     isChange: true)
     }
     
 }

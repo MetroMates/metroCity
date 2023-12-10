@@ -108,7 +108,7 @@ extension MainDetailView {
                 HStack(spacing: 20) {
                     Button {
                         // 화살표 돌아가게 애니메이션 적용 rotation 사용하면 될듯.
-                        withAnimation {
+                        withAnimation(.easeInOut(duration: 1.5)) {
                             vm.settingSubwayInfoWithDebounce(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
                             rotationAngle += .degrees(360)
                         }

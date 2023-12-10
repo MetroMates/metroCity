@@ -14,6 +14,7 @@ struct SubwayAppearView: View {
     var body: some View {
         Group {
             ForEach(realTimeData, id: \.id) { info in
+                // 운행중 상태인 열차는 표시하지않는다.
                 if info.arvlCode != "99" {
                     SubwayShapeView(vm: vm, geo: geo, updn: updn, info: info)
                 }
@@ -22,15 +23,15 @@ struct SubwayAppearView: View {
         .onAppear {
             // 추후 MainDetailVM으로 옮기고 새로운 정보 패치될때 timer cancel하고 하기
             // moveXoffSet도 마찬가지 -> .zero로 초기화하기.
-            vm.trainTimerStart {
-                withAnimation {
-                    vm.moveXoffSet += gtrainSpeed
-                }
-            }
+//            vm.trainTimerStart {
+//                withAnimation {
+//                    vm.moveXoffSet += gtrainSpeed
+//                }
+//            }
         }
-        .onDisappear {
-            vm.trainTimerStop()
-        }
+//        .onDisappear {
+//            vm.trainTimerStop()
+//        }
     }
 }
 

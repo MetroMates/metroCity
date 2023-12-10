@@ -3,6 +3,6 @@
 import Foundation
 
 /// api통신 Fetch 타이머 기준
-let gapiFetchTimeSecond: Double = 3600.0
+let gapiFetchTimeSecond: Double = 10.0
 /// 열차모형 초당 움직이는 거리수 (x 값)
-let gtrainSpeed: Double = 0.2
+let gtrainSpeed: Double = 0.5

@@ -73,7 +73,7 @@ final class MainDetailVM: ObservableObject {
         self.hosunInfo = hosun
         self.fetchInfo(selectStation)
         // 열차 x offset값 초기화
-        self.moveXoffSet = .zero
+//        self.moveXoffSet = .zero  // 잠시보류 23.12.11
         fetchBookMark()
     }
     
