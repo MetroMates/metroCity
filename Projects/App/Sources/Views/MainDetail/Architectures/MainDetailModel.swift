@@ -89,6 +89,8 @@ struct RealTimeSubway: SubwayModelIdentifier {
     let trainLocation: CGFloat
     /// 도착 코드
     let arvlCode: String
+    /// 열차 위치기준 코드
+    let arvlCaseCode: ArvlCase
     /// 열차위치 변경여부
     let isChange: Bool
 }
@@ -122,8 +124,72 @@ extension RealTimeSubway {
                      message: "",
                      trainDestiStation: "",
                      trainLocation: 0,
-                     arvlCode: "-1",
+                     arvlCode: "-1", 
+                     arvlCaseCode: .none,
                      isChange: true)
     }
     
+}
+
+enum ArvlCase: String {
+    case start
+    case middle
+    case end
+    case none
+    
+    var subwayDistanceRate: CGFloat {
+        switch self {
+        case .start:
+            return 0.95
+        case .middle:
+            return 0.7
+        case .end:
+            return 0.5
+        case .none:
+            return 0
+        }
+    }
+    
+    static func arvlCDConvert(_ code: ArvlCD) -> Self {
+        switch code {
+        case .five, .three:
+            return .start
+        case .zero:
+            return .middle
+        case .one, .two:
+            return .end
+        default:
+            return .none
+        }
+    }
+}
+
+/// 전철정보 Api ArvlCD info
+enum ArvlCD: String {
+    case zero = "0"
+    case one = "1"
+    case two = "2"
+    case three = "3"
+    case four = "4"
+    case five = "5"
+    case ninetynine = "99"
+    
+    var name: String {
+        switch self {
+        case .zero:
+            return "당역 진입"
+        case .one:
+            return "당역 도착"
+        case .two:
+            return "출발"
+        case .three:
+            return "전역 출발"
+        case .four:
+            return "전역 진입"
+        case .five:
+            return "전역 도착"
+        case .ninetynine:
+            return "운행중"
+        }
+    }
 }

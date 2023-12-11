@@ -11,9 +11,15 @@ final class MainDetailUseCase {
         self.repository = repo
     }
     
+    deinit {
+        self.beforeArvlCase.removeAll()
+    }
+    
     /// 이전 Fetch 역명.
     private var beforeStatnNm: String = ""
-    private var beforeArvlCase: ArvlCase = .none
+    private var beforeSubwayId: String = ""
+//    private var beforeArvlCase: ArvlCase = .none
+    private var beforeArvlCase = [String: String]()
     
     /// MyStation 에 값 넣어서 반환.  선택된 역정보.
     func getStationData(subwayID: Int,
@@ -90,7 +96,8 @@ final class MainDetailUseCase {
                                                             arvlCd: data.arvlCD,
                                                             nowStationName: nowStation)
                     
-                    let (trainLocation, isChange) = self.trainLocation(statnNm: nowStation,
+                    let (trainLocation, isChange) = self.trainLocation(statnNm: nowStation, 
+                                                                       subwayLineId: subwayLine,
                                                                        destination: data.bstatnNm,
                                                                        trainNo: data.btrainNo,
                                                                        arvlCd: data.arvlCD)
@@ -104,12 +111,14 @@ final class MainDetailUseCase {
                                               message: message,
                                               trainDestiStation: "\(data.bstatnNm)행",
                                               trainLocation: trainLocation,
-                                              arvlCode: data.arvlCD,
+                                              arvlCode: data.arvlCD, 
+                                              arvlCaseCode: .arvlCDConvert(ArvlCD(rawValue: data.arvlCD) ?? .ninetynine),
                                               isChange: isChange))
                     }
                 }
                 
-                self.beforeStatnNm = nowStation // Fetch 역명을 가지고 있는다. -> 추후 첫 Fetch인지 n번째 Fetch인지의 여부를 따지기 위함.
+                self.beforeStatnNm = nowStation  // Fetch 역명을 가지고 있는다. -> 추후 첫 Fetch인지 n번째 Fetch인지의 여부를 따지기 위함.
+                self.beforeSubwayId = subwayLine // 몇 호선인지 여부.
                 
                 if !stations.isEmpty {
                     return Just(stations).setFailureType(to: Error.self).eraseToAnyPublisher()
@@ -138,8 +147,7 @@ extension MainDetailUseCase {
                               nowStationName: String) -> String {
         
         /*
-            당역 도착인데 ex: 당역이 수원이면 5초(수원) 이렇게 뜨는 정보도 있음. -> 수정해야함. 23.12.10
-         
+            TODO: 당역 도착인데 ex: 당역이 수원이면 5초(수원) 이렇게 뜨는 정보도 있음. -> 수정해야함. 23.12.10
          */
         
         var times: String = ""
@@ -183,13 +191,14 @@ extension MainDetailUseCase {
    
     /// 열차 위치.
     private func trainLocation(statnNm: String, 
+                               subwayLineId: String,
                                destination: String,
                                trainNo: String,
                                arvlCd: String) -> (CGFloat, Bool) {
         
         let arvlCode = ArvlCD(rawValue: arvlCd) ?? .ninetynine
         let newarvlCase = ArvlCase.arvlCDConvert(arvlCode)
-        
+        Log.trace("♠️ 상태값:  \(newarvlCase.rawValue)")
         /*------------------------------------------------
                  전역도착, 당역진입, 당역도착 으로만 판단.
          ------------------------------------------------*/
@@ -198,22 +207,27 @@ extension MainDetailUseCase {
         var isChange: Bool = false
         
         // 해당 역명으로 fetch한게 첫번째임.
-        if statnNm != beforeStatnNm {
+        if (statnNm != beforeStatnNm) || (subwayLineId != beforeSubwayId) {
             distanceRate = newarvlCase.subwayDistanceRate
             isChange = true
+            Log.trace("♠️역 \(trainNo) \(destination)  \(statnNm)  before: \(beforeStatnNm)")
         }
         // 새로고침일때 진입.
         else {
             // 받아온 현재 열차 상태가 이전과 다른경우에만 진입.
-            if self.beforeArvlCase != newarvlCase {
+            let beforeCase = self.beforeArvlCase["\(trainNo)", default: "[none]"]
+            
+            Log.trace("♠️🟢상태 \(trainNo) \(destination) \(newarvlCase.rawValue)  before: \(beforeCase)")
+            if beforeCase != newarvlCase.rawValue {
                 distanceRate = newarvlCase.subwayDistanceRate
                 isChange = true
             }
+            
         }
         
-        // 추후 재비교를 위해 값을 할당시켜놓는다.
-        self.beforeArvlCase = newarvlCase
-        
+        // 추후 재비교를 위해 값을 할당시켜놓는다. -> trainNo와 같이 저장해야할듯.
+        self.beforeArvlCase.updateValue(newarvlCase.rawValue, forKey: "\(trainNo)")
+        Log.trace("♠️🦷 DiC: \(beforeArvlCase)")
         return (distanceRate, isChange)
     }
 
@@ -234,87 +248,5 @@ extension MainDetailUseCase {
 //        
 //        return Int(slicedString) ?? 0
 //    }
-    
-    private enum ArvlCase {
-        case start
-        case middle
-        case end
-        case none
-        
-        var subwayDistanceRate: CGFloat {
-            switch self {
-            case .start:
-                return 0.95
-            case .middle:
-                return 0.75
-            case .end:
-                return 0.5
-            case .none:
-                return 0
-            }
-        }
-        
-        static func arvlCDConvert(_ code: ArvlCD) -> Self {
-            switch code {
-            case .five, .three:
-                return .start
-            case .zero:
-                return .middle
-            case .one, .two:
-                return .end
-            default:
-                return .none
-            }
-        }
-    }
-    
-    private enum ArvlCD: String {
-        case zero = "0"
-        case one = "1"
-        case two = "2"
-        case three = "3"
-        case four = "4"
-        case five = "5"
-        case ninetynine = "99"
-        
-        var name: String {
-            switch self {
-            case .zero:
-                return "당역 진입"
-            case .one:
-                return "당역 도착"
-            case .two:
-                return "출발"
-            case .three:
-                return "전역 출발"
-            case .four:
-                return "전역 진입"
-            case .five:
-                return "전역 도착"
-            case .ninetynine:
-                return "운행중"
-            }
-        }
-        
-//        var subwayShowing: CGFloat {
-//            switch self {
-//            case .zero:
-//                return 0.55
-//            case .one:
-//                return 0.5
-//            case .two:
-//                return 0.45
-//            case .three:
-//                return 0.85
-//            case .four:
-//                return 0.9
-//            case .five:
-//                return 0.95
-//            case .ninetynine:
-//                // 화면에서 안보이게 조정.
-//                return -3.0
-//            }
-//        }
-    }
     
 }

@@ -29,9 +29,9 @@ struct SubwayAppearView: View {
 //                }
 //            }
         }
-//        .onDisappear {
+        .onDisappear {
 //            vm.trainTimerStop()
-//        }
+        }
     }
 }
 
