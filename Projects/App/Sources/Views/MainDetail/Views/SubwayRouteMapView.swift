@@ -42,9 +42,9 @@ extension SubwayRouteMapView {
             
             ZStack {
                 HStack {
-                    stationCircle(vm.selectStationInfo.upStNm)
+                    stationCircle(vm.selectStationInfo.upStationName)
                     Spacer()
-                    stationCircle(vm.selectStationInfo.downStNm)
+                    stationCircle(vm.selectStationInfo.downStationName)
                 }
                 stationCircle(vm.selectStationInfo.nowStNm)
             }

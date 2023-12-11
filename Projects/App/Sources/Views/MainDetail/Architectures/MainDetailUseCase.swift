@@ -18,12 +18,12 @@ final class MainDetailUseCase {
     /// 이전 Fetch 역명.
     private var beforeStatnNm: String = ""
     private var beforeSubwayId: String = ""
-//    private var beforeArvlCase: ArvlCase = .none
     private var beforeArvlCase = [String: String]()
     
     /// MyStation 에 값 넣어서 반환.  선택된 역정보.
     func getStationData(subwayID: Int,
                         totalStatInfos: [StationInfo],
+                        relateStatInfos: [RelateStationInfo],
                         selectStationName value: String) -> MyStation {
         
         guard !totalStatInfos.isEmpty else { return .emptyData }
@@ -34,35 +34,80 @@ final class MainDetailUseCase {
         }.first
         
         if let newDatas {
+            var upStCodes: [Int] = []
+            var downStCodes: [Int] = []
+            var upStNms: [String] = []
+            var downStNms: [String] = []
+   
             // 상행일때 -1
-            var upSt = newDatas.statnId - 1
-            var downSt = newDatas.statnId + 1
+            var upSt = Int(newDatas.statnId) - 1
+            var downSt = Int(newDatas.statnId) + 1
             
-            let upStNm = totalStatInfos.filter { $0.statnId == upSt }.first?.statnNm ?? "종착"
-            let downStNm = totalStatInfos.filter { $0.statnId == downSt }.first?.statnNm ?? "종착"
+            var upStNm = totalStatInfos.filter { $0.statnId == upSt }.first?.statnNm ?? "종착"
+            var downStNm = totalStatInfos.filter { $0.statnId == downSt }.first?.statnNm ?? "종착"
+            
+            let relateTest = RelateStationInfo.mockList
+            let relateInfos = relateTest.filter { $0.statnId == newDatas.statnId }.first ?? .emptyData
+            
+            // 연관 역명이 존재함. -> ex) 구로: 가산디지털단지, 구일 /  신도림: 도림천, 문래
+            if !relateInfos.relateIds.isEmpty {
+                // upSt, downSt코드가 relateInfos의 relateStcode랑 같은게 있는지 비교한다.
+                // 같은게 있으면 relateInfos에 있는 relateStCode를 같은게 있는 쪽( upSt이거나 downSt )의 배열변수에 전부 다 담는다.
+                // 같은게 없다면 그냥 기존코드 그대로 실행.
+                if upStNm != "종착" {
+                    if relateInfos.relateIds.contains(where: { $0 == upSt }) {
+                        upStCodes = relateInfos.relateIds
+                        upStNms = relateInfos.relateNms
+                    }
+                }
+                
+                if downStNm != "종착" {
+                    if relateInfos.relateIds.contains(where: { $0 == downSt }) {
+                        downStCodes = relateInfos.relateIds
+                        downStNms = relateInfos.relateNms
+                    }
+                }
+            }
             
             if upStNm == "종착" {
-                upSt = -1
-                // 종착일경우 value를 SubStationInfo 객체에서 찾는다.
-                
-                /*
-                    RelateStationInfo
-                    statnId: Int
-                    statnNm: String
-                    relateIds: [Int]
-                    relateNms: [String]
-                 */
+                let relateUpSt = relateTest.filter { relate in
+                    relate.relateIds.contains { $0 == newDatas.statnId }
+                }.first ?? .emptyData
+                if !relateUpSt.statnNm.isEmpty {
+                    upSt = relateUpSt.statnId
+                    upStNm = relateUpSt.statnNm
+                } else {
+                    upSt = -1
+                }
             }
-            if downStNm == "종착" { downSt = -1 }
             
-            var upStNms: [String] = [upStNm]
+            if downStNm == "종착" {
+                let relateUpSt = relateTest.filter { relate in
+                    relate.relateIds.contains { $0 == newDatas.statnId }
+                }.first ?? .emptyData
+                if !relateUpSt.statnNm.isEmpty {
+                    downSt = relateUpSt.statnId
+                    downStNm = relateUpSt.statnNm
+                } else {
+                    downSt = -1
+                }
+            }
+            
+            if upStNms.isEmpty {
+                upStCodes = [upSt]
+                upStNms = [upStNm]
+            }
+            if downStNms.isEmpty {
+                downStCodes = [downSt]
+                downStNms = [downStNm]
+            }
             
             return .init(nowSt: Int(newDatas.statnId),
                          nowStNm: value,
-                         upSt: Int(upSt),
-                         upStNm: upStNm,
-                         downSt: Int(downSt),
-                         downStNm: downStNm)
+                         upSt: upStCodes,
+                         upStNm: upStNms,
+                         downSt: downStCodes,
+                         downStNm: downStNms)
         }
         
         return .emptyData
@@ -75,8 +120,8 @@ final class MainDetailUseCase {
     // Never타입은 못씀. 에러를 발생시키지 않기 때문...!! -> api통신중의 발생한 Error를 생성해주어야함.
     func recievePublisher(subwayLine: String, stationInfo: MyStation) -> AnyPublisher<[RealTimeSubway], Error> {
         let nowStation = stationInfo.nowStNm
-        let upLineEnd = stationInfo.upSt // -1 일경우 종착지 -> realTime을 받아오지 않는다.
-        let downLineEnd = stationInfo.downSt // -1 일경우 종착지 -> realTime을 받아오지 않는다.
+        let upLineEnd = stationInfo.upStationName // 종착 -> realTime을 받아오지 않는다.
+        let downLineEnd = stationInfo.downStationName // 종착 -> realTime을 받아오지 않는다.
         
         return repository.receivePublisher(type: Arrived.self, urlType: .subwayArrive, whereData: nowStation)
             .flatMap { rdata -> AnyPublisher<[RealTimeSubway], Error> in
@@ -88,7 +133,6 @@ final class MainDetailUseCase {
                 
                 for data in realDatas {
                     let firstSort: Int = self.trainFirstSortKey(ordkey: data.ordkey)
-//                    let secondSort: Int = self.trainSecondSortKey(ordkey: data.ordkey)
                     
                     let message: String = self.trainMessage(barvlDt: data.barvlDt,
                                                             arvlMsg2: data.arvlMsg2,
@@ -102,7 +146,7 @@ final class MainDetailUseCase {
                                                                        trainNo: data.btrainNo,
                                                                        arvlCd: data.arvlCD)
                     
-                    if (data.updnLine == "상행" && upLineEnd == -1) || (data.updnLine == "하행" && downLineEnd == -1) {
+                    if (data.updnLine == "상행" && upLineEnd == "종착") || (data.updnLine == "하행" && downLineEnd == "종착") {
                     } else {
                         stations.append(.init(updnLine: data.updnLine,
                                               trainNo: data.btrainNo,
@@ -198,11 +242,10 @@ extension MainDetailUseCase {
         
         let arvlCode = ArvlCD(rawValue: arvlCd) ?? .ninetynine
         let newarvlCase = ArvlCase.arvlCDConvert(arvlCode)
-        Log.trace("♠️ 상태값:  \(newarvlCase.rawValue)")
+//        Log.trace("♠️ 상태값:  \(newarvlCase.rawValue)")
         /*------------------------------------------------
                  전역도착, 당역진입, 당역도착 으로만 판단.
          ------------------------------------------------*/
-        
         var distanceRate: CGFloat = 0.00
         var isChange: Bool = false
         
@@ -216,18 +259,20 @@ extension MainDetailUseCase {
         else {
             // 받아온 현재 열차 상태가 이전과 다른경우에만 진입.
             let beforeCase = self.beforeArvlCase["\(trainNo)", default: "[none]"]
-            
-            Log.trace("♠️🟢상태 \(trainNo) \(destination) \(newarvlCase.rawValue)  before: \(beforeCase)")
+
             if beforeCase != newarvlCase.rawValue {
                 distanceRate = newarvlCase.subwayDistanceRate
                 isChange = true
             }
             
+            Log.trace("♠️🟢상태 \(trainNo) \(destination) \(newarvlCase.rawValue)  before: \(beforeCase)")
+            
         }
         
         // 추후 재비교를 위해 값을 할당시켜놓는다. -> trainNo와 같이 저장해야할듯.
         self.beforeArvlCase.updateValue(newarvlCase.rawValue, forKey: "\(trainNo)")
-        Log.trace("♠️🦷 DiC: \(beforeArvlCase)")
+//        Log.trace("♠️🦷 DiC: \(beforeArvlCase)")
+        
         return (distanceRate, isChange)
     }
 

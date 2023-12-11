@@ -37,7 +37,9 @@ struct SelectStationInfoView: View {
                                     .contentShape(Rectangle())
                                     .onTapGesture {
                                         mainDetailVM.userSelectedStation = station.statnNm
-                                        let temp = MyStation(nowSt: Int(station.statnId), nowStNm: station.statnNm, upSt: 0, upStNm: "", downSt: 0, downStNm: "")
+                                        
+                                        let temp: MyStation = .nowStNmInit(id: Int(station.statnId), name: station.statnNm)
+
                                         mainDetailVM.settingSubwayInfo(hosun: mainDetailVM.hosunInfo, selectStation: temp)
                                         userChoice = true
                                     }

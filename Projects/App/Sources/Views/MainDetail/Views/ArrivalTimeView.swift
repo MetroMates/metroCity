@@ -21,7 +21,7 @@ extension ArrivalTimeView {
     /// (상행, 하행) 구분
     @ViewBuilder func contentView(_ updn: MainDetailVM.UpDn) -> some View {
         var destiStation: String {
-            updn == .up ? vm.selectStationInfo.upStNm : vm.selectStationInfo.downStNm
+            updn == .up ? vm.selectStationInfo.upStationName : vm.selectStationInfo.downStationName
         }
         
         var trainDatas: [RealTimeSubway] {

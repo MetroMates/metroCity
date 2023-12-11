@@ -53,7 +53,7 @@ struct BookMarkView: View {
             }
         }
         .onAppear {
-            mainDetailVM.subscribe()
+//            mainDetailVM.subscribe()
             bookMarkVM.fetchBookMark()
         }
         .refreshable {
@@ -77,7 +77,9 @@ extension BookMarkView {
                         
                         mainDetailVM.getStationTotal(subwayNm: stationInfo.subwayNm)
                         mainDetailVM.selectedStationBorderColor = bookMarkVM.subwayHexCode(stationInfo.subwayId)
-                        let temp = MyStation(nowSt: Int(stationInfo.statnId), nowStNm: stationInfo.statnNm, upSt: 0, upStNm: "", downSt: 0, downStNm: "")
+                        
+                        let temp: MyStation = .nowStNmInit(id: Int(stationInfo.statnId), name: stationInfo.statnNm)
+                        
                         mainDetailVM.settingSubwayInfo(hosun: bookMarkVM.subwayLine(stationInfo.subwayId), selectStation: temp)
                     } label: {
                         LineCellView(stationName: stationInfo.statnNm,

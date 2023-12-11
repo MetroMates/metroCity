@@ -2,7 +2,8 @@
 
 import SwiftUI
 
-struct MainDetailView: View {     
+struct MainDetailView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @ObservedObject var vm: MainDetailVM
     @ObservedObject var mainVM: MainListVM
     var disappearHandler: () -> Void = {}
@@ -16,9 +17,11 @@ struct MainDetailView: View {
             }
             .onEnded { _ in
                 if self.offset > 50 {
-                    self.goUpStation()
+//                    self.goUpStation()
+                    self.confirmStationDatasAndPopSelectView(.up)
                 } else if self.offset < -50 {
-                    self.goDownStation()
+                    self.confirmStationDatasAndPopSelectView(.down)
+//                    self.goDownStation()
                 }
                 self.offset = 0
             }
@@ -60,6 +63,7 @@ struct MainDetailView: View {
         .overlay {
             SelectStationInfoView(mainDetailVM: vm, userChoice: $mainVM.userChoice, totalStationInfo: $vm.totalStationInfo)
         }
+        .overlay { SelectStationsPop }
         .onAppear {
             vm.timerStart()
             vm.fetchBookMark()
@@ -143,12 +147,12 @@ extension MainDetailView {
             
             HStack {
                 Button {
-                    self.goUpStation()
+                    self.confirmStationDatasAndPopSelectView(.up)
                 } label: {
                     HStack {
                         Image(systemName: "chevron.left")
                             .font(.caption)
-                        ScrollText(content: vm.selectStationInfo.upStNm)
+                        ScrollText(content: vm.selectStationInfo.upStationName)
                             .font(.subheadline)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -168,16 +172,16 @@ extension MainDetailView {
                         .font(.title3)
                         .padding(.horizontal, 5)
                         .foregroundColor(Color.black)
-                        .bold()       
+                        .bold()
                 }.onTapGesture {
                     mainVM.userChoice.toggle()
                 }
                 
                 Button {
-                    self.goDownStation()
+                    self.confirmStationDatasAndPopSelectView(.down)
                 } label: {
                     HStack {
-                        ScrollText(content: vm.selectStationInfo.downStNm)
+                        ScrollText(content: vm.selectStationInfo.downStationName)
                             .font(.subheadline)
                         Image(systemName: "chevron.right")
                             .font(.caption)
@@ -191,20 +195,93 @@ extension MainDetailView {
         }
     }
     
+    /// 표시해야할 역명이 두개이상일 경우 선택팝업
+    @ViewBuilder private var SelectStationsPop: some View {
+        var stationDatas: [String] {
+            if vm.updownStatus == .up {
+                return vm.selectStationInfo.upStNm
+            }
+            return vm.selectStationInfo.downStNm
+        }
+        
+        GeometryReader { geometry in
+            ZStack {
+                Color.black
+                    .opacity(0.3)
+                    .ignoresSafeArea()
+                
+                VStack(spacing: 20) {
+                    List(stationDatas, id: \.self) { station in
+                        Text(station)
+                            .foregroundColor(colorScheme == .dark ? Color(uiColor: .white) : Color.black)
+                            .onTapGesture {
+                                if vm.updownStatus == .up {
+                                    self.goUpStation(station)
+                                } else {
+                                    self.goDownStation(station)
+                                }
+                                vm.isSelectStation = false
+                            }
+                            .listRowSeparator(.hidden)
+                    }
+                    .background(colorScheme == .dark ? Color(uiColor: .systemGray5) :  Color.white)
+                    .listStyle(.plain)
+                    .frame(height: CGFloat(stationDatas.count) * 45)
+                }
+                .padding(.vertical, 10)
+                .frame(maxWidth: .infinity)
+                .frame(height: CGFloat(stationDatas.count) * 45)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 30)
+                        .stroke(.blue.opacity(0.1))
+                        .background(
+                            RoundedRectangle(cornerRadius: 30)
+                                .fill((colorScheme == .dark ? Color(uiColor: .systemGray5) :  Color.white))
+                        )
+                )
+                .padding(.horizontal, 100)
+                .padding(.bottom, geometry.size.height * 0.4)
+            }
+        }
+        .opacity(vm.isSelectStation ? 1.0 : 0.0)
+        .onTapGesture {
+            vm.isSelectStation = false
+        }
+    }
+    
 }
 
 // MARK: - 메서드
 extension MainDetailView {
-    private func goUpStation() {
-        if vm.selectStationInfo.upStNm != "종착" {
-            vm.selectStationInfo.nowStNm = vm.selectStationInfo.upStNm
+    private func confirmStationDatasAndPopSelectView(_ type: MainDetailVM.UpDn) {
+        if type == .up {
+            if vm.selectStationInfo.upStNm.count > 1 {
+                vm.updownStatus = .up
+                vm.isSelectStation = true
+            } else {
+                self.goUpStation(vm.selectStationInfo.upStationName)
+            }
+        } else {
+            if vm.selectStationInfo.downStNm.count > 1 {
+                vm.updownStatus = .down
+                vm.isSelectStation = true
+            } else {
+                self.goDownStation(vm.selectStationInfo.downStationName)
+            }
+        }
+    }
+    
+    private func goUpStation(_ upStation: String) {
+        if vm.selectStationInfo.upStationName != "종착" {
+            vm.selectStationInfo.nowStNm = upStation
             vm.settingSubwayInfo(hosun: vm.hosunInfo, selectStation: vm.selectStationInfo)
         }
     }
     
-    private func goDownStation() {
-        if vm.selectStationInfo.downStNm != "종착" {
-            vm.selectStationInfo.nowStNm = vm.selectStationInfo.downStNm
+    private func goDownStation(_ downStation: String) {
+        if vm.selectStationInfo.downStationName != "종착" {
+            vm.selectStationInfo.nowStNm = downStation
             vm.settingSubwayInfo(hosun: vm.hosunInfo, selectStation: vm.selectStationInfo)
         }
     }

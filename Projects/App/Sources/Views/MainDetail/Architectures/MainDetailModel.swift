@@ -12,33 +12,33 @@ struct MyStation: SubwayModel {
     /// 현재역명 (선택한역)
     var nowStNm: String
     /// 상행역 id ( statnFid )
-    let upSt: Int
+    let upSt: [Int]
     /// 상행역명
-    let upStNm: String
+    let upStNm: [String]
     /// 하행역  id ( statnTid )
-    let downSt: Int
+    let downSt: [Int]
     /// 하행역명
-    let downStNm: String
+    let downStNm: [String]
 }
 
 extension MyStation {
     static var emptyData: Self {
         return .init(nowSt: 0, nowStNm: "NONE",
-                     upSt: 0, upStNm: "",
-                     downSt: 0, downStNm: "")
+                     upSt: [], upStNm: [],
+                     downSt: [], downStNm: [])
     }
     
     static func nowStNmInit(id: Int, name: String) -> Self {
         return .init(nowSt: id,
                      nowStNm: name,
-                     upSt: 0,
-                     upStNm: "",
-                     downSt: 0,
-                     downStNm: "")
+                     upSt: [],
+                     upStNm: [],
+                     downSt: [],
+                     downStNm: [])
     }
     
     var downStationName: String {
-        let downArray: [String] = ["가산디지털단지","구일"] // self.downStNm 자리. -> [String]타입으로 변환 예정. 23.12.11
+        let downArray: [String] = self.downStNm // ["가산디지털단지", "구일"] // self.downStNm 자리. -> [String]타입으로 변환 예정. 23.12.11
         var resultString: String
         if downArray.count > 1 {
             resultString = downArray.joined(separator: "/")
@@ -49,7 +49,7 @@ extension MyStation {
     }
     
     var upStationName: String {
-        let downArray: [String] = ["가산디지털단지","구일"]
+        let downArray: [String] = self.upStNm // ["가산디지털단지", "구일"]
         var resultString: String
         if downArray.count > 1 {
             resultString = downArray.joined(separator: "/")
@@ -58,7 +58,7 @@ extension MyStation {
         }
         return resultString
     }
-    
+
 }
 
 /// 실시간 지하철 위치 정보
