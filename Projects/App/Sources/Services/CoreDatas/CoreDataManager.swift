@@ -47,7 +47,7 @@ final class CoreDataManger {
     }
             
     /// 데이터 조회 (조건가능 <한컬럼>)
-    @discardableResult func retrieve<Entity, Value>(type: Entity.Type,
+    func retrieve<Entity, Value>(type: Entity.Type,
                                  sortkey: WritableKeyPath<Entity, String>? = nil,
                                  sortAsc: Bool = true,
                                  column: WritableKeyPath<Entity, Value>? = nil,
@@ -76,7 +76,7 @@ final class CoreDataManger {
     }
     
     /// 데이터 조회 (전체조회)
-    @discardableResult func retrieve<Entity>(type: Entity.Type,
+    func retrieve<Entity>(type: Entity.Type,
                           sortkey: WritableKeyPath<Entity, String>? = nil,
                           sortAsc: Bool = true) -> [Entity] where Entity: NSManagedObject {
         Log.trace("📝CoreDataManager Retrieve")
