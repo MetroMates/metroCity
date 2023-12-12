@@ -26,6 +26,6 @@ struct BookMarkPreviewView: View {
     private let startVM = StartVM(type: .test)
     var body: some View {
         BookMarkView(bookMarkVM: BookMarkVM(useCase: MainListUseCase(repo: MainListRepository(networkStore: SubwayAPIService())), startVM: startVM),
-                      mainDetailVM: MainDetailVM(useCase: MainDetailUseCase(repo: MainDetailRepository(networkService: SubwayAPIService())), startVM: startVM))
+                     bookMarkDetailVM: BookMarkDetailVM(useCase: MainDetailUseCase(repo: MainDetailRepository(networkService: SubwayAPIService())), startVM: startVM))
     }
 }

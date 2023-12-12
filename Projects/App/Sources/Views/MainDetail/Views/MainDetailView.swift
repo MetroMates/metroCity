@@ -17,11 +17,9 @@ struct MainDetailView: View {
             }
             .onEnded { _ in
                 if self.offset > 50 {
-//                    self.goUpStation()
                     self.confirmStationDatasAndPopSelectView(.up)
                 } else if self.offset < -50 {
                     self.confirmStationDatasAndPopSelectView(.down)
-//                    self.goDownStation()
                 }
                 self.offset = 0
             }
