@@ -13,6 +13,7 @@ final class StartVM: ObservableObject {
     private let stationInfoSubject = CurrentValueSubject<[StationInfo], Never>([])
     private let lineInfoSubject = CurrentValueSubject<[SubwayLineColor], Never>([])
     private let locInfoSubject = CurrentValueSubject<[StationLocation], Never>([])
+    private let relateInfoSubject = CurrentValueSubject<[RelateStationInfo], Never>([])
     private let localVer: Int
     private let userDefaultKEY: String
     
@@ -34,8 +35,11 @@ final class StartVM: ObservableObject {
         fetchDatas()
     }
     
-    func dataPublisher() -> AnyPublisher<(Array<StationInfo>, Array<SubwayLineColor>, Array<StationLocation>), Never> {
-        return stationInfoSubject.zip(lineInfoSubject, locInfoSubject)
+    func dataPublisher() -> AnyPublisher<(Array<StationInfo>, 
+                                          Array<SubwayLineColor>,
+                                          Array<StationLocation>,
+                                          Array<RelateStationInfo>), Never> {
+        return stationInfoSubject.zip(lineInfoSubject, locInfoSubject, relateInfoSubject)
             .share()
             .eraseToAnyPublisher()
     }
@@ -43,19 +47,21 @@ final class StartVM: ObservableObject {
     private func fetchDatas() {
         dataManager.fetchDatas(statType: StationInfo.self,
                                subwayLineType: SubwayLineColor.self,
-                               locationInfoType: StationLocation.self) { serverVer, statInfos, lineInfos, locInfos  in
+                               locationInfoType: StationLocation.self,
+                               relateType: RelateStationInfo.self) { serverVer, statInfos, lineInfos, locInfos, relateInfos  in
             
             // 여기의 send부분이 해당 publisher에 구독, 즉 sink가 달리기도 전에 먼저 실행이 되게 되면
             // 추후 해당 publisher는 발행자로서의 기능을 상실하게 된다. 그래서 Passthrough가 아닌 CurrentValueSubject로 진행.
             self.stationInfoSubject.send(statInfos)
             self.lineInfoSubject.send(lineInfos)
             self.locInfoSubject.send(locInfos)
+            self.relateInfoSubject.send(relateInfos)
             
             // MARK: 테스트 다한후, .real로 변경
             if self.type == .real {
                 if serverVer > self.localVer {
                     Log.trace("🍜🐷📝 CoreData SET")
-                    self.setCoreData(ver: serverVer, datas: statInfos, lineInfos, locInfos)
+                    self.setCoreData(ver: serverVer, datas: statInfos, lineInfos, locInfos, relateInfos)
                 }
             }
             
@@ -68,6 +74,7 @@ final class StartVM: ObservableObject {
         coreDataManger.deleteAll(type: StationInfoEntity.self)
         coreDataManger.deleteAll(type: SubwayLineColorEntity.self)
         coreDataManger.deleteAll(type: StationLocationEntity.self)
+        coreDataManger.deleteAll(type: RelateStationInfoEntity.self)
     }
     
     private func setCoreData(ver: Int, datas: [FireStoreCodable]...) {
@@ -115,6 +122,13 @@ final class StartVM: ObservableObject {
                                 newStationLocation.route = stationLocation.route
                                 newStationLocation.statnId = stationLocation.statnId
                                 newStationLocation.statnNm = stationLocation.statnNm
+                                
+                            case let relateStation as RelateStationInfo: 
+                                let newrelateStationInfo = RelateStationInfoEntity(context: newContext)
+                                newrelateStationInfo.statnId = relateStation.statnId
+                                newrelateStationInfo.statnNm = relateStation.statnNm
+                                newrelateStationInfo.relateIds = relateStation.relateIds
+                                newrelateStationInfo.relateNms = relateStation.relateNms
                                 
                             default:
                                 // 처리할 타입이 추가될 경우에 대한 로직

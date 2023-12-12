@@ -6,11 +6,11 @@ import SwiftUI
 struct BookMarkView: View {
     @Environment(\.colorScheme) private var colorScheme
     @StateObject private var bookMarkVM: BookMarkVM
-    @StateObject private var mainDetailVM: MainDetailVM
+    @StateObject private var bookMarkDetailVM: BookMarkDetailVM
     
-    init(bookMarkVM: BookMarkVM, mainDetailVM: MainDetailVM) {
+    init(bookMarkVM: BookMarkVM, bookMarkDetailVM: BookMarkDetailVM) {
         self._bookMarkVM = StateObject(wrappedValue: bookMarkVM)
-        self._mainDetailVM = StateObject(wrappedValue: mainDetailVM)
+        self._bookMarkDetailVM = StateObject(wrappedValue: bookMarkDetailVM)
     }
     
     var contentBackColor: Color {
@@ -31,7 +31,7 @@ struct BookMarkView: View {
                             }
                             .padding()
                             .navigationDestination(isPresented: $bookMarkVM.isDetailPresented) {
-                                MainDetailView(vm: mainDetailVM, mainVM: bookMarkVM) {
+                                MainDetailView(vm: bookMarkDetailVM, mainVM: bookMarkVM) {
                                     bookMarkVM.fetchBookMark()
                                 }
                             }
@@ -53,7 +53,6 @@ struct BookMarkView: View {
             }
         }
         .onAppear {
-            mainDetailVM.subscribe()
             bookMarkVM.fetchBookMark()
         }
         .refreshable {
@@ -75,10 +74,12 @@ extension BookMarkView {
                         self.setLineAndstationInfo(line: bookMarkVM.subwayLine(stationInfo.subwayId))
                         bookMarkVM.isDetailPresented.toggle()
                         
-                        mainDetailVM.getStationTotal(subwayNm: stationInfo.subwayNm)
-                        mainDetailVM.selectedStationBorderColor = bookMarkVM.subwayHexCode(stationInfo.subwayId)
-                        let temp = MyStation(nowSt: Int(stationInfo.statnId), nowStNm: stationInfo.statnNm, upSt: 0, upStNm: "", downSt: 0, downStNm: "")
-                        mainDetailVM.settingSubwayInfo(hosun: bookMarkVM.subwayLine(stationInfo.subwayId), selectStation: temp)
+                        bookMarkDetailVM.getStationTotal(subwayNm: stationInfo.subwayNm)
+                        bookMarkDetailVM.selectedStationBorderColor = bookMarkVM.subwayHexCode(stationInfo.subwayId)
+                        
+                        let temp: MyStation = .nowStNmInit(id: Int(stationInfo.statnId), name: stationInfo.statnNm)
+                        
+                        bookMarkDetailVM.settingSubwayInfo(hosun: bookMarkVM.subwayLine(stationInfo.subwayId), selectStation: temp)
                     } label: {
                         LineCellView(stationName: stationInfo.statnNm,
                                      stationColor: bookMarkVM.subwayColor(stationInfo.subwayId))
@@ -98,8 +99,8 @@ extension BookMarkView {
 extension BookMarkView {
     /// 유저 맞춤 역정보데이터 mainDetailVm에도 똑같이 추가하는 함수
     private func setLineAndstationInfo(line: SubwayLineColor) {
-        mainDetailVM.selectStationLineInfos = bookMarkVM.subwayLineInfosAtStation
-        mainDetailVM.settingSubwayInfo(hosun: line, selectStation: bookMarkVM.nearStationInfo)
+        bookMarkDetailVM.selectStationLineInfos = bookMarkVM.subwayLineInfosAtStation
+        bookMarkDetailVM.settingSubwayInfo(hosun: line, selectStation: bookMarkVM.nearStationInfo)
         
     }
 }
