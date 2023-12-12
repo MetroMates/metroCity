@@ -30,23 +30,23 @@ final class MainDetailVM: ObservableObject {
   
     /// 네트워크 끊겼을 경우 메세지
     @Published var networkDiedToastMessage: Toast?
-    
     /// 북마크 추가/해제시 메세지
     @Published var bookMarkInfoToastMessage: Toast?
 
     /// 해당역 북마크 추가/해제 표시
     @Published var isBookMarked: Bool = false
+    /// 역이 두개이상일경우 선택팝업 표시
+    @Published var isSelectStation: Bool = false
+    @Published var updownStatus: UpDn = .up
     
     /// 호선정보 및 색상 MainListModel.swift
     @Published var hosunInfo: SubwayLineColor = .emptyData
-    
-    /// 열차 움직임 변수값만큼 해당 x offset에 적용
-    @Published var moveXoffSet: CGFloat = .zero
     
     // MARK: - Private Properties
     private var lineInfos = [SubwayLineColor]()
     private var stationInfos = [StationInfo]()
     private var locationInfos = [StationLocation]()
+    private var relateStationInfos = [RelateStationInfo]()
     private var anyCancellable: Set<AnyCancellable> = []
     private var timerCancel: AnyCancellable = .init {} // Timer만 생성했다 제거했다를 반복하기 위함.
     private var trainTimerCancel: AnyCancellable = .init {}
@@ -72,8 +72,7 @@ final class MainDetailVM: ObservableObject {
     func settingSubwayInfo(hosun: SubwayLineColor, selectStation: MyStation) {
         self.hosunInfo = hosun
         self.fetchInfo(selectStation)
-        // 열차 x offset값 초기화
-        self.moveXoffSet = .zero
+
         fetchBookMark()
     }
     
@@ -192,10 +191,11 @@ final class MainDetailVM: ObservableObject {
 extension MainDetailVM {
     private func startVMSubscribe() {
         startVM.dataPublisher()
-            .sink { (station, line, location) in
+            .sink { (station, line, location, relateInfo) in
                 self.stationInfos = station
                 self.lineInfos = line
                 self.locationInfos = location
+                self.relateStationInfos = relateInfo
             }
             .store(in: &anyCancellable)
     }
@@ -246,6 +246,7 @@ extension MainDetailVM {
     private func getStationInfo(_ stationName: String) -> MyStation {
         return useCase.getStationData(subwayID: Int(hosunInfo.subwayId),
                                       totalStatInfos: stationInfos,
+                                      relateStatInfos: relateStationInfos,
                                       selectStationName: stationName)
     }
     

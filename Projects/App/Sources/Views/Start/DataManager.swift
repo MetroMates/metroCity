@@ -16,20 +16,23 @@ struct VersionCheck: FireStoreCodable {
 protocol DataManager {
     func fetchDatas<Station: FireStoreCodable,
                     SubwayLine: FireStoreCodable,
-                    LocInfo: FireStoreCodable>(statType: Station.Type,
+                    LocInfo: FireStoreCodable,
+                    Relate: FireStoreCodable>(statType: Station.Type,
                                                subwayLineType: SubwayLine.Type,
                                                locationInfoType: LocInfo.Type,
-                                               completion: @escaping (Int, [Station], [SubwayLine], [LocInfo]) -> Void)
+                                              relateType: Relate.Type,
+                                               completion: @escaping (Int, [Station], [SubwayLine], [LocInfo], [Relate]) -> Void)
 }
 
 final class RealDataManager: DataManager, FireStoreServiceDelegate {
     private let coreManager = CoreDataManger.shared
 
-    func fetchDatas<Station, SubwayLine, LocInfo>(statType: Station.Type,
-                                                  subwayLineType: SubwayLine.Type,
-                                                  locationInfoType: LocInfo.Type,
-                                                  completion: @escaping (Int, [Station], [SubwayLine], [LocInfo]) -> Void) where Station: FireStoreCodable, SubwayLine: FireStoreCodable, LocInfo: FireStoreCodable {
-
+    func fetchDatas<Station, SubwayLine, LocInfo, Relate>(statType: Station.Type,
+                                                          subwayLineType: SubwayLine.Type,
+                                                          locationInfoType: LocInfo.Type,
+                                                          relateType: Relate.Type,
+                                                          completion: @escaping (Int, [Station], [SubwayLine], [LocInfo], [Relate]) -> Void) where Station: FireStoreCodable, SubwayLine: FireStoreCodable, LocInfo: FireStoreCodable, Relate: FireStoreCodable {
+        
         Task {
             // 1. 버전 체크 firestore에서 VersionCheck 컬렉션 조회하여 ver 값 가져와서 UserDefault의 ver값과 비교하기.
             let versionData = try? await firestoreFetch(colName: "VersionCheck", docID: "version", type: VersionCheck.self)
@@ -45,33 +48,35 @@ final class RealDataManager: DataManager, FireStoreServiceDelegate {
                     let stationInfos: [Station] = try await firestoreFetchAll(colName: "StationInfo", type: Station.self)
                     let subwayLineInfos: [SubwayLine] = try await firestoreFetchAll(colName: "SubwayLineColor", type: SubwayLine.self)
                     let locInfos: [LocInfo] = try await firestoreFetchAll(colName: "StationLocation", type: LocInfo.self)
+                    let relateInfos: [Relate] = try await firestoreFetchAll(colName: "RelateStationInfo", type: Relate.self)
                     
                     // 해당 값을 받아서 화면에서는 처리하는 중이어야 한다. -> setCoreData는 그 후 실행.
-                    completion(serverVer, stationInfos, subwayLineInfos, locInfos)
+                    completion(serverVer, stationInfos, subwayLineInfos, locInfos, relateInfos)
                     
                 } catch let error as NSError {
                     let fetchError = NSError(domain: "FireFetchAll", code: error.code)
                     Log.error(fetchError.localizedDescription)
                     
                     // 배열 3개중 하나라도 데이터가 안들어오면 앱실행이 불가능. 앱을 종료시키고 다시 실행하게 해야한다.
-                    completion(serverVer, [], [], [])
+                    completion(serverVer, [], [], [], [])
                 }
                 
             } else {
                 Log.trace("📝GetCoreData 로딩..")
                 // 무조건 coreData에서 Fetch.
-                getCoreData { stationInfo, lineInfo, locInfo in
+                getCoreData { stationInfo, lineInfo, locInfo, relateInfo in
                     let statInfos = stationInfo as? [Station] ?? []
                     let lineInfos = lineInfo as? [SubwayLine] ?? []
                     let locInfos = locInfo as? [LocInfo] ?? []
+                    let relateInfos = relateInfo as? [Relate] ?? []
                     
-                    completion(serverVer, statInfos, lineInfos, locInfos)
+                    completion(serverVer, statInfos, lineInfos, locInfos, relateInfos)
                 }
             }
         }
     }
     
-    private func getCoreData(completion: @escaping ([StationInfo], [SubwayLineColor], [StationLocation]) -> Void) {
+    private func getCoreData(completion: @escaping ([StationInfo], [SubwayLineColor], [StationLocation], [RelateStationInfo]) -> Void) {
         DispatchQueue.global(qos: .default).async { [self] in
             let stationEntity = coreManager.retrieve(type: StationInfoEntity.self)
             let stationInfo = stationEntity.flatMap { info -> [StationInfo] in
@@ -94,8 +99,18 @@ final class RealDataManager: DataManager, FireStoreServiceDelegate {
                 return infos
             }
             
+            let relateEntity = coreManager.retrieve(type: RelateStationInfoEntity.self)
+            let relateInfo = relateEntity.flatMap { info -> [RelateStationInfo] in
+                var infos: [RelateStationInfo] = []
+                let relate: RelateStationInfo = .init(statnId: info.statnId, statnNm: info.statnNm ?? "", relateIds: info.relateIds ?? [], relateNms: info.relateNms ?? [])
+                
+                infos.append(relate)
+                
+                return infos
+            }
+            
             DispatchQueue.main.async {
-                completion(stationInfo, lineInfo, locInfo)
+                completion(stationInfo, lineInfo, locInfo, relateInfo)
             }
         }
     }
@@ -103,17 +118,19 @@ final class RealDataManager: DataManager, FireStoreServiceDelegate {
 }
 
 final class TestDataManager: DataManager {
-    func fetchDatas<Station, SubwayLine, LocInfo>(statType: Station.Type,
-                                                  subwayLineType: SubwayLine.Type,
-                                                  locationInfoType: LocInfo.Type,
-                                                  completion: @escaping (Int, [Station], [SubwayLine], [LocInfo]) -> Void) where Station: FireStoreCodable, SubwayLine: FireStoreCodable, LocInfo: FireStoreCodable {
+    func fetchDatas<Station, SubwayLine, LocInfo, Relate>(statType: Station.Type,
+                                                          subwayLineType: SubwayLine.Type,
+                                                          locationInfoType: LocInfo.Type,
+                                                          relateType: Relate.Type,
+                                                          completion: @escaping (Int, [Station], [SubwayLine], [LocInfo], [Relate]) -> Void) where Station: FireStoreCodable, SubwayLine: FireStoreCodable, LocInfo: FireStoreCodable, Relate: FireStoreCodable {
         
-            let stationInfos = Station.mockList
-            let subwayLineInfos = SubwayLine.mockList
-            let locInfos = LocInfo.mockList
-
-            completion(-1, stationInfos, subwayLineInfos, locInfos)
-
+        let stationInfos = Station.mockList
+        let subwayLineInfos = SubwayLine.mockList
+        let locInfos = LocInfo.mockList
+        let relateInfos = Relate.mockList
+        
+        completion(-1, stationInfos, subwayLineInfos, locInfos, relateInfos)
+        
     }
     
 }

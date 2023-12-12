@@ -2,6 +2,7 @@
 
 import SwiftUI
 
+// upSt, downSt 모두 배열로 만들어주기로 한다.
 /// 역정보 (호선 내부용) -> 호선에 대한 현재역, 이전역, 다음역
 ///
 /// Arrived에서 데이터 가져올수 있다.
@@ -11,31 +12,53 @@ struct MyStation: SubwayModel {
     /// 현재역명 (선택한역)
     var nowStNm: String
     /// 상행역 id ( statnFid )
-    let upSt: Int
+    let upSt: [Int]
     /// 상행역명
-    let upStNm: String
+    let upStNm: [String]
     /// 하행역  id ( statnTid )
-    let downSt: Int
+    let downSt: [Int]
     /// 하행역명
-    let downStNm: String
+    let downStNm: [String]
 }
 
 extension MyStation {
     static var emptyData: Self {
         return .init(nowSt: 0, nowStNm: "NONE",
-                     upSt: 0, upStNm: "",
-                     downSt: 0, downStNm: "")
+                     upSt: [], upStNm: [],
+                     downSt: [], downStNm: [])
     }
     
     static func nowStNmInit(id: Int, name: String) -> Self {
         return .init(nowSt: id,
                      nowStNm: name,
-                     upSt: 0,
-                     upStNm: "",
-                     downSt: 0,
-                     downStNm: "")
+                     upSt: [],
+                     upStNm: [],
+                     downSt: [],
+                     downStNm: [])
     }
     
+    var downStationName: String {
+        let downArray: [String] = self.downStNm // ["가산디지털단지", "구일"] // self.downStNm 자리. -> [String]타입으로 변환 예정. 23.12.11
+        var resultString: String
+        if downArray.count > 1 {
+            resultString = downArray.joined(separator: "/")
+        } else {
+            resultString = downArray.first ?? ""
+        }
+        return resultString
+    }
+    
+    var upStationName: String {
+        let downArray: [String] = self.upStNm // ["가산디지털단지", "구일"]
+        var resultString: String
+        if downArray.count > 1 {
+            resultString = downArray.joined(separator: "/")
+        } else {
+            resultString = downArray.first ?? ""
+        }
+        return resultString
+    }
+
 }
 
 /// 실시간 지하철 위치 정보
@@ -56,8 +79,8 @@ struct RealTimeSubway: SubwayModelIdentifier {
     let trainType: String
     /// 정렬 순서 1 (몇번째 전역에 위치한지 정보)
     let stCnt: Int
-    /// 정렬순서 2 (해당역에 몇번째로 들어오는 열차인지) -> 데이터가 신뢰성은 없음.
-    let sortOrder: Int
+//    /// 정렬순서 2 (해당역에 몇번째로 들어오는 열차인지) -> 데이터가 신뢰성은 없음.
+//    let sortOrder: Int
     /// 표출메세지 : 전역 도착, 130초전 등등
     let message: String
     /// 무슨행 ( 광운대행, 청량ㅇ리행 )
@@ -66,6 +89,10 @@ struct RealTimeSubway: SubwayModelIdentifier {
     let trainLocation: CGFloat
     /// 도착 코드
     let arvlCode: String
+    /// 열차 위치기준 코드
+    let arvlCaseCode: ArvlCase
+    /// 열차위치 변경여부
+    let isChange: Bool
 }
 
 extension RealTimeSubway {
@@ -94,16 +121,75 @@ extension RealTimeSubway {
                      trainNo: "",
                      trainType: "",
                      stCnt: 0,
-                     sortOrder: 0,
                      message: "",
                      trainDestiStation: "",
                      trainLocation: 0,
-                     arvlCode: "-1")
+                     arvlCode: "-1", 
+                     arvlCaseCode: .none,
+                     isChange: true)
     }
     
-    // 여러개 들어올 예정.
-    static var list: [Self] {
-        return []
+}
+
+enum ArvlCase: String {
+    case start
+    case middle
+    case end
+    case none
+    
+    var subwayDistanceRate: CGFloat {
+        switch self {
+        case .start:
+            return 0.95
+        case .middle:
+            return 0.7
+        case .end:
+            return 0.5
+        case .none:
+            return 0
+        }
     }
     
+    static func arvlCDConvert(_ code: ArvlCD) -> Self {
+        switch code {
+        case .five, .three, .four:
+            return .start
+        case .zero:
+            return .middle
+        case .one, .two:
+            return .end
+        default:
+            return .none
+        }
+    }
+}
+
+/// 전철정보 Api ArvlCD info
+enum ArvlCD: String {
+    case zero = "0"
+    case one = "1"
+    case two = "2"
+    case three = "3"
+    case four = "4"
+    case five = "5"
+    case ninetynine = "99"
+    
+    var name: String {
+        switch self {
+        case .zero:
+            return "당역 진입"
+        case .one:
+            return "당역 도착"
+        case .two:
+            return "출발"
+        case .three:
+            return "전역 출발"
+        case .four:
+            return "전역 진입"
+        case .five:
+            return "전역 도착"
+        case .ninetynine:
+            return "운행중"
+        }
+    }
 }

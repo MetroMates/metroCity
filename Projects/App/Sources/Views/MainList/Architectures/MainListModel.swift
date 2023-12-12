@@ -54,6 +54,26 @@ extension StationInfo {
     
 }
 
+/// 연관 역정보
+struct RelateStationInfo: FireStoreCodable {
+    let id = UUID().uuidString
+    let statnId: Int32
+    let statnNm: String
+    let relateIds: [Int32]
+    let relateNms: [String]
+}
+
+extension RelateStationInfo {
+    static var mockList: [Self] = [
+        .init(statnId: 1001000141, statnNm: "구로", relateIds: [1001080142, 1001000142], relateNms: ["가산디지털단지", "구일"]),
+//        .init(statnId: 1001000141, statnNm: "구로", relateIds: [1001080142, 1001000142], relateNms: ["가산디지털단지", "구일"])
+    ]
+    static var emptyData: Self = .init(statnId: 0,
+                                       statnNm: "",
+                                       relateIds: [],
+                                       relateNms: [])
+}
+
 /// MainList를 구성하는 SubwayLine 모델
 /// FireStore에서 fetch해온다.
 struct SubwayLineColor: FireStoreCodable, Identifiable {
@@ -66,7 +86,7 @@ struct SubwayLineColor: FireStoreCodable, Identifiable {
     let lineColorHexCode: String
     
     init(subwayId: Int32, subwayNm: String, lineColorHexCode: String) {
-//        self.id = UUID().uuidString // -> 여기서 주면 fetch가 안됨.
+//        self.id = UUID().uuidString // -> 여기서 주면 fetch가 안됨. Firebase에서 id를 가져오는 과정에서의 충돌.
         self.subwayId = subwayId
         self.subwayNm = subwayNm
         self.lineColorHexCode = lineColorHexCode
