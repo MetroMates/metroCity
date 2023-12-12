@@ -122,7 +122,7 @@ extension MainListVM {
     private func startVMSubscribe() {
         startVM.dataPublisher()
             .receive(on: DispatchQueue.main)
-            .sink { (station, line, location) in
+            .sink { (station, line, location, _) in
                 self.stationInfos = station
                 self.subwayLineInfos = line
                 self.locationInfos = location

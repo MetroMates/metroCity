@@ -191,10 +191,11 @@ final class MainDetailVM: ObservableObject {
 extension MainDetailVM {
     private func startVMSubscribe() {
         startVM.dataPublisher()
-            .sink { (station, line, location) in
+            .sink { (station, line, location, relateInfo) in
                 self.stationInfos = station
                 self.lineInfos = line
                 self.locationInfos = location
+                self.relateStationInfos = relateInfo
             }
             .store(in: &anyCancellable)
     }

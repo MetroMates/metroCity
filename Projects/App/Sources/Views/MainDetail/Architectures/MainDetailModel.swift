@@ -152,7 +152,7 @@ enum ArvlCase: String {
     
     static func arvlCDConvert(_ code: ArvlCD) -> Self {
         switch code {
-        case .five, .three:
+        case .five, .three, .four:
             return .start
         case .zero:
             return .middle

@@ -213,6 +213,8 @@ extension MainDetailView {
                 VStack(spacing: 20) {
                     List(stationDatas, id: \.self) { station in
                         Text(station)
+                            .frame(maxWidth: .infinity)
+                            .contentShape(Rectangle())
                             .foregroundColor(colorScheme == .dark ? Color(uiColor: .white) : Color.black)
                             .onTapGesture {
                                 if vm.updownStatus == .up {

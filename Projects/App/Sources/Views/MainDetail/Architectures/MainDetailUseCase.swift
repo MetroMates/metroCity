@@ -34,19 +34,19 @@ final class MainDetailUseCase {
         }.first
         
         if let newDatas {
-            var upStCodes: [Int] = []
-            var downStCodes: [Int] = []
+            var upStCodes: [Int32] = []
+            var downStCodes: [Int32] = []
             var upStNms: [String] = []
             var downStNms: [String] = []
    
             // 상행일때 -1
-            var upSt = Int(newDatas.statnId) - 1
-            var downSt = Int(newDatas.statnId) + 1
+            var upSt = newDatas.statnId - 1
+            var downSt = newDatas.statnId + 1
             
             var upStNm = totalStatInfos.filter { $0.statnId == upSt }.first?.statnNm ?? "종착"
             var downStNm = totalStatInfos.filter { $0.statnId == downSt }.first?.statnNm ?? "종착"
             
-            let relateTest = RelateStationInfo.mockList
+            let relateTest = relateStatInfos // RelateStationInfo.mockList
             let relateInfos = relateTest.filter { $0.statnId == newDatas.statnId }.first ?? .emptyData
             
             // 연관 역명이 존재함. -> ex) 구로: 가산디지털단지, 구일 /  신도림: 도림천, 문래
@@ -104,9 +104,9 @@ final class MainDetailUseCase {
             
             return .init(nowSt: Int(newDatas.statnId),
                          nowStNm: value,
-                         upSt: upStCodes,
+                         upSt: upStCodes.map { Int($0) },
                          upStNm: upStNms,
-                         downSt: downStCodes,
+                         downSt: downStCodes.map { Int($0) },
                          downStNm: downStNms)
         }
         
@@ -253,7 +253,7 @@ extension MainDetailUseCase {
         if (statnNm != beforeStatnNm) || (subwayLineId != beforeSubwayId) {
             distanceRate = newarvlCase.subwayDistanceRate
             isChange = true
-            Log.trace("♠️역 \(trainNo) \(destination)  \(statnNm)  before: \(beforeStatnNm)")
+            Log.trace("♠️역 \(trainNo) \(destination)  \(statnNm)  \(distanceRate) ARVLCode: \(arvlCode) newarvLCAse: \(newarvlCase) before: \(beforeStatnNm)")
         }
         // 새로고침일때 진입.
         else {
@@ -285,7 +285,7 @@ extension MainDetailUseCase {
         return Int(slicedString) ?? 0
     }
     
-    /// 첫번재 도착인지 두번째 도착인지 반환 -> 추후 삭제할듯 23.12.01
+    // 첫번재 도착인지 두번째 도착인지 반환 -> 추후 삭제할듯 23.12.01
 //    private func trainSecondSortKey(ordkey: String) -> Int {
 //        let startIndex = ordkey.index(ordkey.startIndex, offsetBy: 1)
 //        let endIndex = ordkey.index(startIndex, offsetBy: 1)

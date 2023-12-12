@@ -57,9 +57,9 @@ extension StationInfo {
 /// 연관 역정보
 struct RelateStationInfo: FireStoreCodable {
     let id = UUID().uuidString
-    let statnId: Int
+    let statnId: Int32
     let statnNm: String
-    let relateIds: [Int]
+    let relateIds: [Int32]
     let relateNms: [String]
 }
 
