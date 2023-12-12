@@ -10,15 +10,16 @@ struct StartView: View {
     @StateObject private var mainVM: MainListVM
     @StateObject private var mainDetailVM: MainDetailVM
     @StateObject private var bookMarkVM: BookMarkVM
+    @StateObject private var bookMarkDetailVM: BookMarkDetailVM
     
     init(startVM: StartVM) {
         self.startVM = startVM
         let mainListUseCase = MainListUseCase(repo: MainListRepository(networkStore: SubwayAPIService()))
         
         self._mainVM = StateObject(wrappedValue: MainListVM(useCase: mainListUseCase, startVM: startVM))
-        self._mainDetailVM = StateObject(wrappedValue: MainDetailVM(useCase: MainDetailUseCase(repo: MainDetailRepository(networkService: SubwayAPIService())),
-                                                                    startVM: startVM))
+        self._mainDetailVM = StateObject(wrappedValue: MainDetailVM(useCase: MainDetailUseCase(repo: MainDetailRepository(networkService: SubwayAPIService())), startVM: startVM))
         self._bookMarkVM = StateObject(wrappedValue: BookMarkVM(useCase: mainListUseCase, startVM: startVM))
+        self._bookMarkDetailVM = StateObject(wrappedValue: BookMarkDetailVM(useCase: MainDetailUseCase(repo: MainDetailRepository(networkService: SubwayAPIService())), startVM: startVM))
     }
   
     var selectedScheme: ColorScheme? {
@@ -45,7 +46,7 @@ struct StartView: View {
                 .tag(0)
                 
                 // 즐겨찾기
-                BookMarkView(bookMarkVM: bookMarkVM, mainDetailVM: mainDetailVM)
+                BookMarkView(bookMarkVM: bookMarkVM, bookMarkDetailVM: bookMarkDetailVM)
                     .tabItem {
                         EmptyView()
                     }
@@ -59,6 +60,7 @@ struct StartView: View {
                     .tag(2)
             }
             .preferredColorScheme(selectedScheme)
+            
             TabBarItem
             
         }

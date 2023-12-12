@@ -57,8 +57,6 @@ final class StartVM: ObservableObject {
             self.locInfoSubject.send(locInfos)
             self.relateInfoSubject.send(relateInfos)
             
-            Log.trace("🫣 StartVM Fetchs \(relateInfos)")
-            
             // MARK: 테스트 다한후, .real로 변경
             if self.type == .real {
                 if serverVer > self.localVer {

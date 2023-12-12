@@ -4,7 +4,7 @@ import SwiftUI
 import Combine
 
 /// 실시간 전철 도착 정보 ViewModel
-final class MainDetailVM: ObservableObject {
+class MainDetailVM: ObservableObject {
     /// 검색 Text
     @Published var searchText: String = ""
     @Published var isSearching: Bool = false
