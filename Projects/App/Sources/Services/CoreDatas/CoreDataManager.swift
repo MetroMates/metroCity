@@ -32,7 +32,7 @@ final class CoreDataManger {
     
     // MARK: - CRUD Methods
     /// 여러 Entity의 내용을 한번에 등록할 경우.
-    func create(contextValue: NSManagedObjectContext? = nil,
+    @discardableResult func create(contextValue: NSManagedObjectContext? = nil,
                 newEntityDataHandler: () -> Void) -> Bool {
         Log.trace("📝 CoreDataManager create")
         var context: NSManagedObjectContext
@@ -47,7 +47,7 @@ final class CoreDataManger {
     }
             
     /// 데이터 조회 (조건가능 <한컬럼>)
-    func retrieve<Entity, Value>(type: Entity.Type,
+    @discardableResult func retrieve<Entity, Value>(type: Entity.Type,
                                  sortkey: WritableKeyPath<Entity, String>? = nil,
                                  sortAsc: Bool = true,
                                  column: WritableKeyPath<Entity, Value>? = nil,
@@ -76,7 +76,7 @@ final class CoreDataManger {
     }
     
     /// 데이터 조회 (전체조회)
-    func retrieve<Entity>(type: Entity.Type,
+    @discardableResult func retrieve<Entity>(type: Entity.Type,
                           sortkey: WritableKeyPath<Entity, String>? = nil,
                           sortAsc: Bool = true) -> [Entity] where Entity: NSManagedObject {
         Log.trace("📝CoreDataManager Retrieve")
@@ -97,7 +97,7 @@ final class CoreDataManger {
     
     /// 수정
     /// clouser에 entity.setValue("변경할 데이터", forKey: "컬럼명") 의 형식으로 작성.!!
-    func update<Entity, Value>(type: Entity.Type,
+    @discardableResult func update<Entity, Value>(type: Entity.Type,
                                column: WritableKeyPath<Entity, Value>,
                                value: Value,
                                contextValue: NSManagedObjectContext? = nil,
@@ -119,7 +119,7 @@ final class CoreDataManger {
     }
 
     /// 해당 데이터만 삭제
-    func delete<Entity, Value>(type: Entity.Type,
+    @discardableResult func delete<Entity, Value>(type: Entity.Type,
                                column: WritableKeyPath<Entity, Value>,
                                value: Value,
                                contextValue: NSManagedObjectContext? = nil) -> Bool where Entity: NSManagedObject {
@@ -140,7 +140,7 @@ final class CoreDataManger {
     }
     
     /// 해당 타입 전체삭제.
-    func deleteAll<Entity>(type: Entity.Type,
+    @discardableResult func deleteAll<Entity>(type: Entity.Type,
                            contextValue: NSManagedObjectContext? = nil) -> Bool where Entity: NSManagedObject {
         Log.trace("📝 CoreDataManager DeleteAll")
         var context: NSManagedObjectContext
