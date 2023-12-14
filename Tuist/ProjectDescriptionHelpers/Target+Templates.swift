@@ -32,23 +32,25 @@ extension Target {
 //        }
     
         // Target에 xcconfig 적용하는 로직. -> 현재는 프로젝트의 xcconfig를 받아서 사용할 것이기 때문에 사용하지 않는다.
-//        let isProductApp = product == .app ? true : false
-//
-//        var setting: Settings?
-//
-//        if isProductApp {
-//            // 빌드 세팅 (xcconfig 있을경우)
+        let isProductApp = product == .app ? true : false
+
+        var setting: Settings?
+
+        if isProductApp {
+            setting = .settings(base: ["OTHER_LDFLAGS":"-ObjC"])
+            // 빌드 세팅 (xcconfig 있을경우)
 //            setting = Settings.settings(configurations: [
 //                .debug(name: "Debug", xcconfig: .relativeToRoot("\(projectFolder)/App/Resources/Config/Secrets.xcconfig")),
 //                .release(name: "Release", xcconfig: .relativeToRoot("\(projectFolder)/App/Resources/Config/Secrets.xcconfig")),
 //            ], defaultSettings: .recommended)
-//        } else {
-//            // 빌드 세팅 (기본)
+        } else {
+            // 빌드 세팅 (기본)
+            setting = nil
 //            setting = .settings(base: [:],
 //                                              configurations: [.debug(name: .debug),
 //                                                               .release(name: .release)],
 //                                              defaultSettings: .recommended)
-//        }
+        }
         
         let sources: SourceFilesList = ["Sources/**"]
 //        ["\(projectFolder)/\(folderNm)Sources/**"]
@@ -88,8 +90,8 @@ extension Target {
 //                                headers: <#T##Headers?#>,
 //                                entitlements: <#T##Entitlements?#>,
                                 scripts: scripts,
-                                dependencies: dependencies
-//                                settings: <#T##Settings?#>,
+                                dependencies: dependencies,
+                                settings: setting
 //                                coreDataModels: <#T##[CoreDataModel]#>,
 //                                environmentVariables: <#T##[String : EnvironmentVariable]#>,
 //                                launchArguments: <#T##[LaunchArgument]#>,
