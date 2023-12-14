@@ -143,7 +143,7 @@ Tuist/Dependencies
 # => 전체 plist를 다 제외함.
 # **/*.plist  
 # Support/*.plist
-# GoogleService-Info.plist
+GoogleService-Info.plist
 
 # XCconfig
 **.xcconfig
