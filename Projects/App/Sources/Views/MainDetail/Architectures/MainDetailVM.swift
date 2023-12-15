@@ -27,12 +27,14 @@ class MainDetailVM: ObservableObject {
     @Published var selectedStationBorderColor: String = ""
     /// 서연추가) 유저가 역팝업뷰에서 역 선택하였을 때 배경 분기처리를 위한 프로퍼티
     @Published var userSelectedStation: String?
-  
+    /// 서연추가) 검색으로 변화하는 화면에서 색상 재설정을 위한 프로퍼티
+    @Published var searchColor: String = ""
+    
     /// 네트워크 끊겼을 경우 메세지
     @Published var networkDiedToastMessage: Toast?
     /// 북마크 추가/해제시 메세지
     @Published var bookMarkInfoToastMessage: Toast?
-
+    
     /// 해당역 북마크 추가/해제 표시
     @Published var isBookMarked: Bool = false
     /// 역이 두개이상일경우 선택팝업 표시
@@ -72,7 +74,6 @@ class MainDetailVM: ObservableObject {
     func settingSubwayInfo(hosun: SubwayLineColor, selectStation: MyStation) {
         self.hosunInfo = hosun
         self.fetchInfo(selectStation)
-
         fetchBookMark()
     }
     
@@ -117,17 +118,17 @@ class MainDetailVM: ObservableObject {
         let line = lineInfos.filter { $0.subwayId == item.subwayId }.first ?? .emptyData
         
         self.settingSubwayInfo(hosun: line, selectStation: mystation)
-
+        
     }
     
     /// 타이머 시작
     func timerStart() {
         self.timerCancel = Timer.publish(every: gapiFetchTimeSecond, on: .main, in: .default)
-                    .autoconnect()
-                    .sink { _ in
-                        self.settingSubwayInfoWithDebounce(selectStationInfo: self.selectStationInfo,
-                                  lineInfo: self.hosunInfo)
-                    }
+            .autoconnect()
+            .sink { _ in
+                self.settingSubwayInfoWithDebounce(selectStationInfo: self.selectStationInfo,
+                                                   lineInfo: self.hosunInfo)
+            }
         
     }
     
@@ -205,7 +206,7 @@ extension MainDetailVM {
         let stationData = stationName
         
         stationInfos = stationInfos.filter { $0.subwayId == hosunInfo.subwayId }
- 
+        
         if !stationInfos.contains(where: { $0.statnNm == stationName }) {
             // 선택한 라인에서 역코드가 제일 작은걸 가져온다.
             if let firstData = stationInfos.first {
@@ -255,10 +256,10 @@ extension MainDetailVM {
     private func getRealTimeInfo(selectStationInfo: MyStation) {
         upRealTimeInfos.removeAll() // 초기화
         downRealTimeInfos.removeAll() // 초기화
-
+        
         // 해당 호선번호로 filter, 역명으로 openAPI 통신.
         useCase.recievePublisher(subwayLine: "\(hosunInfo.subwayId)", stationInfo: selectStationInfo)
-            // sink로 구독시 publisher의 타입의 에러 형태가 Never가 아닐경우에는 receiveCompelete도 무조건 작성해야함.
+        // sink로 구독시 publisher의 타입의 에러 형태가 Never가 아닐경우에는 receiveCompelete도 무조건 작성해야함.
             .sink { result in
                 switch result {
                 case .finished:
@@ -272,14 +273,14 @@ extension MainDetailVM {
                     }
                 }
             } receiveValue: { data in
- 
+                
                 let newData = data.sorted { $0.stCnt < $1.stCnt }
                 Log.trace("데이터 갯수: \(newData.count)")
                 
                 // 상행
-                self.upRealTimeInfos = Array(newData.filter { $0.updnIndex == "0" }.prefix(6))
+                self.upRealTimeInfos = Array(newData.filter { $0.updnIndex == "0" }.prefix(4))
                 // 하행
-                self.downRealTimeInfos = Array(newData.filter { $0.updnIndex == "1" }.prefix(6))
+                self.downRealTimeInfos = Array(newData.filter { $0.updnIndex == "1" }.prefix(4))
             }
             .store(in: &anyCancellable)
         
@@ -314,5 +315,13 @@ extension MainDetailVM {
             totalStationInfo.append(station)
         }
         self.totalStationInfo.sort { $0.statnId < $1.statnId }
+    }
+    
+    func findStationColor(subwayNm: String) {
+        for color in self.selectStationLineInfos {
+            if color.subwayNm == subwayNm {
+                self.searchColor = color.lineColorHexCode
+            }
+        }
     }
 }

@@ -24,34 +24,45 @@ struct SettingView: View {
         NavigationStack {
             VStack {
                 List {
-                    Section("테마 설정") {
-                        HStack {
-                            Image(systemName: "paintpalette")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 24, height: 24)
-                                .foregroundColor(.secondary)
-                                .padding(.trailing)
-
-                            Picker(selection: $systemTheme, label: Text("테마")) {
-                                ForEach(SchemeType.allCases, id: \.self) { item in
-                                    Text(item.schemeType)
-                                        .tag(item.rawValue)
+                    Group {
+                        Section("테마 설정") {
+                            HStack {
+                                Image(systemName: "paintpalette")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 24, height: 24)
+                                    .foregroundColor(.secondary)
+                                    .padding(.trailing)
+                                
+                                Picker(selection: $systemTheme, label: Text("테마")) {
+                                    ForEach(SchemeType.allCases, id: \.self) { item in
+                                        Text(item.schemeType)
+                                            .tag(item.rawValue)
+                                    }
                                 }
                             }
+                            .preferredColorScheme(selectedScheme)
                         }
-                        .preferredColorScheme(selectedScheme)
+                        
+                        Section("앱 정보") {
+                            /// 버전정보 뷰
+                            AppInfoView(settingVC: settingVC)
+                            /// 문의하기 뷰
+                            contactView(settingVC: settingVC)
+                            /// 활용한 데이터 소개 뷰
+                            UseDataView(settingVC: settingVC)
+                        }
                     }
+                    .listRowBackground(colorScheme == .light ? Color.gray.opacity(0.1) : Color.white.opacity(0.1))
                     
-                    Section("앱 정보") {
-                        /// 버전정보 뷰
-                        AppInfoView(settingVC: settingVC)
-                        /// 문의하기 뷰
-                        contactView(settingVC: settingVC)
-                        /// 활용한 데이터 소개 뷰
-                        UseDataView(settingVC: settingVC)
-                    }
+                    Text("지하철 실시간 도착정보는\nTOPIS에서 제공되는 시스템으로 데이터가 따로 기록되지 않으며,\n데이터와 실제 지하철 시간에 차이가 있을 수 있습니다.")
+                        .font(.caption)
+                        .multilineTextAlignment(.center)
+                        .listRowBackground(Color.clear)
+                    
                 }
+                .scrollContentBackground(.hidden)
+                
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

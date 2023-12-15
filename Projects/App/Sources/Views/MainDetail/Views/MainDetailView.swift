@@ -6,9 +6,9 @@ struct MainDetailView: View {
     @Environment(\.colorScheme) private var colorScheme
     @ObservedObject var vm: MainDetailVM
     @ObservedObject var mainVM: MainListVM
-    var disappearHandler: () -> Void = {}
     @State private var offset: CGFloat = .zero
     @State private var rotationAngle: Angle = .zero
+    
     private var swipeToNext: some Gesture {
         DragGesture()
             .onChanged { value in
@@ -42,7 +42,7 @@ struct MainDetailView: View {
                     .padding(.top, 10)
                 
                 SubwayRouteMapView(vm: vm)
-                    .padding(.top, 30)
+                    .padding(.top, 20)
                     .gesture(swipeToNext)
                 
                 Spacer()
@@ -68,7 +68,6 @@ struct MainDetailView: View {
         }
         .onDisappear { 
             vm.timerStop()
-            disappearHandler()
         }
         .onTapGesture {
             self.endTextEditing()
@@ -223,8 +222,8 @@ extension MainDetailView {
                                 vm.isSelectStation = false
                             }
                             .listRowSeparator(.hidden)
+                            .listRowBackground(colorScheme == .dark ? Color(uiColor: .systemGray5) :  Color.white)
                     }
-                    .background(colorScheme == .dark ? Color(uiColor: .systemGray5) :  Color.white)
                     .listStyle(.plain)
                     .frame(height: CGFloat(stationDatas.count) * 45)
                 }

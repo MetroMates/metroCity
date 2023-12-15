@@ -32,7 +32,7 @@ extension ArrivalTimeView {
             Section {
                 VStack(alignment: .leading, spacing: 10) {
                     trainList(trainDatas)
-                        .frame(height: 150)
+                        .frame(height: 110)
                 }
                 .font(.callout)
                 .frame(maxWidth: .infinity)

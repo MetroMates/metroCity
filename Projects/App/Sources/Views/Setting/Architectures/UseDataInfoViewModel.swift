@@ -9,8 +9,7 @@ struct DataList: Hashable {
 
 final class UseDataInfoViewModel: ObservableObject {
     var linkList: [DataList] = [
-        .init(title: "서울시 지하철 실시간 도착정보", link: "https://data.seoul.go.kr/dataList/OA-12764/F/1/datasetView.do"),
-        .init(title: "서울시 지하철 실시간 위치정보", link: "https://data.seoul.go.kr/dataList/OA-12601/A/1/datasetView.do")
+        .init(title: "서울시 지하철 실시간 도착정보", link: "https://data.seoul.go.kr/dataList/OA-12764/F/1/datasetView.do")
     ]
     
     @ViewBuilder

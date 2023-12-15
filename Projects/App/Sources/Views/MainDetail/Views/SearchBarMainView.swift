@@ -19,6 +19,9 @@ struct SearchBarMainView: View {
                     .onTapGesture {
                         outFocused()
                         mainDetailVM.changeFilteredStationAndLineInfo(item: item)
+                        mainDetailVM.getStationTotal(subwayNm: item.subwayNm)
+                        mainDetailVM.findStationColor(subwayNm: item.subwayNm)
+                        mainDetailVM.selectedStationBorderColor = mainDetailVM.searchColor
                     }
                 }
                 .listStyle(.plain)

@@ -1,14 +1,5 @@
 // Copyright © 2023 TDS. All rights reserved. 2023-11-14 화 오후 01:06 꿀꿀🐷
 
-/*
-    TEST용 혹은 민근, 서연, 우진 각각의 테스트용 class가 있기 위해서는 POP가 필수..
-    어떻게 구성하면 좋을까...
- 
-    http://swopenAPI.seoul.go.kr/api/subway/5a5670727973776a3532736472524f/json/realtimeStationArrival/ALL
-    전체 역 정보 받아와서 statnNm, statnId를 struct 배열에 담고 해당 호선에 대한 데이터객체 만들어서 코어데이터로 저장 해놓기. -> realm을 사용해보거나 하기.
- 
- */
-
 import SwiftUI
 import Combine
 
@@ -33,7 +24,7 @@ final class SubwayAPIService: APIServiceDelegate {
     var urlString: String?
     
     // MARK: 초기화 Method
-    init() { }
+    init() {}
     
     func request<Content>(type: Content.Type) -> AnyPublisher<Content, Error> where Content: SubwayModel2Server {
         guard let urlString, let urlRequest = self.requestURL(urlString: urlString) else {
