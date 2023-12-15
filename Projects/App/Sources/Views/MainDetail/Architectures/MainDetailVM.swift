@@ -27,6 +27,8 @@ class MainDetailVM: ObservableObject {
     @Published var selectedStationBorderColor: String = ""
     /// 서연추가) 유저가 역팝업뷰에서 역 선택하였을 때 배경 분기처리를 위한 프로퍼티
     @Published var userSelectedStation: String?
+    /// 서연추가) 검색으로 변화하는 화면에서 색상 재설정을 위한 프로퍼티
+    @Published var searchColor: String = ""
     
     /// 네트워크 끊겼을 경우 메세지
     @Published var networkDiedToastMessage: Toast?
@@ -313,5 +315,13 @@ extension MainDetailVM {
             totalStationInfo.append(station)
         }
         self.totalStationInfo.sort { $0.statnId < $1.statnId }
+    }
+    
+    func findStationColor(subwayNm: String) {
+        for color in self.selectStationLineInfos {
+            if color.subwayNm == subwayNm {
+                self.searchColor = color.lineColorHexCode
+            }
+        }
     }
 }
