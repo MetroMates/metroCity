@@ -11,29 +11,55 @@ import ProjectDescription
 extension Target {
     /// 타겟을 만들어준다. isTestAt이 true인 경우 Test 타겟도 같이 만든다.
     /// 이때 Test타겟의 경로에 해당하는 Test폴더는 직접 만들어주어야한다. -> Tests라는 폴더명으로 만들기
-    public static func makeTargetWithTest(name: String,
+    public static func makeTarget(name: String,
                                           platform: Platform = .iOS,
                                           product: Product,
                                           orgName: String,
                                           deploymentTarget: DeploymentTarget = .iOS(targetVersion: "16.4",
                                                                                     devices: [.iphone, .ipad],
                                                                                     supportsMacDesignedForIOS: true),
-                                          dependencies: [TargetDependency],
+                                          dependencies: [TargetDependency] = [],
                                           infoPlistPath: String = "",
                                           scripts: [TargetScript] = [],
                                           isResource: Bool = false,
+                                  // 코어데이터 수정
+                                  coreDataModels: [CoreDataModel] = [],
                                           isTestAt: Bool = false) -> [Self] {
         
         // Target 생성 폴더명
-        var folderNm: String {
-            return "\(name)/"
+//        var folderNm: String {
+//            return "\(name)/"
+//        }
+    
+        // Target에 xcconfig 적용하는 로직. -> 현재는 프로젝트의 xcconfig를 받아서 사용할 것이기 때문에 사용하지 않는다.
+        let isProductApp = product == .app ? true : false
+
+        var setting: Settings?
+
+        if isProductApp {
+            setting = .settings(base: ["OTHER_LDFLAGS":"-ObjC"])
+            // 빌드 세팅 (xcconfig 있을경우)
+//            setting = Settings.settings(configurations: [
+//                .debug(name: "Debug", xcconfig: .relativeToRoot("\(projectFolder)/App/Resources/Config/Secrets.xcconfig")),
+//                .release(name: "Release", xcconfig: .relativeToRoot("\(projectFolder)/App/Resources/Config/Secrets.xcconfig")),
+//            ], defaultSettings: .recommended)
+        } else {
+            // 빌드 세팅 (기본)
+            setting = nil
+//            setting = .settings(base: [:],
+//                                              configurations: [.debug(name: .debug),
+//                                                               .release(name: .release)],
+//                                              defaultSettings: .recommended)
         }
         
-        let sources: SourceFilesList = ["\(projectFolder)/\(folderNm)Sources/**"]
+        let sources: SourceFilesList = ["Sources/**"]
+//        ["\(projectFolder)/\(folderNm)Sources/**"]
+        
         
         var resources: ResourceFileElements? {
             if isResource {
-                return ["\(projectFolder)/\(folderNm)Resources/**"]
+                return ["Resources/**"]
+                // ["\(projectFolder)/\(folderNm)Resources/**"]
             } else {
                 return nil
             }
@@ -43,12 +69,12 @@ extension Target {
             if infoPlistPath.isEmpty {
                 return .default
             } else {
-                return .file(path: "\(projectFolder)/\(folderNm)\(infoPlistPath)")
+                return .file(path: "\(infoPlistPath)")
             }
         }
         
         // Bundle 아이디 (Target에서 필요)
-        let bundleID: String = "com.\(orgName).\(name)"
+        let bundleID: String = "com.\(name).\(orgName)"
         
         // 메인 타겟
         let mainTarget = Target(name: name,
@@ -64,8 +90,8 @@ extension Target {
 //                                headers: <#T##Headers?#>,
 //                                entitlements: <#T##Entitlements?#>,
                                 scripts: scripts,
-                                dependencies: dependencies
-//                                settings: <#T##Settings?#>,
+                                dependencies: dependencies,
+                                settings: setting
 //                                coreDataModels: <#T##[CoreDataModel]#>,
 //                                environmentVariables: <#T##[String : EnvironmentVariable]#>,
 //                                launchArguments: <#T##[LaunchArgument]#>,
@@ -84,7 +110,7 @@ extension Target {
                                     bundleId: "\(bundleID)Tests",
                                     deploymentTarget: deploymentTarget,
                                     infoPlist: .default,
-                                    sources: ["\(projectFolder)/\(folderNm)Tests/**"],
+                                    sources: ["Tests/**"],
                                     dependencies: [.target(name: name)] // -> 위에 만든 mainTarget을 의존. mainTarget의 name
             )
             targets.append(testTarget)

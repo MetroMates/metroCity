@@ -19,19 +19,38 @@ import ProjectDescription
 extension Project {
     
     public static func makeProject(projectName: String,
-                                   orgName: String) -> Project {
+                                   orgName: String,
+                                   targets: [Target],
+                                   isXcconfigSet: Bool = false,
+                                   additionalFiles: [FileElement] = []) -> Project {
         
-        guard !confirmTargets.isEmpty else { return .init(name: "ErrorProject") }
+        guard !targets.isEmpty else { return .init(name: "ErrorProject") }
         
+        let isProductApp = targets.contains { target in
+            target.product == .app
+        }
         
-        // 빌드 세팅
-        let setting: Settings = .settings(base: [:],
-                                          configurations: [.debug(name: .debug),
-                                                           .release(name: .release)],
-                                          defaultSettings: .recommended)
+        var setting: Settings?
         
+        // 타겟이 App일경우만 세팅
+        if isProductApp, isXcconfigSet {
+            // 빌드 세팅 (xcconfig 있을경우)
+            setting = Settings.settings(configurations: [
+                .debug(name: "Debug", xcconfig: .relativeToRoot("\(projectFolder)/App/Resources/Config/Secrets.xcconfig")),
+                .release(name: "Release", xcconfig: .relativeToRoot("\(projectFolder)/App/Resources/Config/Secrets.xcconfig")),
+            ], defaultSettings: .recommended)
+        } else {
+            // 빌드 세팅 (기본)
+            setting = .settings(base: [:],
+                                              configurations: [.debug(name: .debug),
+                                                               .release(name: .release)],
+                                              defaultSettings: .recommended)
+        }
         // 현재 생성되는 프로젝트(name)에 대한 scheme 생성
-        let schemes: [Scheme] = [.makeScheme(target: .debug, name: projectName)]
+        var schemes: [Scheme] = []
+        if isProductApp {
+            schemes = [.makeScheme(target: .debug, name: projectName)]
+        }
         
         // swift 파일 생성시 나타나는 주석템플릿양식
         var fileheaderTemplate: FileHeaderTemplate? = nil
@@ -39,20 +58,28 @@ extension Project {
             fileheaderTemplate = .string(firstHeadTemplate)
         }
         
+        // 프로젝트명들 모아놓기
+        projectNames.append(projectName)
         
         return Project(name: projectName,
                        organizationName: orgName,
 //                       options: Project.Options,
-//                       packages: [Package],
+//                       packages: [], // 여기에 직접 추가시 Project에 자체에 의존성을 띄게됨.
                        settings: setting,
-                       targets: confirmTargets,
+                       targets: targets,
                        schemes: schemes,
                        fileHeaderTemplate: fileheaderTemplate,
-                       additionalFiles: ["README.md"]
+                       additionalFiles: additionalFiles
 //                       resourceSynthesizers: [ResourceSynthesizer]
         )
     }
-    
+}
+
+
+
+
+
+extension Project {
     /// Project 생성
     /// - name: 프로젝트명
     /// - platform: 플랫폼( ios, macod... )
@@ -68,7 +95,7 @@ extension Project {
 //                                   platform: Platform = .iOS,
 //                                   product: Product,
 //                                   orgName: String,
-//                                   deploymentTarget: DeploymentTarget = .iOS(targetVersion: "16.4", 
+//                                   deploymentTarget: DeploymentTarget = .iOS(targetVersion: "16.4",
 //                                                                             devices: [.iphone, .ipad],
 //                                                                             supportsMacDesignedForIOS: false),
 //                                   dependencies: [TargetDependency],
@@ -76,7 +103,7 @@ extension Project {
 //                                   resources: ResourceFileElements? = nil,
 //                                   infoPlist: InfoPlist = .default,
 //                                   isTestAt: Bool = false) -> Project {
-//                
+//
 //        // 빌드 세팅
 //        let setting: Settings = .settings(base: [:],
 //                                          configurations: [.debug(name: .debug),
@@ -91,17 +118,17 @@ extension Project {
 //                                                          isResource: true,
 //                                                          isTestAt: false)
 //
-//        
+//
 //        // 현재 생성되는 프로젝트(name)에 대한 scheme 생성
 //        let schemes: [Scheme] = [.makeScheme(target: .debug, name: projectName)]
-//        
+//
 //        // swift 파일 생성시 나타나는 주석템플릿양식
 //        var fileheaderTemplate: FileHeaderTemplate? = nil
 //        if !firstHeadTemplate.isEmpty {
 //            fileheaderTemplate = .string(firstHeadTemplate)
 //        }
-//        
-//        
+//
+//
 //        return Project(name: projectName,
 //                       organizationName: orgName,
 ////                       options: <#T##Project.Options#>,
@@ -114,7 +141,4 @@ extension Project {
 ////                       resourceSynthesizers: [ResourceSynthesizer]
 //        )
 //    }
-    
 }
-
-
