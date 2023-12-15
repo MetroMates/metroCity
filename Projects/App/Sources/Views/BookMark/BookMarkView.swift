@@ -31,9 +31,7 @@ struct BookMarkView: View {
                             }
                             .padding()
                             .navigationDestination(isPresented: $bookMarkVM.isDetailPresented) {
-                                MainDetailView(vm: bookMarkDetailVM, mainVM: bookMarkVM) {
-                                    bookMarkVM.fetchBookMark()
-                                }
+                                MainDetailView(vm: bookMarkDetailVM, mainVM: bookMarkVM)
                             }
                         }
                     }
