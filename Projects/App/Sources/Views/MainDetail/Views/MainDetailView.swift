@@ -6,9 +6,9 @@ struct MainDetailView: View {
     @Environment(\.colorScheme) private var colorScheme
     @ObservedObject var vm: MainDetailVM
     @ObservedObject var mainVM: MainListVM
-    var disappearHandler: () -> Void = {}
     @State private var offset: CGFloat = .zero
     @State private var rotationAngle: Angle = .zero
+    
     private var swipeToNext: some Gesture {
         DragGesture()
             .onChanged { value in
@@ -68,7 +68,6 @@ struct MainDetailView: View {
         }
         .onDisappear { 
             vm.timerStop()
-            disappearHandler()
         }
         .onTapGesture {
             self.endTextEditing()

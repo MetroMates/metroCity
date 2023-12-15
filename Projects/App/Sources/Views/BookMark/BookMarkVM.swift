@@ -2,10 +2,13 @@
 
 import SwiftUI
 import Combine
+import CoreData
 
 /// 즐겨찾기 ViewModel
 final class BookMarkVM: MainListVM {
+    
     @Published var stationInfos: [StationInfo] = []
+    private var cancellables: Set<AnyCancellable> = []
     
     var groupedStationInfos: [(key: String, value: [StationInfo])] {
         Array(Dictionary(grouping: stationInfos, by: { $0.subwayNm }).sorted(by: { $0.key < $1.key }))
@@ -14,6 +17,18 @@ final class BookMarkVM: MainListVM {
     override init(useCase: MainListUseCase, startVM: StartVM) {
         super.init(useCase: useCase, startVM: startVM)
         self.isSearchShow = false
+        observeCoreData()
+    }
+    
+    deinit {
+        cancellables.forEach { $0.cancel() }
+    }
+    private func observeCoreData() {
+        NotificationCenter.default.publisher(for: NSManagedObjectContext.didSaveObjectsNotification)
+            .sink { _ in
+                self.fetchBookMark()
+            }
+            .store(in: &cancellables)
     }
     
     func fetchBookMark() {
