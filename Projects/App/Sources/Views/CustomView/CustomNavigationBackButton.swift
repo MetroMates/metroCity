@@ -3,9 +3,6 @@
 import SwiftUI
 
 struct CustomBackButtonModifier: ViewModifier {
-    @Environment(\.dismiss) private var dismiss
-    @State private var dragOffset: CGFloat = 0
-    
     func body(content: Content) -> some View {
         content
             .navigationBarBackButtonHidden(true)
@@ -15,6 +12,7 @@ struct CustomBackButtonModifier: ViewModifier {
 
 struct CustomBackButton: View {
     @Environment(\.dismiss) private var dismiss
+    
     var body: some View {
         Button {
             dismiss()
