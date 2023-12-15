@@ -74,7 +74,7 @@ extension Target {
         }
         
         // Bundle 아이디 (Target에서 필요)
-        let bundleID: String = "com.\(orgName).\(name)"
+        let bundleID: String = "com.\(name).\(orgName)"
         
         // 메인 타겟
         let mainTarget = Target(name: name,

@@ -23,8 +23,10 @@ final class BookMarkVM: MainListVM {
     deinit {
         cancellables.forEach { $0.cancel() }
     }
+    
     private func observeCoreData() {
         NotificationCenter.default.publisher(for: NSManagedObjectContext.didSaveObjectsNotification)
+            .receive(on: DispatchQueue.main)
             .sink { _ in
                 self.fetchBookMark()
             }
