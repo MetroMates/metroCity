@@ -222,8 +222,8 @@ extension MainDetailView {
                                 vm.isSelectStation = false
                             }
                             .listRowSeparator(.hidden)
+                            .listRowBackground(colorScheme == .dark ? Color(uiColor: .systemGray5) :  Color.white)
                     }
-                    .background(colorScheme == .dark ? Color(uiColor: .systemGray5) :  Color.white)
                     .listStyle(.plain)
                     .frame(height: CGFloat(stationDatas.count) * 45)
                 }
