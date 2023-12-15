@@ -42,7 +42,7 @@ struct MainDetailView: View {
                     .padding(.top, 10)
                 
                 SubwayRouteMapView(vm: vm)
-                    .padding(.top, 30)
+                    .padding(.top, 20)
                     .gesture(swipeToNext)
                 
                 Spacer()

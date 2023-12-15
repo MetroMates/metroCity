@@ -276,9 +276,9 @@ extension MainDetailVM {
                 Log.trace("데이터 갯수: \(newData.count)")
                 
                 // 상행
-                self.upRealTimeInfos = Array(newData.filter { $0.updnIndex == "0" }.prefix(6))
+                self.upRealTimeInfos = Array(newData.filter { $0.updnIndex == "0" }.prefix(4))
                 // 하행
-                self.downRealTimeInfos = Array(newData.filter { $0.updnIndex == "1" }.prefix(6))
+                self.downRealTimeInfos = Array(newData.filter { $0.updnIndex == "1" }.prefix(4))
             }
             .store(in: &anyCancellable)
         

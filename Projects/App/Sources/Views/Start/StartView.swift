@@ -38,32 +38,39 @@ struct StartView: View {
         ZStack(alignment: .bottom) {
             TabView(selection: $startVM.selectTabIndex) {
                 // 메인 호선 현황
-                MainListView(mainVM: mainVM,
-                             mainDetailVM: mainDetailVM)
-                .tabItem {
-                    EmptyView()
+                Group {
+                    MainListView(mainVM: mainVM,
+                                 mainDetailVM: mainDetailVM)
+                    
+                    .tabItem {
+                        EmptyView()
+                    }
+                    .tag(0)
+                    
+                    // 즐겨찾기
+                    BookMarkView(bookMarkVM: bookMarkVM, bookMarkDetailVM: bookMarkDetailVM)
+                        .tabItem {
+                            EmptyView()
+                        }
+                        .tag(1)
+                    
+                    // 설정
+                    SettingView()
+                        .tabItem {
+                            EmptyView()
+                        }
+                        .tag(2)
                 }
-                .tag(0)
-                
-                // 즐겨찾기
-                BookMarkView(bookMarkVM: bookMarkVM, bookMarkDetailVM: bookMarkDetailVM)
-                    .tabItem {
-                        EmptyView()
-                    }
-                    .tag(1)
-                
-                // 설정
-                SettingView()
-                    .tabItem {
-                        EmptyView()
-                    }
-                    .tag(2)
+                .padding(.bottom, 65)
             }
-            .preferredColorScheme(selectedScheme)
             
-            TabBarItem
+            VStack(spacing: 5) {
+                Admob()
+                TabBarItem
+            }
             
         }
+        .preferredColorScheme(selectedScheme)
         
     }
 }
