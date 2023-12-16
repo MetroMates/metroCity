@@ -6,9 +6,12 @@ import Combine
 /// MainDetailViewModel의 비즈니스로직 관리
 final class MainDetailUseCase {
     private let repository: SubwayRepositoryFetch
+    /// 단방향 상행역명 배열
+    private let onewayUpStationNames: [String]
     
     init(repo: SubwayRepositoryFetch) {
         self.repository = repo
+        self.onewayUpStationNames = ["구산", "연신내", "독바위", "불광", "역촌"]
     }
     
     deinit {
@@ -46,6 +49,11 @@ final class MainDetailUseCase {
             var upStNm = totalStatInfos.filter { $0.statnId == upSt }.first?.statnNm ?? "종착"
             var downStNm = totalStatInfos.filter { $0.statnId == downSt }.first?.statnNm ?? "종착"
             
+            // 6호선의 상행역이 단방향일경우 하행역은 종착으로 본다.
+            if subwayID == 1006 && onewayUpStationNames.contains(where: { $0 == value }) {
+                downStNm = "종착"
+            }
+            
             let relateTest = relateStatInfos // RelateStationInfo.mockList
             let relateInfos = relateTest.filter { $0.statnId == newDatas.statnId }.first ?? .emptyData
             
@@ -78,18 +86,6 @@ final class MainDetailUseCase {
                     upStNm = relateUpSt.statnNm
                 } else {
                     upSt = -1
-                }
-            }
-            
-            if downStNm == "종착" {
-                let relateUpSt = relateTest.filter { relate in
-                    relate.relateIds.contains { $0 == newDatas.statnId }
-                }.first ?? .emptyData
-                if !relateUpSt.statnNm.isEmpty {
-                    downSt = relateUpSt.statnId
-                    downStNm = relateUpSt.statnNm
-                } else {
-                    downSt = -1
                 }
             }
             
