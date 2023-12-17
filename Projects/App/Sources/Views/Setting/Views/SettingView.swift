@@ -54,12 +54,12 @@ struct SettingView: View {
                         }
                     }
                     .listRowBackground(colorScheme == .light ? Color.gray.opacity(0.1) : Color.white.opacity(0.1))
-                    
-                    Text("지하철 실시간 도착정보는\nTOPIS에서 제공되는 시스템으로 데이터가 따로 기록되지 않으며,\n데이터와 실제 지하철 시간에 차이가 있을 수 있습니다.")
+        
+                    Text("지하철 실시간 도착정보는 TOPIS에서 제공되는 \n시스템으로 실제 지하철 시간에 차이가 있을 수 있습니다.")
                         .font(.caption)
                         .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity)
                         .listRowBackground(Color.clear)
-                    
                 }
                 .scrollContentBackground(.hidden)
                 
