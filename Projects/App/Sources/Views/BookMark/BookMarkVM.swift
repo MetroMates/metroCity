@@ -49,15 +49,15 @@ final class BookMarkVM: MainListVM {
         }.sorted { $0.subwayId < $1.subwayId }
     }
     
-    func subwayLine(_ id: Int32) -> SubwayLineColor {
+    func subwayLine(_ id: Int64) -> SubwayLineColor {
         guard let subwayLine = subwayLineInfos.first(where: { $0.subwayId == id }) else { return .emptyData }
         return subwayLine
     }
-    func subwayColor(_ id: Int32) -> Color {
+    func subwayColor(_ id: Int64) -> Color {
         guard let subwayColor = subwayLineInfos.first(where: { $0.subwayId == id }) else { return .primary }
         return subwayColor.lineColor
     }
-    func subwayHexCode(_ id: Int32) -> String {
+    func subwayHexCode(_ id: Int64) -> String {
         guard let subwayHexCode = subwayLineInfos.first(where: { $0.subwayId == id }) else { return "" }
         return subwayHexCode.lineColorHexCode
     }

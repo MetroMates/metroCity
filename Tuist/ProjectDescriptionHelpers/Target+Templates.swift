@@ -35,9 +35,11 @@ extension Target {
         let isProductApp = product == .app ? true : false
 
         var setting: Settings?
-
+        var entitlements: Entitlements?
+        
         if isProductApp {
             setting = .settings(base: ["OTHER_LDFLAGS":"-ObjC"])
+            entitlements = "MetroCity.entitlements"
             // 빌드 세팅 (xcconfig 있을경우)
 //            setting = Settings.settings(configurations: [
 //                .debug(name: "Debug", xcconfig: .relativeToRoot("\(projectFolder)/App/Resources/Config/Secrets.xcconfig")),
@@ -46,6 +48,7 @@ extension Target {
         } else {
             // 빌드 세팅 (기본)
             setting = nil
+            entitlements = nil
 //            setting = .settings(base: [:],
 //                                              configurations: [.debug(name: .debug),
 //                                                               .release(name: .release)],
@@ -88,7 +91,7 @@ extension Target {
                                 resources: resources,
 //                                copyFiles: <#T##[CopyFilesAction]?#>,
 //                                headers: <#T##Headers?#>,
-//                                entitlements: <#T##Entitlements?#>,
+                                entitlements: entitlements,
                                 scripts: scripts,
                                 dependencies: dependencies,
                                 settings: setting

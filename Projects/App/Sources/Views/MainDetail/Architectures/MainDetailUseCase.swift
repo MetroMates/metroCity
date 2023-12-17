@@ -37,8 +37,8 @@ final class MainDetailUseCase {
         }.first
         
         if let newDatas {
-            var upStCodes: [Int32] = []
-            var downStCodes: [Int32] = []
+            var upStCodes: [Int64] = []
+            var downStCodes: [Int64] = []
             var upStNms: [String] = []
             var downStNms: [String] = []
    
@@ -49,13 +49,12 @@ final class MainDetailUseCase {
             var upStNm = totalStatInfos.filter { $0.statnId == upSt }.first?.statnNm ?? "종착"
             var downStNm = totalStatInfos.filter { $0.statnId == downSt }.first?.statnNm ?? "종착"
             
-            // 6호선의 상행역이 단방향일경우 하행역은 종착으로 본다.
+            // 6호선의 상행역이 단방향일경우 상행역은 종착으로 본다.
             if subwayID == 1006 && onewayUpStationNames.contains(where: { $0 == value }) {
-                downStNm = "종착"
+                upStNm = "종착"
             }
             
-            let relateTest = relateStatInfos // RelateStationInfo.mockList
-            let relateInfos = relateTest.filter { $0.statnId == newDatas.statnId }.first ?? .emptyData
+            let relateInfos = relateStatInfos.filter { $0.statnId == newDatas.statnId }.first ?? .emptyData
             
             // 연관 역명이 존재함. -> ex) 구로: 가산디지털단지, 구일 /  신도림: 도림천, 문래
             if !relateInfos.relateIds.isEmpty {
@@ -77,8 +76,9 @@ final class MainDetailUseCase {
                 }
             }
             
-            if upStNm == "종착" {
-                let relateUpSt = relateTest.filter { relate in
+            // 경춘선 광운대는 하행에 상봉역이 나타나야함으로 추가. 23.12.17
+            if upStNm == "종착" && value != "광운대" {
+                let relateUpSt = relateStatInfos.filter { relate in
                     relate.relateIds.contains { $0 == newDatas.statnId }
                 }.first ?? .emptyData
                 if !relateUpSt.statnNm.isEmpty {
@@ -86,6 +86,20 @@ final class MainDetailUseCase {
                     upStNm = relateUpSt.statnNm
                 } else {
                     upSt = -1
+                }
+            } else if upStNm == "구산" {
+                upStNm = "역촌"
+            }
+            
+            if downStNm == "종착" && value == "광운대" {
+                let relateDownSt = relateStatInfos.filter { relate in
+                    relate.relateIds.contains { $0 == newDatas.statnId }
+                }.first ?? .emptyData
+                if !relateDownSt.statnNm.isEmpty {
+                    downSt = relateDownSt.statnId
+                    downStNm = relateDownSt.statnNm
+                } else {
+                    downSt = -1
                 }
             }
             

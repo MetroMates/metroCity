@@ -8,14 +8,14 @@ import CoreData
 /// 역정보 (전체) -> 엑셀양식을 다운받아서 FireStore에 올릴 예정. -> 추후 Firestore에서 내려바당서 사용.
 struct StationInfo: FireStoreCodable, SubwayModelIdentifier {
     let id = UUID().uuidString
-    let subwayId: Int32
+    let subwayId: Int64
     let subwayNm: String
     /// 역 ID
-    let statnId: Int32
+    let statnId: Int64
     /// 역명
     let statnNm: String
     
-    init(subwayId: Int32, subwayNm: String, statnId: Int32, statnNm: String) {
+    init(subwayId: Int64, subwayNm: String, statnId: Int64, statnNm: String) {
         self.subwayId = subwayId
         self.subwayNm = subwayNm
         self.statnId = statnId
@@ -57,9 +57,9 @@ extension StationInfo {
 /// 연관 역정보
 struct RelateStationInfo: FireStoreCodable {
     let id = UUID().uuidString
-    let statnId: Int32
+    let statnId: Int64
     let statnNm: String
-    let relateIds: [Int32]
+    let relateIds: [Int64]
     let relateNms: [String]
 }
 
@@ -79,13 +79,13 @@ extension RelateStationInfo {
 struct SubwayLineColor: FireStoreCodable, Identifiable {
     let id: String = UUID().uuidString
     /// 호선 정보 1002
-    let subwayId: Int32
+    let subwayId: Int64
     /// 호선 이름
     let subwayNm: String
     /// 호선별 색상정보
     let lineColorHexCode: String
     
-    init(subwayId: Int32, subwayNm: String, lineColorHexCode: String) {
+    init(subwayId: Int64, subwayNm: String, lineColorHexCode: String) {
 //        self.id = UUID().uuidString // -> 여기서 주면 fetch가 안됨. Firebase에서 id를 가져오는 과정에서의 충돌.
         self.subwayId = subwayId
         self.subwayNm = subwayNm
