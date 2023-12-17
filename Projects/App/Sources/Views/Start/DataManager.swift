@@ -5,10 +5,6 @@ import SwiftUI
 
 /// Version체크 Model
 struct VersionCheck: FireStoreCodable {
-    let appRm: String
-    let appVer: String
-    let appbeforeVer: String
-    let appupdateDate: String
     let beforeVer: Int
     let rm: String
     let updateDate: String

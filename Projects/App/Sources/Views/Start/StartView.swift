@@ -72,7 +72,7 @@ struct StartView: View {
             
         }
         .preferredColorScheme(selectedScheme)
-        .alert("뛰어말어의 새로운 업데이트정보가 존재합니다.\n업데이트 후 이용해주세요.\n현재 \(System.shared.appVersion) 버전", isPresented: $startVM.isUpdated) {
+        .alert("업데이트 알림", isPresented: $startVM.isUpdated, actions: {
             Button {
                 Task {
                    await startVM.switchAppStoreForUpdateApp()
@@ -80,7 +80,9 @@ struct StartView: View {
             } label: {
                 Text("업데이트")
             }
-        }
+        }, message: {
+            Text("뛰어말어의 새로운 업데이트 정보가 존재합니다.\n업데이트 후 이용해주세요.\n현재 \(System.shared.appVersion) 버전")
+        })
         .onChange(of: scenePhase) { newValue in
             switch newValue {
             case .active:

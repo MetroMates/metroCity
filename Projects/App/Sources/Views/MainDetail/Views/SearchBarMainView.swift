@@ -16,6 +16,8 @@ struct SearchBarMainView: View {
                         Text("(\(item.subwayNm))")
                     }
                     .foregroundColor(.primary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .contentShape(Rectangle())
                     .onTapGesture {
                         outFocused()
                         mainDetailVM.changeFilteredStationAndLineInfo(item: item)
