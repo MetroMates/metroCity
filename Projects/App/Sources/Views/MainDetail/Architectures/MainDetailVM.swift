@@ -126,8 +126,7 @@ class MainDetailVM: ObservableObject {
         self.timerCancel = Timer.publish(every: gapiFetchTimeSecond, on: .main, in: .default)
             .autoconnect()
             .sink { _ in
-                self.settingSubwayInfoWithDebounce(selectStationInfo: self.selectStationInfo,
-                                                   lineInfo: self.hosunInfo)
+                self.settingSubwayInfo(hosun: self.hosunInfo, selectStation: self.selectStationInfo)
             }
         
     }
