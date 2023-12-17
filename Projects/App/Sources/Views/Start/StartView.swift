@@ -6,6 +6,7 @@ struct StartView: View {
     @ObservedObject var startVM: StartVM
     @AppStorage("systemTheme") private var systemTheme: Int = SchemeType.system.rawValue
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.scenePhase) private var scenePhase
     
     @StateObject private var mainVM: MainListVM
     @StateObject private var mainDetailVM: MainDetailVM
@@ -71,6 +72,25 @@ struct StartView: View {
             
         }
         .preferredColorScheme(selectedScheme)
+        .alert("업데이트 알림", isPresented: $startVM.isUpdated, actions: {
+            Button {
+                Task {
+                   await startVM.switchAppStoreForUpdateApp()
+                }
+            } label: {
+                Text("업데이트")
+            }
+        }, message: {
+            Text("뛰어말어의 새로운 업데이트 정보가 존재합니다.\n업데이트 후 이용해주세요.\n현재 \(System.shared.appVersion) 버전")
+        })
+        .onChange(of: scenePhase) { newValue in
+            switch newValue {
+            case .active:
+                startVM.appUpdateCheck()
+            default:
+                break
+            }
+        }
         
     }
 }

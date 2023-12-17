@@ -126,8 +126,7 @@ class MainDetailVM: ObservableObject {
         self.timerCancel = Timer.publish(every: gapiFetchTimeSecond, on: .main, in: .default)
             .autoconnect()
             .sink { _ in
-                self.settingSubwayInfoWithDebounce(selectStationInfo: self.selectStationInfo,
-                                                   lineInfo: self.hosunInfo)
+                self.settingSubwayInfo(hosun: self.hosunInfo, selectStation: self.selectStationInfo)
             }
         
     }
@@ -157,7 +156,7 @@ class MainDetailVM: ObservableObject {
             let bookMarkInfo = BookMarkEntity(context: context)
             bookMarkInfo.statnId = hosunInfo.subwayId
             bookMarkInfo.statnNm = hosunInfo.subwayNm
-            bookMarkInfo.subwayId = Int32(selectStationInfo.nowSt)
+            bookMarkInfo.subwayId = Int64(selectStationInfo.nowSt)
             bookMarkInfo.subwayNm = selectStationInfo.nowStNm
             bookMarkInfo.lineColor = hosunInfo.lineColorHexCode
         }
@@ -171,7 +170,7 @@ class MainDetailVM: ObservableObject {
     
     func deleteBookMark() {
         let coreDataManger = CoreDataManger.shared
-        let isResult = coreDataManger.delete(type: BookMarkEntity.self, column: \.subwayId, value: Int32(selectStationInfo.nowSt))
+        let isResult = coreDataManger.delete(type: BookMarkEntity.self, column: \.subwayId, value: Int64(selectStationInfo.nowSt))
         
         if isResult {
             self.bookMarkInfoToastMessage = .init(style: .success, message: "즐겨찾기가 해제되었습니다.")
@@ -182,7 +181,7 @@ class MainDetailVM: ObservableObject {
     
     func fetchBookMark() {
         let coreDataManger = CoreDataManger.shared
-        let isResult = coreDataManger.retrieve(type: BookMarkEntity.self, column: \.subwayId, comparision: .equal, value: Int32(selectStationInfo.nowSt))
+        let isResult = coreDataManger.retrieve(type: BookMarkEntity.self, column: \.subwayId, comparision: .equal, value: Int64(selectStationInfo.nowSt))
         
         isBookMarked = isResult.isEmpty ? false : true
     }
