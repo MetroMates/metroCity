@@ -71,7 +71,17 @@ struct StartView: View {
             
         }
         .preferredColorScheme(selectedScheme)
-        
+        .task {
+            let storeVersion = await System().latestVersion() ?? ""
+            let realVersion = System.appVersion ?? ""
+            
+            print("💫현재 앱스토어 버전 정보 \(await System().latestVersion() ?? "🪼")")
+            print("💫설치된 앱의 버전 정보 \(System.appVersion ?? "")")
+            
+            if storeVersion == realVersion {
+                await System().openAppStore()
+            }
+        }
     }
 }
 
