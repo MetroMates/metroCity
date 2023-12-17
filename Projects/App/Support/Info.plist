@@ -26,6 +26,8 @@
 	<true/>
 	<key>GAD_BANNER_ID</key>
 	<string>$(GAD_BANNER_ID)</string>
+	<key>APPSTORE_ID</key>
+	<string>$(APPSTORE_ID)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>

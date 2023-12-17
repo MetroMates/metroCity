@@ -92,7 +92,7 @@ struct AppInfoView: View {
             
             Spacer()
             
-            Text("1.0")
+            Text("\(System.shared.appVersion)")
                 .foregroundColor(.primary)
         }
     }
