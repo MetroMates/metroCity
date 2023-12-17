@@ -11,8 +11,3 @@ enum GtrainSpeed {
     static let middle: Double = 0.3
     static let end: Double = 0.05
 }
-
-/// App 새로운 Ver
-var appNewVer: String = ""
-/// 현재 App Ver
-var appVer: String = ""
