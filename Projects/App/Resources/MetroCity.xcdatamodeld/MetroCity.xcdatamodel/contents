@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="23B92" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="23C64" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="BookMarkEntity" representedClassName="BookMarkEntity" syncable="YES" codeGenerationType="class">
         <attribute name="lineColor" attributeType="String"/>
-        <attribute name="statnId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="statnId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="statnNm" attributeType="String"/>
-        <attribute name="subwayId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="subwayId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="subwayNm" attributeType="String"/>
     </entity>
     <entity name="RelateStationInfoEntity" representedClassName="RelateStationInfoEntity" syncable="YES" codeGenerationType="class">
-        <attribute name="relateIds" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int32]"/>
+        <attribute name="relateIds" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
         <attribute name="relateNms" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
-        <attribute name="statnId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="statnId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="statnNm" optional="YES" attributeType="String"/>
     </entity>
     <entity name="StationInfoEntity" representedClassName="StationInfoEntity" syncable="YES" codeGenerationType="class">
-        <attribute name="statnId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="statnId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="statnNm" attributeType="String"/>
-        <attribute name="subwayId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="subwayId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="subwayNm" attributeType="String"/>
     </entity>
     <entity name="StationLocationEntity" representedClassName="StationLocationEntity" syncable="YES" codeGenerationType="class">
         <attribute name="crdntX" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="crdntY" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="route" attributeType="String"/>
-        <attribute name="statnId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="statnId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="statnNm" attributeType="String"/>
     </entity>
     <entity name="SubwayLineColorEntity" representedClassName="SubwayLineColorEntity" syncable="YES" codeGenerationType="class">
         <attribute name="lineColorHexCode" attributeType="String"/>
-        <attribute name="subwayId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="subwayId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="subwayNm" attributeType="String"/>
     </entity>
 </model>

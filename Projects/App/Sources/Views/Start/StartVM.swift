@@ -7,6 +7,8 @@ import CoreData
 final class StartVM: ObservableObject {
     @Published var selectTabIndex: Int = 0
     @Published var selectLineInfo: SubwayLineColor = .emptyData
+    /// 앱 새로운 업데이트 버전 유무 파악.
+    @Published var isUpdated: Bool = false
     
     private let type: DataType
     private let dataManager: DataManager!
@@ -65,7 +67,23 @@ final class StartVM: ObservableObject {
                 }
             }
             
+            // 현재 Appver이 새로운 Appver보다 낮으면 앱스토어 업데이트 필요.
+            self.appUpdateCheck()
+            
         }
+    }
+    
+    func appUpdateCheck() {
+        let system = System.shared
+        if system.appVersion != system.appStoreVersion {
+            DispatchQueue.main.async {
+                self.isUpdated = true
+            }
+        }
+    }
+    
+    func switchAppStoreForUpdateApp() async {
+        await System.shared.openAppStore()
     }
     
     private func deleteCoreData() {
