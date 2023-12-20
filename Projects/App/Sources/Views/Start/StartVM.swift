@@ -75,7 +75,8 @@ final class StartVM: ObservableObject {
     
     func appUpdateCheck() {
         let system = System.shared
-        if system.appVersion != system.appStoreVersion {
+        
+        if !system.compareMinorVersions(appVersion: system.appVersion, storeVersion: system.appStoreVersion) {
             DispatchQueue.main.async {
                 self.isUpdated = true
             }
