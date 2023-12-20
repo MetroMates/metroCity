@@ -42,6 +42,25 @@ final class System {
         }
     }
     
+    func compareMinorVersions(appVersion: String, storeVersion: String) -> Bool {
+        let app = String(appVersion.prefix(3))// appVersion.split(separator: ".").map { String($0) }
+        let store = String(storeVersion.prefix(3))
+        
+        let doubleApp = Double(app)
+        let doubleStore = Double(store)
+        
+        guard let doubleApp, let doubleStore else {
+            Log.error("버전 포맷 불일치 \(doubleApp) : \(doubleStore)")
+            return true
+        }
+        
+        if doubleApp < doubleStore { // 설치버전 < 앱스토어 버전
+            return false // 업데이트 필요
+        } else {
+            return true // 업데이트 불필요
+        }
+    }
+    
     // 앱 스토어로 이동 -> urlStr 에 appStoreOpenUrlString 넣으면 이동
     func openAppStore() async {
         guard let url = URL(string: self.appStoreOpenUrlString) else { return }
