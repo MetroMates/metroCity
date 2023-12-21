@@ -1,5 +1,7 @@
 # MetroCity
+### 👉 [AppStore에서 다운로드하기](https://apps.apple.com/kr/app/%EB%9B%B0%EC%96%B4%EB%A7%90%EC%96%B4/id6474415798)
 
+<br>
 
 ## 프로젝트 소개
 > 지하철 앱을 열어 시간표를 확인하고 역시간에 맞춰서 나왔지만 무슨일인지 근소한차이로  
