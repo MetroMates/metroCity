@@ -41,10 +41,10 @@ final class MainDetailUseCase {
             var downStCodes: [Int64] = []
             var upStNms: [String] = []
             var downStNms: [String] = []
-   
-            // 상행일때 -1
-            var upSt = newDatas.statnId - 1
-            var downSt = newDatas.statnId + 1
+
+            // 상행일때 -1 ==> 2호선만 반대로 적용해준다.
+            var upSt = subwayID == 1002 ? newDatas.statnId + 1 : newDatas.statnId - 1
+            var downSt = subwayID == 1002 ? newDatas.statnId - 1 : newDatas.statnId + 1
             
             var upStNm = totalStatInfos.filter { $0.statnId == upSt }.first?.statnNm ?? "종착"
             var downStNm = totalStatInfos.filter { $0.statnId == downSt }.first?.statnNm ?? "종착"
@@ -77,10 +77,8 @@ final class MainDetailUseCase {
             }
             
             // 경춘선 광운대는 하행에 상봉역이 나타나야함으로 추가. 23.12.17
-            if upStNm == "종착" && value != "광운대" {
-                let relateUpSt = relateStatInfos.filter { relate in
-                    relate.relateIds.contains { $0 == newDatas.statnId }
-                }.first ?? .emptyData
+            if upStNm == "종착" && value != "광운대",
+               let relateUpSt = relateStatInfos.first(where: { $0.relateIds.contains(newDatas.statnId) }) {
                 if !relateUpSt.statnNm.isEmpty {
                     upSt = relateUpSt.statnId
                     upStNm = relateUpSt.statnNm
@@ -91,10 +89,10 @@ final class MainDetailUseCase {
                 upStNm = "역촌"
             }
             
-            if downStNm == "종착" && value == "광운대" {
-                let relateDownSt = relateStatInfos.filter { relate in
-                    relate.relateIds.contains { $0 == newDatas.statnId }
-                }.first ?? .emptyData
+            if downStNm == "종착",
+               ["광운대", "문래", "도림천", "시청"].contains(value),
+               let relateDownSt = relateStatInfos.first(where: { $0.relateIds.contains(newDatas.statnId) }) {
+                
                 if !relateDownSt.statnNm.isEmpty {
                     downSt = relateDownSt.statnId
                     downStNm = relateDownSt.statnNm
@@ -150,20 +148,22 @@ final class MainDetailUseCase {
                                                             arvlCd: data.arvlCD,
                                                             nowStationName: nowStation)
                     
+                    let trainDestinationName = self.trainDestinationName(destination: data.bstatnNm, updnLine: data.updnLine)
+                    
                     let (trainLocation, isChange) = self.trainLocation(statnNm: nowStation, 
                                                                        subwayLineId: subwayLine,
                                                                        destination: data.bstatnNm,
                                                                        trainNo: data.btrainNo,
                                                                        arvlCd: data.arvlCD)
                     
-                    if (data.updnLine == "상행" && upLineEnd == "종착") || (data.updnLine == "하행" && downLineEnd == "종착") {
+                    if ( (data.updnLine == "상행" || data.updnLine == "내선") && upLineEnd == "종착") || ( (data.updnLine == "하행" || data.updnLine == "외선") && downLineEnd == "종착") {
                     } else {
                         stations.append(.init(updnLine: data.updnLine,
                                               trainNo: data.btrainNo,
                                               trainType: data.btrainSttus,
                                               stCnt: firstSort,
                                               message: message,
-                                              trainDestiStation: "\(data.bstatnNm)행",
+                                              trainDestiStation: trainDestinationName,
                                               trainLocation: trainLocation,
                                               arvlCode: data.arvlCD, 
                                               arvlCaseCode: .arvlCDConvert(ArvlCD(rawValue: data.arvlCD) ?? .ninetynine),
@@ -193,7 +193,10 @@ extension MainDetailUseCase {
         return (minutes, remainingSeconds)
     }
     
-    // TODO: 추후 변경 해야함. 23.11.27 -> 12.01 변경중.
+    private func trainDestinationName(destination: String, updnLine: String) -> String {
+        return destination == "성수" ? "\(updnLine)순환" : "\(destination)행"
+    }
+    
     private func trainMessage(barvlDt: String,
                               arvlMsg2: String,
                               arvlMsg3: String,
@@ -234,7 +237,7 @@ extension MainDetailUseCase {
         }
         
         var rtnMsg: String = ""
-        if !times.isEmpty {
+        if !times.isEmpty, arvlCd == "99" {
             rtnMsg = "\(times) (\(arvlMsg3))"
         } else {
             rtnMsg = arvlMsg

@@ -97,7 +97,7 @@ struct RealTimeSubway: SubwayModelIdentifier {
 
 extension RealTimeSubway {
     var updnIndex: String {
-        if updnLine == "상행" || updnLine == "외선" {
+        if updnLine == "상행" || updnLine == "내선" {
             return "0"
         }
         return "1"
