@@ -77,7 +77,7 @@ final class RealDataManager: DataManager, FireStoreServiceDelegate {
     }
     
     private func getCoreData(completion: @escaping ([StationInfo], [SubwayLineColor], [StationLocation], [RelateStationInfo]) -> Void) {
-        DispatchQueue.global(qos: .default).async { [self] in
+        DispatchQueue.main.async { [self] in
             let stationEntity = coreManager.retrieve(type: StationInfoEntity.self)
             let stationInfo = stationEntity.flatMap { info -> [StationInfo] in
                 var infos: [StationInfo] = []
@@ -109,9 +109,8 @@ final class RealDataManager: DataManager, FireStoreServiceDelegate {
                 return infos
             }
             
-            DispatchQueue.main.async {
-                completion(stationInfo, lineInfo, locInfo, relateInfo)
-            }
+            completion(stationInfo, lineInfo, locInfo, relateInfo)
+            
         }
     }
     
