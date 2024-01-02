@@ -137,7 +137,7 @@ struct UseDataView: View {
                     .foregroundColor(.secondary)
                     .padding(.trailing)
                 
-                Text("활용 API")
+                Text("활용 API 및 오픈소스")
                     .foregroundColor(.primary)
             }
         }

@@ -34,7 +34,7 @@ struct GADBanner: UIViewControllerRepresentable {
             Log.info("배너광고 Load 완료.")
         }
         func bannerView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: Error) {
-            Log.warning("배너광고 Load 실패.")
+            Log.warning("배너광고 Load 실패. \(error.localizedDescription)")
         }
         func bannerViewDidRecordClick(_ bannerView: GADBannerView) {
             Log.info("배너광고 Click됨.")

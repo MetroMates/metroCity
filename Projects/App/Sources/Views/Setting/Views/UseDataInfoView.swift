@@ -8,7 +8,7 @@ struct UseDataInfoView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text("활용한 API 정보")
+            Text("활용한 API 및 오픈 소스 라이센스 확인하기")
                 .font(.system(size: 20, weight: .semibold))
                 .foregroundColor(.primary)
                 .padding(.bottom, 2)
