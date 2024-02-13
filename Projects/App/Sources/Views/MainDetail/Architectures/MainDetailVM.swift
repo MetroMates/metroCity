@@ -35,6 +35,9 @@ class MainDetailVM: ObservableObject {
     /// 북마크 추가/해제시 메세지
     @Published var bookMarkInfoToastMessage: Toast?
     
+    // 실시간시간 표시 여부
+    @Published var isRealAt: Bool = true
+    
     /// 해당역 북마크 추가/해제 표시
     @Published var isBookMarked: Bool = false
     /// 역이 두개이상일경우 선택팝업 표시

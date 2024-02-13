@@ -105,8 +105,17 @@ extension MainDetailView {
             }
             
             HStack {
+                HStack(spacing: 5) {
+                    Text("실시간")
+                    Toggle("", isOn: $vm.isRealAt)
+                        .frame(width: 40)
+                        .toggleStyle(SwitchToggleStyle(tint: vm.hosunInfo.lineColor)) // isOn의 색상을 변경합니다.
+                }
+                
                 Spacer()
+                
                 HStack(spacing: 20) {
+                   
                     Button {
                         // 화살표 돌아가게 애니메이션 적용 rotation 사용하면 될듯.
                         withAnimation(.easeInOut(duration: 1.5)) {
