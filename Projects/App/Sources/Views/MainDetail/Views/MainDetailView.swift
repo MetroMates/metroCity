@@ -26,8 +26,8 @@ struct MainDetailView: View {
     }
     
     var body: some View {
-        VStack(spacing: 20) {
-            VStack(spacing: 20) {
+        VStack(spacing: 1) {
+            VStack(spacing: 10) {
                 // BookMarkView에서 사용하는 MainDetailView와의 분기처리
                 if mainVM.isSearchShow {
                     SearchBarMainView(mainDetailVM: vm)
@@ -104,9 +104,120 @@ extension MainDetailView {
                 }
             }
             
+//            HStack {
+//                HStack(spacing: 5) {
+//                    Text("실시간")
+//                    Toggle("", isOn: $vm.isRealAt)
+//                        .frame(width: 40)
+//                        .toggleStyle(SwitchToggleStyle(tint: vm.hosunInfo.lineColor)) // isOn의 색상을 변경합니다.
+//                }
+//                
+//                Spacer()
+//                
+//                HStack(spacing: 12) {
+//                    Button {
+//                        // 화살표 돌아가게 애니메이션 적용 rotation 사용하면 될듯.
+//                        withAnimation(.easeInOut(duration: 1.5)) {
+//                            vm.settingSubwayInfoWithDebounce(selectStationInfo: vm.selectStationInfo, lineInfo: vm.hosunInfo)
+//                            rotationAngle += .degrees(360)
+//                        }
+//                    } label: {
+//                        Image(systemName: "arrow.clockwise")
+//                            .tint(.primary)
+//                            .rotationEffect(rotationAngle)
+//                    }
+//                    
+//                    Button(action: {
+//                        
+//                    }, label: {
+//                        Image(systemName: "tablecells")
+//                            .foregroundStyle(Color.black)
+////                            .rotationEffect(.degrees(90))
+//                    })
+//                    
+//                    // MARK: - BookBark Button!!
+//                    Button {
+//                        vm.isBookMarked ? vm.deleteBookMark() : vm.addBookMark()
+//                    } label: {
+//                        Image(systemName: vm.isBookMarked ? "bookmark.fill" : "bookmark")
+//                            .tint(vm.isBookMarked ? .yellow : .primary)
+//                    }
+//
+//                }
+//                .font(.title2)
+//            }
+        }
+        
+    }
+    
+    /// SubTitle 부분 역정보
+    @ViewBuilder private var SubTitleContent: some View {
+        VStack(spacing: 15) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 17)
+                    .fill(vm.hosunInfo.lineColor)
+                    .frame(height: 30)
+                
+                HStack {
+                    Button {
+                        self.confirmStationDatasAndPopSelectView(.up)
+                    } label: {
+                        HStack {
+                            Image(systemName: "chevron.left")
+                                .font(.caption)
+                            ScrollText(content: vm.selectStationInfo.upStationName)
+                                .font(.subheadline)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.leading, 5)
+                    }
+                    
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 30)
+                            .stroke(vm.hosunInfo.lineColor, lineWidth: 5)
+                            .frame(width: 150, height: 40)
+                            .background {
+                                RoundedRectangle(cornerRadius: 30)
+                                    .fill(Color.white)
+                            }
+                        
+                        ScrollText(content: vm.selectStationInfo.nowStNm)
+                            .font(.title3)
+                            .padding(.horizontal, 5)
+                            .foregroundColor(Color.black)
+                            .bold()
+                    }.onTapGesture {
+                        mainVM.userChoice.toggle()
+                    }
+                    
+                    Button {
+                        self.confirmStationDatasAndPopSelectView(.down)
+                    } label: {
+                        HStack {
+                            ScrollText(content: vm.selectStationInfo.downStationName)
+                                .font(.subheadline)
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .padding(.trailing, 5)
+                    }
+                    
+                }
+                .foregroundStyle(Color.white)
+            }
+            
             HStack {
+                HStack(spacing: 5) {
+                    Text("실시간")
+                    Toggle("", isOn: $vm.isRealAt)
+                        .frame(width: 40)
+                        .toggleStyle(SwitchToggleStyle(tint: vm.hosunInfo.lineColor)) // isOn의 색상을 변경합니다.
+                }
+                
                 Spacer()
-                HStack(spacing: 20) {
+                
+                HStack(spacing: 12) {
                     Button {
                         // 화살표 돌아가게 애니메이션 적용 rotation 사용하면 될듯.
                         withAnimation(.easeInOut(duration: 1.5)) {
@@ -119,6 +230,14 @@ extension MainDetailView {
                             .rotationEffect(rotationAngle)
                     }
                     
+                    Button(action: {
+                        
+                    }, label: {
+                        Image(systemName: "tablecells")
+                            .foregroundStyle(Color.black)
+//                            .rotationEffect(.degrees(90))
+                    })
+                    
                     // MARK: - BookBark Button!!
                     Button {
                         vm.isBookMarked ? vm.deleteBookMark() : vm.addBookMark()
@@ -130,65 +249,6 @@ extension MainDetailView {
                 }
                 .font(.title2)
             }
-        }
-        
-    }
-    
-    /// SubTitle 부분 역정보
-    @ViewBuilder private var SubTitleContent: some View {
-        
-        ZStack {
-            RoundedRectangle(cornerRadius: 17)
-                .fill(vm.hosunInfo.lineColor)
-                .frame(height: 30)
-            
-            HStack {
-                Button {
-                    self.confirmStationDatasAndPopSelectView(.up)
-                } label: {
-                    HStack {
-                        Image(systemName: "chevron.left")
-                            .font(.caption)
-                        ScrollText(content: vm.selectStationInfo.upStationName)
-                            .font(.subheadline)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.leading, 5)
-                }
-                
-                ZStack {
-                    RoundedRectangle(cornerRadius: 30)
-                        .stroke(vm.hosunInfo.lineColor, lineWidth: 5)
-                        .frame(width: 150, height: 40)
-                        .background {
-                            RoundedRectangle(cornerRadius: 30)
-                                .fill(Color.white)
-                        }
-                    
-                    ScrollText(content: vm.selectStationInfo.nowStNm)
-                        .font(.title3)
-                        .padding(.horizontal, 5)
-                        .foregroundColor(Color.black)
-                        .bold()
-                }.onTapGesture {
-                    mainVM.userChoice.toggle()
-                }
-                
-                Button {
-                    self.confirmStationDatasAndPopSelectView(.down)
-                } label: {
-                    HStack {
-                        ScrollText(content: vm.selectStationInfo.downStationName)
-                            .font(.subheadline)
-                        Image(systemName: "chevron.right")
-                            .font(.caption)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-                    .padding(.trailing, 5)
-                }
-                
-            }
-            .foregroundStyle(Color.white)
         }
     }
     

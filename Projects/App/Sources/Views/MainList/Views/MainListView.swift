@@ -43,7 +43,7 @@ struct MainListView: View {
                         }
                     }
                 }
-                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarTitleDisplayMode(.inline)                
                 .toolbar {
                     ToolbarItem(placement: .principal) {
                         Text("호선 선택")
