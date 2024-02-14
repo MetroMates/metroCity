@@ -43,8 +43,6 @@ final class StationTableListVM: ObservableObject {
         
         Log.trace("😇 jsonData = \(jsonData)")
         
-        let coreManager = CoreDataManger.shared
-        
         DispatchQueue.global().async {
             do {
                 // 이 부분이 시간이 오래 걸림.
