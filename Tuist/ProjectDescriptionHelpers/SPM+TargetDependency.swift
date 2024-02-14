@@ -22,4 +22,5 @@ public extension TargetDependency.SPM {
 //    static let fireCore = TargetDependency.external(name: "FirebaseCore")
     static let firestoreSwift = TargetDependency.external(name: "FirebaseFirestoreSwift")
     static let googleAD = TargetDependency.external(name: "GoogleMobileAds")
+    static let Gzip = TargetDependency.external(name: "Gzip")
 }

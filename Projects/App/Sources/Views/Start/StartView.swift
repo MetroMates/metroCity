@@ -49,7 +49,8 @@ struct StartView: View {
                     .tag(0)
                     
                     // 즐겨찾기
-                    BookMarkView(bookMarkVM: bookMarkVM, bookMarkDetailVM: bookMarkDetailVM)
+                    BookMarkView(bookMarkVM: bookMarkVM,
+                                 bookMarkDetailVM: bookMarkDetailVM)
                         .tabItem {
                             EmptyView()
                         }
@@ -90,6 +91,9 @@ struct StartView: View {
             default:
                 break
             }
+        }
+        .onAppear {
+            startVM.fetchDatas()
         }
         
     }

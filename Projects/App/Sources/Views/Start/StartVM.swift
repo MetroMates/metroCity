@@ -34,7 +34,7 @@ final class StartVM: ObservableObject {
         
         self.localVer = UserDefaults.standard.integer(forKey: userDefaultKEY)
         
-        fetchDatas()
+//        fetchDatas() -> onAppear로 이동함.
     }
     
     func dataPublisher() -> AnyPublisher<(Array<StationInfo>, 
@@ -46,7 +46,7 @@ final class StartVM: ObservableObject {
             .eraseToAnyPublisher()
     }
     
-    private func fetchDatas() {
+    func fetchDatas() {
         dataManager.fetchDatas(statType: StationInfo.self,
                                subwayLineType: SubwayLineColor.self,
                                locationInfoType: StationLocation.self,

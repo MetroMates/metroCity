@@ -11,7 +11,9 @@ import ProjectDescription
 let denpendencies = Dependencies(
     swiftPackageManager: [
         .remote(url: "https://github.com/firebase/firebase-ios-sdk.git", requirement: .branch("main")),
-        .remote(url: "https://github.com/googleads/swift-package-manager-google-mobile-ads.git", requirement: .upToNextMajor(from: "10.14.0"))
+        .remote(url: "https://github.com/googleads/swift-package-manager-google-mobile-ads.git", requirement: .upToNextMajor(from: "10.14.0")),
+        .remote(url: "https://github.com/1024jp/GzipSwift.git", requirement: .upToNextMajor(from: "6.0.1")),
+    
         // Alamofire
 //        .remote(url: "https://github.com/Alamofire/Alamofire.git",
 //                requirement:.upToNextMajor(from: "5.8.1")),
