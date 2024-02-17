@@ -38,21 +38,28 @@ extension Target {
         var entitlements: Entitlements?
         
         if isProductApp {
-            setting = .settings(base: ["OTHER_LDFLAGS":"-ObjC"])
+//            setting = .settings(base: ["OTHER_LDFLAGS":"-ObjC"])
+            //base: ["OTHER_LDFLAGS":"-ObjC"],
+            //$(inherited) -Xlinker -interposable -all_load
             entitlements = "MetroCity.entitlements"
-            // 빌드 세팅 (xcconfig 있을경우)
+//             빌드 세팅 (xcconfig 있을경우)
 //            setting = Settings.settings(configurations: [
-//                .debug(name: "Debug", xcconfig: .relativeToRoot("\(projectFolder)/App/Resources/Config/Secrets.xcconfig")),
-//                .release(name: "Release", xcconfig: .relativeToRoot("\(projectFolder)/App/Resources/Config/Secrets.xcconfig")),
-//            ], defaultSettings: .recommended)
+            //"-lc++", "-Objc", "-all_load",
+            setting = Settings.settings(base: ["OTHER_LDFLAGS": "-Objc"],
+//            setting = Settings.settings(
+                                        configurations: [
+                                            .debug(name: "Debug", xcconfig: .relativeToRoot("\(projectFolder)/App/Resources/Config/Secrets.xcconfig")),
+                                            .release(name: "Release", xcconfig: .relativeToRoot("\(projectFolder)/App/Resources/Config/Secrets.xcconfig")),
+                                        ],
+                                        defaultSettings: .recommended)
         } else {
             // 빌드 세팅 (기본)
-            setting = nil
-            entitlements = nil
-//            setting = .settings(base: [:],
-//                                              configurations: [.debug(name: .debug),
-//                                                               .release(name: .release)],
-//                                              defaultSettings: .recommended)
+//            setting = nil
+//            entitlements = nil
+            setting = .settings(base: [:],
+                                configurations: [.debug(name: .debug),
+                                                 .release(name: .release)],
+                                defaultSettings: .recommended)
         }
         
         let sources: SourceFilesList = ["Sources/**"]
@@ -83,23 +90,15 @@ extension Target {
         let mainTarget = Target(name: name,
                                 platform: platform,
                                 product: product,
-//                                productName: <#T##String?#>,
                                 bundleId: bundleID,
                                 deploymentTarget: deploymentTarget,
                                 infoPlist: infoPlist,
                                 sources: sources,
                                 resources: resources,
-//                                copyFiles: <#T##[CopyFilesAction]?#>,
-//                                headers: <#T##Headers?#>,
                                 entitlements: entitlements,
                                 scripts: scripts,
                                 dependencies: dependencies,
                                 settings: setting
-//                                coreDataModels: <#T##[CoreDataModel]#>,
-//                                environmentVariables: <#T##[String : EnvironmentVariable]#>,
-//                                launchArguments: <#T##[LaunchArgument]#>,
-//                                additionalFiles: <#T##[FileElement]#>,
-//                                buildRules: <#T##[BuildRule]#>
         )
         
         

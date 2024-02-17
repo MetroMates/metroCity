@@ -61,7 +61,6 @@ final class StationTableListVM: ObservableObject {
                             data.direction == "down" && data.statNm == statName
                         }.sorted { $0.arriveTime < $1.arriveTime }
                         
-
                         self.upBaseInfo = upTable
                         self.downBaseInfo = downTable
 

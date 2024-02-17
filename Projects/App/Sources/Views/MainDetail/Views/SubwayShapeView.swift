@@ -33,7 +33,7 @@ struct SubwayShapeView: View {
             } else {
                 baseX = (geoWidth * (1 - startPositionRate)) - (textWidth + 5)
             }
-        } 
+        }
         else {
             baseX = self.originX
         }

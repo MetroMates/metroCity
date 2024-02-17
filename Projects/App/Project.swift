@@ -16,8 +16,11 @@ let appTarget = Target.makeTarget(name: "MetroCity",
                                   deploymentTarget: .iOS(targetVersion: "16.4",
                                                          devices: [.iphone, .ipad],
                                                          supportsMacDesignedForIOS: false),
-                                  dependencies: [.project(target: "FirebaseSPM", path: .relativeToRoot("\(projectFolder)/FirebaseSPM")),
-                                                 .project(target: "SPM", path: .relativeToRoot("\(projectFolder)/SPM"))
+                                  dependencies: [.project(target: "FirebaseSPM",
+                                                          path: .relativeToRoot("\(projectFolder)/FirebaseSPM")),
+                                                 
+                                                 .project(target: "SPM",
+                                                          path: .relativeToRoot("\(projectFolder)/SPM"))
                                                 ],
                                   infoPlistPath: "Support/Info.plist",
                                   scripts: [.swiftLintPath],
@@ -29,4 +32,5 @@ let appProject = Project.makeProject(projectName: "MetroCity",
                                      orgName: organizationName,
                                      targets: appTarget,
                                      isXcconfigSet: true,
-                                     additionalFiles: [])
+                                     additionalFiles: [],
+                                     packages: [])

@@ -17,11 +17,12 @@ let spmTarget = Target.makeTarget(name: "SPM",
                                   deploymentTarget: .iOS(targetVersion: "16.4",
                                                          devices: [.iphone, .ipad],
                                                          supportsMacDesignedForIOS: false),
-                                  dependencies: [.SPM.Gzip],
+                                  dependencies: [.Gzip],
                                   infoPlistPath: "",
                                   isResource: false,
                                   isTestAt: false)
 
 let spmProject = Project.makeProject(projectName: "SPM",
                                      orgName: organizationName,
-                                     targets: spmTarget)
+                                     targets: spmTarget,
+                                     packages: [.Gzip])
