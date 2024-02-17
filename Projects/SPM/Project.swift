@@ -12,16 +12,17 @@ import ProjectDescriptionHelpers
 // SPM 타겟 생성
 let spmTarget = Target.makeTarget(name: "SPM",
                                   platform: .iOS,
-                                  product: .framework,
+                                  product: .staticFramework,
                                   orgName: organizationName,
                                   deploymentTarget: .iOS(targetVersion: "16.4",
                                                          devices: [.iphone, .ipad],
                                                          supportsMacDesignedForIOS: false),
-                                  dependencies: [],
+                                  dependencies: [.Gzip],
                                   infoPlistPath: "",
                                   isResource: false,
                                   isTestAt: false)
 
 let spmProject = Project.makeProject(projectName: "SPM",
                                      orgName: organizationName,
-                                     targets: spmTarget)
+                                     targets: spmTarget,
+                                     packages: [.Gzip])

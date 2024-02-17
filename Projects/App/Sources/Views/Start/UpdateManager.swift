@@ -50,7 +50,7 @@ final class System {
         let doubleStore = Double(store)
         
         guard let doubleApp, let doubleStore else {
-            Log.error("버전 포맷 불일치 \(doubleApp) : \(doubleStore)")
+            Log.error("버전 포맷 불일치 \(String(describing: doubleApp)) : \(String(describing: doubleStore))")
             return true
         }
         
