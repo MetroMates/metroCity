@@ -8,10 +8,14 @@ final class StationTableListVM: ObservableObject {
     @Published var selection: String = ""
     @Published var upStationInfo: StationTable = []
     @Published var downStationInfo: StationTable = []
+    @Published var hourTime: String = ""
+    @Published var currentTime: String = ""
     
     private var upBaseInfo: StationTable = []
     private var downBaseInfo: StationTable = []
     private var anyCancellable: Set<AnyCancellable> = []
+    let timeFormatter = DateFormatter()
+    let currentFormatter = DateFormatter()
     
     func selectionSubscribe() {
        $selection.sink { newData in
@@ -27,6 +31,11 @@ final class StationTableListVM: ObservableObject {
     
     init() {
         self.selectionSubscribe()
+        timeFormatter.dateFormat = "HH"
+        self.hourTime = timeFormatter.string(from: Date())
+        
+        currentFormatter.dateFormat = "HH:mm"
+        self.currentTime = currentFormatter.string(from: Date())
     }
     
     deinit {

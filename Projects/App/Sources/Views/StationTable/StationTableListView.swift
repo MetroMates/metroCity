@@ -11,33 +11,23 @@ struct StationTableListView: View {
         VStack {
             Selection
             ContentHeader
+            HStack(spacing: 3) {
+                Text("현재")
+                Text("\(vm.currentTime)")
+            }
+            .foregroundColor(Color(hex: "42454A"))
+            
             ScrollView {
                 HStack {
                     LazyVStack(alignment: .leading) {
-                        ForEach(vm.upStationInfo) { info in
-                            HStack(spacing: 10) {
-                                Text("\(info.arriveTime.isEmpty ? info.startTime : info.arriveTime)")
-                                    .frame(width: 45, alignment: .leading)
-                                Text("\(info.destination)")
-//                                Text(info.weekAt)
-                            }
-                        }
-                        .font(.callout)
+                        StationTimeInfoView(stationInfo: vm.upStationInfo, vm: vm)
                     }
                     .frame(maxWidth: .infinity)
                     
                     Divider()
                     
                     LazyVStack(alignment: .leading) {
-                        ForEach(vm.downStationInfo) { info in
-                            HStack(spacing: 10) {
-                                Text("\(info.arriveTime.isEmpty ? info.startTime : info.arriveTime)")
-                                    .frame(width: 45, alignment: .leading)
-                                Text("\(info.destination)")
-//                                Text(info.weekAt)
-                            }
-                        }
-                        .font(.callout)
+                        StationTimeInfoView(stationInfo: vm.downStationInfo, vm: vm)
                     }
                     .frame(maxWidth: .infinity)
                 }
@@ -70,9 +60,54 @@ extension StationTableListView {
         HStack {
             Text("상행")
                 .frame(maxWidth: .infinity)
+            Rectangle()
+                .fill(Color(hex: "42454A"))
+                .frame(width: 1)
             Text("하행")
                 .frame(maxWidth: .infinity)
         }
+        .frame(height: UIScreen.main.bounds.height * 0.02)
+        .padding(.vertical, 10)
+        .background(Color(hex: "F3F5F8"))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+}
+
+struct StationTimeInfoView: View {
+    var stationInfo: [MetroCity.StationTableElement]
+    @ObservedObject var vm: StationTableListVM
+    
+    var body: some View {
+        ForEach(stationInfo.indices, id: \.self) { index in
+            let currentElement = stationInfo[index]
+            let nextIndex = index + 1 < stationInfo.count ? index + 1 : nil
+            let nextElement = nextIndex != nil ? stationInfo[nextIndex ?? 0] : nil
+            
+            let currentTime = currentElement.arriveTime.isEmpty ? currentElement.startTime : currentElement.arriveTime
+            let currentTimeComponents = currentTime.components(separatedBy: ":")
+            
+            let nextTime = nextElement?.arriveTime.isEmpty ?? false ? nextElement?.startTime : nextElement?.arriveTime
+            let nextTimeComponents = nextTime?.components(separatedBy: ":")
+            
+            VStack(alignment: .leading) {
+                HStack {
+                    Text(currentTime)
+                        .frame(maxWidth: 50)
+                    Text("\(currentElement.destination)행")
+                        .foregroundColor(Color(hex: "42454A"))
+                    Spacer()
+                }
+                .padding(.vertical, 5)
+                .background(vm.hourTime == currentTimeComponents.first ? Color(hex: "EAF7FD") : .clear)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                
+                if currentTimeComponents.first != nextTimeComponents?.first {
+                    Divider()
+                }
+            }
+
+        }
+        .font(.callout)
     }
 }
 
